@@ -1,0 +1,18 @@
+        org     0
+        mov     r0, #0x1000
+
+bruh    ldr     r1, [r0], #0
+
+        cmp     r1, #0
+        beq     kraj
+
+        mov     r1, #0
+        str     r1, [r0], #4
+
+        b       bruh
+
+kraj    swi     123456
+
+
+        org     0x1000
+        dw      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 0
