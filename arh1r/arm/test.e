@@ -9,7 +9,7 @@
 32 ; address width
 #
 #
-# Original file: Z:/home/tinke/FER-stvari/arh1r/arm/test.a
+# Original file: Z:/home/tk/FER-stvari/arh1r/arm/test.a
 #
 #
 <1,0>	                      ;        org     0
