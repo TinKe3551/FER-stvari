@@ -1,0 +1,57 @@
+  ; dosad iskoristeni registri: 
+  ; r1 - operacija
+  ; r2 - prvi operand
+  ; r3 - drugi operand
+  ; r4 - niz podataka
+  ; r5 - niz rezultata
+  ; r6 - broj koji oznacava kraj niza podataka
+  ; r10 - rezultat operacije
+
+        mov     r4, #0x700       ; pocetak niza podataka
+        mov     r5, #0x2000      ; pocetak niza rezultata   
+
+        ldr     r6, 0x500    ; kraj niza rezultata
+
+gpetlja ldr     r1, [r4], #4    ; gpetlja - glavna petlja
+        
+        cmp     r1, r6  ; program se prekida kada se na r1 ucita 0x88888888
+        beq     kraj            
+
+        ldr     r2, [r4], #4    
+        ldr     r3, [r4], #4    
+
+        cmp     r1, #0
+        beq     zbr
+
+        cmp     r1, #1
+        beq     odu
+
+        cmp     r1, #2
+        beq     umn
+
+odu     sub     r10, r2, r3     ; oduzimanje
+        b       slj
+
+zbr     add     r10, r2, r3     ; zbrajanje
+        b       slj
+
+umn     mul     r10, r2, r3     ; mnozenje
+        b       slj
+
+
+
+slj     str     r10, [r5], #4
+        b       gpetlja
+
+
+kraj    swi     0x123456
+
+        org     0x500
+zadnji  dw      0x88888888
+
+        org     0x700
+podaci  dw      1, 0x1F4, 0xFFFFFD44, 2, 0xFFFFFFFE, 0xA, 2, 0x70, 0x8e, 0, -0x98, -0x69, 0x88888888  ; ulazni podaci
+
+        org     0x2000
+rj      dw      0, 0, 0, 0      ; rjesenja
+ 
