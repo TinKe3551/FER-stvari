@@ -1,0 +1,113 @@
+  ; dosad iskoristeni registri: 
+  ; r1 - operacija, u potprogramu DIJELI predznak rezultata
+  ; r2 - prvi operand
+  ; r3 - drugi operand
+  ; r4 - niz podataka
+  ; r5 - niz rezultata
+  ; r6 - broj koji oznacava kraj niza podataka
+  ; r7 - zaključni rezutat
+  ; r10 - rezultat operacije
+
+        mov     r4, #0x700       ; pocetak niza podataka
+        mov     r5, #0x2000      ; pocetak niza rezultata   
+
+        ldr     r6, 0x500    ; kraj niza podataka
+        ldr     r7, 0x504       ; kraj niza rezultata
+        
+        mov     sp, #0x10000    ; inicijalizacija stoga
+
+gpetlja ldr     r1, [r4], #4    ; gpetlja - glavna petlja
+        
+        cmp     r1, r6  ; program se prekida kada se na r1 ucita 0x88888888
+        beq     kraj            
+
+        ldr     r2, [r4], #4    
+        ldr     r3, [r4], #4    
+
+        cmp     r1, #0  ; ako je r1 == 0, obavi zbrajanje
+        beq     zbr
+
+        cmp     r1, #1  ; ako je r1 == 1, obavi oduzimanje
+        beq     odu
+
+        cmp     r1, #2  ; ako je r1 == 2, obavi mnozenje
+        beq     umn
+
+        cmp     r1, #3  ; ako je r1 == 3, obavi dijeljenje korištenjem potprograma DIJELI
+        stmfd   SP!, {r1, r2, r3}
+        bleq    DIJELI
+        add     sp, sp, #12
+        b       slj
+
+odu     sub     r10, r2, r3     ; oduzimanje
+        b       slj
+
+zbr     add     r10, r2, r3     ; zbrajanje
+        b       slj
+
+umn     mul     r10, r2, r3     ; mnozenje
+        b       slj
+
+DIJELI  stmfd   sp!, {r1, r2, r3}       ; spremanje konteksta
+        
+        ldr     r1, [sp, #12]   ; uvođenje argumenata na registre
+        ldr     r2, [sp, #16]   ; r1 - predznak, r2 - djeljenik, r3 - djelitelj
+        ldr     r3, [sp, #20]
+
+        mov     r1, #1
+        mov     r10, #0
+
+        cmp     r3, #0  ; ako je r3 == 0, potprogram se odmah završava
+        beq     dj_kraj ; i r10 je namješten na 0
+
+prvi    cmp     r2, #0
+        bmi     neg1
+        b       drugi
+
+neg1    mvn     r2, r2  ; ako je prvi operand negativan, promijeni njegov predznak i predznak rezultata
+        add     r2, r2, #1
+        mvn     r1, r1
+        add     r1, r1, #1
+        b       drugi
+
+drugi   cmp     r3, #0
+        bmi     neg2
+        b       dj
+
+neg2    mvn     r3, r3  ; ako je drugi operand negativan, promijeni njegov predznak i predznak rezultata
+        add     r3, r3, #1
+        mvn     r1, r1
+        add     r1, r1, #1
+        b       dj
+
+dj      sub     r2, r2, r3      ; od r2 se oduzima r3 dok je r2 veći od nule, a
+        add     r10, r10, #1    ; u r10 se broji koliko puta je r3 oduzet od r2
+        cmp     r2, #0
+        bpl     dj
+
+        cmp     r2, #0          ; ako je r2 manji od nule, konačni rezultat je r10 - 1
+        submi   r10, r10, #1
+        mul     r10, r1, r10    ; postavljanje predznaka r10
+
+dj_kraj ldmfd   sp!, {r1, r2, r3}       ; obnavljanje konteksta
+        mov     pc, lr
+        
+
+
+slj     str     r10, [r5], #4
+        b       gpetlja
+
+
+kraj    str     r7, [r5], #4
+        swi     0x123456
+
+        org     0x500
+stvari  dw      0x88888888, 0xFFFFFFFF
+
+        org     0x700
+podaci  dw      0x3, 0xfffffeff, 0x10, 0x1, 0x1f4, 0xfffffd44, 0x2, 0xfffffffe, 0xa, 0x3, 0xfffff000, 0xffffffc0, 0x88888888
+
+
+        org     0x2000
+rj      dw      0, 0, 0, 0, 0; rjesenja
+ 

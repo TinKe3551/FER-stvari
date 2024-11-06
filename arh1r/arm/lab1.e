@@ -9,7 +9,7 @@
 32 ; address width
 #
 #
-# Original file: Z:/home/tk/FER-stvari/arh1r/arm/lab1arh.a
+# Original file: Z:/home/tk/FER-stvari/arh1r/arm/lab1.a
 #
 #
 <1,0>	                      ;  ; dosad iskoristeni registri: 
@@ -120,71 +120,23 @@
 |         FF FF FF FF
 <106,0>	                      ;
 <107,0>	                      ;        org     0x700
-<108,0>	00000700! 00 00 00 00 ;podaci  dw      0x0, 0x00001000, 0x0001FEDC, 0x0, 0xFFFFFED4, 0x00001000, 0x0, 0x00110000, 0xFFFFFF6A, 0x0, 0xFFFFFF38, 0xFFFFFE0C, 0x1, 0x00001000, 0x0001FEDC, 0x1, 0xFFFFFED4, 0x00001000, 0x1, 0x00110000, 0xFFFFFF6A, 0x1, 0xFFFFFF38, 0xFFFFFE0C, 0x2, 0x00001000, 0x0001FEDC, 0x2, 0xFFFFFED4, 0x00001000, 0x2, 0x00110000, 0xFFFFFF6A, 0x2, 0xFFFFFF38, 0xFFFFFE0C, 0x3, 0x00001000, 0x0001FEDC, 0x3, 0xFFFFFED4, 0x00001000, 0x3, 0x00110000, 0xFFFFFF6A, 0x3, 0xFFFFFF38, 0xFFFFFE0C, 0x88888888
-|         00 10 00 00
-|         DC FE 01 00
-|         00 00 00 00
-|         D4 FE FF FF
-|         00 10 00 00
-|         00 00 00 00
-|         00 00 11 00
-|         6A FF FF FF
-|         00 00 00 00
-|         38 FF FF FF
-|         0C FE FF FF
+<108,0>	00000700! 03 00 00 00 ;podaci  dw      0x3, 0xfffffeff, 0x10, 0x1, 0x1f4, 0xfffffd44, 0x2, 0xfffffffe, 0xa, 0x3, 0xfffff000, 0xffffffc0, 0x88888888
+|         FF FE FF FF
+|         10 00 00 00
 |         01 00 00 00
-|         00 10 00 00
-|         DC FE 01 00
-|         01 00 00 00
-|         D4 FE FF FF
-|         00 10 00 00
-|         01 00 00 00
-|         00 00 11 00
-|         6A FF FF FF
-|         01 00 00 00
-|         38 FF FF FF
-|         0C FE FF FF
+|         F4 01 00 00
+|         44 FD FF FF
 |         02 00 00 00
-|         00 10 00 00
-|         DC FE 01 00
-|         02 00 00 00
-|         D4 FE FF FF
-|         00 10 00 00
-|         02 00 00 00
-|         00 00 11 00
-|         6A FF FF FF
-|         02 00 00 00
-|         38 FF FF FF
-|         0C FE FF FF
+|         FE FF FF FF
+|         0A 00 00 00
 |         03 00 00 00
-|         00 10 00 00
-|         DC FE 01 00
-|         03 00 00 00
-|         D4 FE FF FF
-|         00 10 00 00
-|         03 00 00 00
-|         00 00 11 00
-|         6A FF FF FF
-|         03 00 00 00
-|         38 FF FF FF
-|         0C FE FF FF
+|         00 F0 FF FF
+|         C0 FF FF FF
 |         88 88 88 88
 <109,0>	                      ;
 <110,0>	                      ;
 <111,0>	                      ;        org     0x2000
-<112,0>	00002000! 00 00 00 00 ;rj      dw      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0     ; rjesenja
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
-|         00 00 00 00
+<112,0>	00002000! 00 00 00 00 ;rj      dw      0, 0, 0, 0, 0; rjesenja
 |         00 00 00 00
 |         00 00 00 00
 |         00 00 00 00
@@ -195,7 +147,7 @@
 # Debug Data
 #
 .debug:
-<!h105,0> <!h108,0> <!h112,0> 
+<!h112,0> 
 #
 #
 # Assembling: OK

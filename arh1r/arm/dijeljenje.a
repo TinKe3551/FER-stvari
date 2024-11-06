@@ -1,0 +1,52 @@
+
+
+pocetak mov     r1, #1  ; r1 - predznak rezultata
+        mov     r10, #0
+
+        ldr     r2, 320
+        ldr     r3, 324
+
+prvi    cmp     r2, #0
+        bmi     neg1
+        b       drugi
+
+neg1    mvn     r2, r2          ; pretvaranje prvog operanda u poz. broj
+        add     r2, r2, #1
+
+        mvn     r1, r1          ; promjena predznaka rezultata
+        add     r1, r1, #1
+
+        b       drugi
+
+drugi   cmp     r3, #0
+        bmi     neg2
+        b       dj
+
+neg2    mvn     r3, r3          ; pretvaranje drugog operanda u poz. broj
+        add     r3, r3, #1      
+
+        mvn     r1, r1          ; promjena predznaka rezultata
+        add     r1, r1, #1      ; promjena predznaka rezultata
+
+        b       dj
+
+dj      sub     r2, r2, r3
+        add     r10, r10, #1
+        cmp     r2, #0
+        bmi     dovrsi
+        b       dj
+
+dovrsi  sub     r10, r10, #1
+        str     r10, 400
+        mul     r10, r1, r10
+        str     r10, 400
+        
+kraj    swi     0x123456
+
+
+
+        org     320
+input   dw      0xfffffeff, 0x10
+
+        org     400
+rj      dw      0
