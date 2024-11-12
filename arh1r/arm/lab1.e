@@ -12,7 +12,7 @@
 # Original file: Z:/home/tk/FER-stvari/arh1r/arm/lab1.a
 #
 #
-<1,0>	                      ;  ; dosad iskoristeni registri: 
+<1,0>	                      ;  ; dosad iskorišteni registri: 
 <2,0>	                      ;  ; r1 - operacija, u potprogramu DIJELI predznak rezultata
 <3,0>	                      ;  ; r2 - prvi operand
 <4,0>	                      ;  ; r3 - drugi operand
@@ -22,8 +22,8 @@
 <8,0>	                      ;  ; r7 - zaključni rezutat
 <9,0>	                      ;  ; r10 - rezultat operacije
 <10,0>	                      ;
-<11,0>	00000000  70 4E A0 E3 ;        mov     r4, #0x700       ; pocetak niza podataka
-<12,0>	00000004  80 5D A0 E3 ;        mov     r5, #0x2000      ; pocetak niza rezultata   
+<11,0>	00000000  70 4E A0 E3 ;        mov     r4, #0x700       ; početak niza podataka
+<12,0>	00000004  80 5D A0 E3 ;        mov     r5, #0x2000      ; početak niza rezultata   
 <13,0>	                      ;
 <14,0>	00000008  F0 64 9F E5 ;        ldr     r6, 0x500    ; kraj niza podataka
 <15,0>	0000000C  F0 74 9F E5 ;        ldr     r7, 0x504       ; kraj niza rezultata
@@ -32,7 +32,7 @@
 <18,0>	                      ;
 <19,0>	00000014  04 10 94 E4 ;gpetlja ldr     r1, [r4], #4    ; gpetlja - glavna petlja
 <20,0>	                      ;        
-<21,0>	00000018  06 00 51 E1 ;        cmp     r1, r6  ; program se prekida kada se na r1 ucita 0x88888888
+<21,0>	00000018  06 00 51 E1 ;        cmp     r1, r6  ; program se prekida kada se na r1 učita 0x88888888
 <22,0>	0000001C  35 00 00 0A ;        beq     kraj            
 <23,0>	                      ;
 <24,0>	00000020  04 20 94 E4 ;        ldr     r2, [r4], #4    
@@ -44,7 +44,7 @@
 <30,0>	00000030  01 00 51 E3 ;        cmp     r1, #1  ; ako je r1 == 1, obavi oduzimanje
 <31,0>	00000034  06 00 00 0A ;        beq     odu
 <32,0>	                      ;
-<33,0>	00000038  02 00 51 E3 ;        cmp     r1, #2  ; ako je r1 == 2, obavi mnozenje
+<33,0>	00000038  02 00 51 E3 ;        cmp     r1, #2  ; ako je r1 == 2, obavi množenje
 <34,0>	0000003C  08 00 00 0A ;        beq     umn
 <35,0>	                      ;
 <36,0>	00000040  03 00 51 E3 ;        cmp     r1, #3  ; ako je r1 == 3, obavi dijeljenje korištenjem potprograma DIJELI
@@ -99,7 +99,7 @@
 <85,0>	000000D4  00 00 52 E3 ;        cmp     r2, #0
 <86,0>	000000D8  FB FF FF 5A ;        bpl     dj
 <87,0>	                      ;
-<88,0>	000000DC  00 00 52 E3 ;        cmp     r2, #0          ; ako je r2 manji od nule, konačni rezultat je r10 - 1
+<88,0>	000000DC  00 00 52 E3 ;        cmp     r2, #0          ; ako je r2 manji od nule, rezultat je r10 - 1
 <89,0>	000000E0  01 A0 4A 42 ;        submi   r10, r10, #1
 <90,0>	000000E4  91 0A 0A E0 ;        mul     r10, r1, r10    ; postavljanje predznaka r10
 <91,0>	                      ;

@@ -1,15 +1,15 @@
-  ; dosad iskoristeni registri: 
+  ; dosad iskorišteni registri: 
   ; r1 - operacija, u potprogramu DIJELI predznak rezultata
   ; r2 - prvi operand
   ; r3 - drugi operand
   ; r4 - niz podataka
   ; r5 - niz rezultata
-  ; r6 - broj koji oznacava kraj niza podataka
+  ; r6 - broj koji označava kraj niza podataka
   ; r7 - zaključni rezutat
   ; r10 - rezultat operacije
 
-        mov     r4, #0x700       ; pocetak niza podataka
-        mov     r5, #0x2000      ; pocetak niza rezultata   
+        mov     r4, #0x700       ; početak niza podataka
+        mov     r5, #0x2000      ; početak niza rezultata   
 
         ldr     r6, 0x500    ; kraj niza podataka
         ldr     r7, 0x504       ; kraj niza rezultata
@@ -18,7 +18,7 @@
 
 gpetlja ldr     r1, [r4], #4    ; gpetlja - glavna petlja
         
-        cmp     r1, r6  ; program se prekida kada se na r1 ucita 0x88888888
+        cmp     r1, r6  ; program se prekida kada se na r1 učita 0x88888888
         beq     kraj            
 
         ldr     r2, [r4], #4    
@@ -30,7 +30,7 @@ gpetlja ldr     r1, [r4], #4    ; gpetlja - glavna petlja
         cmp     r1, #1  ; ako je r1 == 1, obavi oduzimanje
         beq     odu
 
-        cmp     r1, #2  ; ako je r1 == 2, obavi mnozenje
+        cmp     r1, #2  ; ako je r1 == 2, obavi množenje
         beq     umn
 
         cmp     r1, #3  ; ako je r1 == 3, obavi dijeljenje korištenjem potprograma DIJELI
@@ -85,7 +85,7 @@ dj      sub     r2, r2, r3      ; od r2 se oduzima r3 dok je r2 veći od nule, a
         cmp     r2, #0
         bpl     dj
 
-        cmp     r2, #0          ; ako je r2 manji od nule, konačni rezultat je r10 - 1
+        cmp     r2, #0          ; ako je r2 manji od nule, rezultat je r10 - 1
         submi   r10, r10, #1
         mul     r10, r1, r10    ; postavljanje predznaka r10
 
