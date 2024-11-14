@@ -1,0 +1,61 @@
+        org     300
+stvari  dw      0xf0f0f0f0, 0x1000, 0x100000
+
+
+start
+        ldr     r1, 304
+        ldr     sp, 308
+        stmfd   sp!, {r1}
+        bl      obradi
+        add     sp, sp, #4
+
+kraj    swi     0x123456
+        
+
+
+obradi
+        stmfd   sp!, {r0, r1, r2}       ; spremanje konteksta
+        
+        ldr     r1, [sp, #12]   ; r1 - trenutni podatak
+        add     r2, r1, #0x100  ; r2 - zadnji podatak
+
+ptlj_obr
+
+        ldr     r2, [r1], #4
+
+        
+        str     r0, podatak
+        bl      paritet
+podatak dw      0
+
+        cmp     r0, #1
+        ldreq   r0, 300
+        streq   r0, [r1]
+
+        cmp     r1, r2
+        bne     ptlj_obr
+
+
+kraj_obr
+        ldmfd   sp!, {r0, r1, r2}
+        mov     pc, lr
+
+
+paritet
+        stmfd   sp!, {r1, r2}   ; spremanje konteksta
+        ldr     r1, [lr], #4    ; r1 - podatak kojem se provjeava paritet
+        mov     r0, #0          ; r0 - paritet
+
+ptlj_par        ; registru r0 pribrajaju se jedinice iz r1, parnost zbroja također je i paritet r1
+        movs    r1, r1, lsr #1
+        adc     r0, r0, #0
+        cmp     r1, #0
+        bne     ptlj_par
+
+kraj_par
+        and     r0, r0, #1      ; n & 1 == n % 2
+        ldmfd   sp!, {r1, r2}   ; obnova konteksta
+        
+
+
+

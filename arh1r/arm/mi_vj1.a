@@ -1,0 +1,54 @@
+start
+        
+
+
+kraj
+        swi     0x123456
+
+
+
+PODIJELI
+        stmfd   sp!, {r1, r2, r3}       ; spremanje konteksta
+
+        ldr     r1, [sp, #16]
+        ldr     r2, [sp, #20]
+        mov     r3, #1
+
+        mov     r0, #0
+
+        cmp     r2, #0  ; ako je u r2 0, odmah se vraća 0 preko r0
+        beq     kr_djel
+
+pr1
+        cmp     r1, #0  ; ako je prvi broj negativan, obrni njegov predznak i predznak rezultata
+        bpl     pr2
+        mvn     r1, r1
+        add     r1, r1, #1
+        mvn     r3, r3
+        add     r3, r3, #1
+
+pr2
+        cmp     r2, #0  ; isto tako i za drugi broj
+        bpl     pt_djel
+        mvn     r2, r2
+        add     r2, r2, #1
+        mvn     r3, r3
+        add     r3, r3, #1
+
+pt_djel
+        sub     r1, r1, r2      ; od r1 se uzastopno oduzima r2, a r0 se pribraja 1
+        add     r0, r0, #1
+        cmp     r1, #0
+        bpl     pt_djel         ; petlja se prekida kada je r1 <= 0
+
+        cmp     r1, #0
+        addmi   r1, r1, #1
+
+        cmp     r3, #0  ; postavljanje predznaka rezultata
+        bpl     kr_djel
+        mvn     r0, r0
+        add     r0, r0, #1
+
+kr_djel
+        ldmfd   sp!, {r1, r2, r3}       ; obnova konteksta
+        mov     pc, lr
