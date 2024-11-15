@@ -18,7 +18,7 @@
 <4,0>	                      ;  ; r3 - drugi operand
 <5,0>	                      ;  ; r4 - niz podataka
 <6,0>	                      ;  ; r5 - niz rezultata
-<7,0>	                      ;  ; r6 - broj koji oznacava kraj niza podataka
+<7,0>	                      ;  ; r6 - broj koji označava kraj niza podataka
 <8,0>	                      ;  ; r7 - zaključni rezutat
 <9,0>	                      ;  ; r10 - rezultat operacije
 <10,0>	                      ;

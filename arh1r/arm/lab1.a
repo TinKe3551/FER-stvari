@@ -11,7 +11,7 @@
         mov     r4, #0x700       ; početak niza podataka
         mov     r5, #0x2000      ; početak niza rezultata   
 
-        ldr     r6, 0x500    ; kraj niza podataka
+        ldr     r6, 0x500       ; kraj niza podataka
         ldr     r7, 0x504       ; kraj niza rezultata
         
         mov     sp, #0x10000    ; inicijalizacija stoga
