@@ -47,7 +47,7 @@ std::unordered_set<int> prosti_faktori (int n) {
 int main(void) {
 
     #ifdef debug
-    freopen("input", "r", stdin);
+    freopen("~/FER-stvari/natpro/input", "r", stdin);
     #endif
 
     preprostcess();
