@@ -1,7 +1,62 @@
 ; r1, r2, r3 - 16-bitovni podaci
 ; r4, r5, r6 - pokazivači na adrese podataka koji počinju od adresa 0x300, 0x500 i 0x700 redom
-; r0 - srednja vrijednost pojedine trojke podataka
+; r0 - pokazivač na adresu pojedinog rezultata
 
+        org     0x200
+rez     dw      0       ; srednja vrijednost pojedine trojke podataka
 
 glavni
+
+        mov     r4, #0x300      ; inicijalizacija pokazivača na adrese podataka u memoriji
+        mov     r5, #0x500
+        mov     r6, #0x700
+
+petlja
+
+        ldrh    r1, [r4], #2    ; učitavanje podataka iz memorije
+        ldrh    r2, [r5], #2
+        ldrh    r3, [r6], #2
+
+        cmp     r1, 0x8080      ; program se prekida ako je jedan od podataka jednak 0x8080
+        beq     kraj
+
+        stmfd   sp!, {r1, r2, r3}       ; argumenti za potprogram srednja
+        bl      srednja
+
+        ldrh    r1, rez         ; učitavanje rezultata iz fiksne lokacije
+        strh    r1, [r0], #2    ; upisivanje rezultata u memoriju
+
+
+kraj    swi     0x123456
+
+
+srednja
+
+; u potprogramu srednja registri r1, r2, i r3 prenamijenjuju se ovako:
+; r1 - zbroj ulaznih podataka
+; r2 - predznak rezultata dijeljenja
+; r3 - rezultat dijeljenja
+
+        stmfd   sp!, {r1, r2, r3}
+        ldr     r1, [sp, #16]
+        ldr     r2, [sp, #20]
+        ldr     r3, [sp, #24]
+
+        add     r1, r1, r2      ; u r1 se sprema zbroj podataka
+        add     r1, r1, r3
+
+        mov     r2, #1  ; predznak rezultata
+        cmp     r1, #0
         
+        mvnmi   r2, r2  ; ako je r1 < 0, obrni njegov predznak (u 2'k) i predznak rezultata
+        addmi   r2, #1
+        mvnmi   r1, r1
+        addmi   r1, #1
+
+        mov     r3, #0  ; u r3 se zapisuje rezultat koji će potprogram vratiti preko lokacije rez
+
+dj      
+        sub     r1, #3
+        add     r3, r3, #1
+        cmp     r1, #0
+        bpl     dj
