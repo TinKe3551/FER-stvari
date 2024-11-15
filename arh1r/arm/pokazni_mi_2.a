@@ -1,0 +1,7 @@
+; r1, r2, r3 - 16-bitovni podaci
+; r4, r5, r6 - pokazivači na adrese podataka koji počinju od adresa 0x300, 0x500 i 0x700 redom
+; r0 - srednja vrijednost pojedine trojke podataka
+
+
+glavni
+        
