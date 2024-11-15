@@ -30,7 +30,7 @@
 <14,0>	                      ;
 <15,0>	                      ;
 <16,0>	                      ;obradi
-<17,0>	00000150  07 00 2D E9 ;        stmfd   sp!, {r0, r1, r2}       ; spremanje konteksta
+<17,0>	00000150  07 40 2D E9 ;        stmfd   sp!, {r0, r1, r2, lr}       ; spremanje konteksta
 <18,0>	                      ;        
 <19,0>	00000154  0C 10 9D E5 ;        ldr     r1, [sp, #12]   ; r1 - trenutni podatak
 <20,0>	00000158  40 2F 81 E2 ;        add     r2, r1, #0x100  ; r2 - zadnji podatak
@@ -53,7 +53,7 @@
 <37,0>	                      ;
 <38,0>	                      ;
 <39,0>	                      ;kraj_obr
-<40,0>	00000180  07 00 BD E8 ;        ldmfd   sp!, {r0, r1, r2}
+<40,0>	00000180  07 40 BD E8 ;        ldmfd   sp!, {r0, r1, r2, lr}
 <41,0>	00000184  0E F0 A0 E1 ;        mov     pc, lr
 <42,0>	                      ;
 <43,0>	                      ;
