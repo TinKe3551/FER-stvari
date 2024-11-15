@@ -9,15 +9,11 @@ int prosti[kol_prostih];
 
 void preprostcess() {
 
-    int k = 1;
-
     for (int i = 2; i * i < kol_prostih; i++) {
 
         if (prosti[i] != 0) continue;
 
-        k *= i;
-
-        for (int j = i * i; j < kol_prostih; j += k) {
+        for (int j = i * i; j < kol_prostih; j += i) {
 
             if (prosti[j] == 0) prosti[j] = i;
 
@@ -47,7 +43,7 @@ std::unordered_set<int> prosti_faktori (int n) {
 int main(void) {
 
     #ifdef debug
-    freopen("~/FER-stvari/natpro/input", "r", stdin);
+    freopen("input", "r", stdin);
     #endif
 
     preprostcess();
