@@ -69,10 +69,42 @@ srednja
         mov     r2, #1
         mov     r3, #0
 
-        cmp     r1, #0
+        cmp     r1, #0  ; postavlja se predznak rezultata, a r1 se postavlja u apsolutnu vrijednost
         mvnmi   r1, r1
-        addmi   r1, #1
+        addmi   r1, r1, #1
 
-dj
+dj                      ; r1 se uzastopnim oduzimanjem dijeli s 3
+        subs    r1, r1, #3
+        add     r3, r3, #1
+        bpl     dj
+        sub     r3, r3, #1
+
+        cmp     r2, #0  ; rezultat se prenosi u 2'k oblik
+        mvnmi   r3, r3
+        addmi   r3, r3, #1
+
+        str     r3, rez ; upisivanje rezultata u memoriju
+        ldmfd   sp!, {r1, r2, r3, lr}
+        mov     pc, lr
+
+
+bzp_2k
+        stmfd   sp!, {r1, lr}   ; spremanje konteksta i učitavanje r1
+        ldr     r1, [sp, #12]
+        
+        movs    r1, r1, lsl #17 ; bitshiftamo broj za 17 mjesta ulijevo da ubacimo njegov bit za predznak u zastavicu c
+        mov     r1, r1, lsr #17
+
+        mvncs   r1, r1          ; sada ostaje apsolutna vrijednost koju po potrebi mijenjamo u 2'k negativan broj
+        addcs   r1, r1, #1
+
+        mov     r0, r1          ; onda se rezultat upisuje u r0 i izlazi se iz potprograma
+        ldmfd   sp!, {r1, lr}
+        mov     pc, lr
+
+; to bi trebalo biti to testirat ću program kad mi se bude dalo
+        
+
+        
         
         
