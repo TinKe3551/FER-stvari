@@ -1,9 +1,4 @@
 
-        org     0x200
-rez     dw      0
-zadnji  dw      0x8080
-
-
 start
 ; r1, r2, r3 - pokazivači na memorijske adrese ulaznih podataka
 ; r4, r5, r6 - podaci
@@ -11,7 +6,9 @@ start
         mov     r1, #0x300      ; inicijalizacija r1, r2, r3, i r7
         mov     r2, #0x500
         mov     r3, #0x700
+        mov     r8, #0x1000
         ldr     r7, 0x204
+        mov     sp, #0x5000
 
 petlja
         ldrh    r4, [r1], #2    ; učitavanje podataka
@@ -27,9 +24,10 @@ petlja
 
         ldr     r0, rez         ; učitavanje rezultata sa fiksne lokacije
 
-        add     r1, r1, #0x700  ;upisivanje rezultata u memoriju
-        str     r0, [r1]
-        sub     r1, r1, #0x700
+        
+        str     r0, [r8], #4    ; upisivanje rezultata u memoriju
+
+        b       petlja
 
 
 kraj
@@ -40,9 +38,9 @@ kraj
 srednja
 ; r1, r2, r3 - podaci
         stmfd   sp!, {r1, r2, r3, lr}
-        ldr     r1, [sp, #20]   ; učitavanje podataka u r1, r2 i r3
-        ldr     r2, [sp, #24]
-        ldr     r3, [sp, #28]
+        ldr     r1, [sp, #16]   ; učitavanje podataka u r1, r2 i r3
+        ldr     r2, [sp, #20]
+        ldr     r3, [sp, #24]
 
         stmfd   sp!, {r1}       ; na r1, r2 i r3 primjenjuje se bzp_2k
         bl      bzp_2k
@@ -72,6 +70,8 @@ srednja
         cmp     r1, #0  ; postavlja se predznak rezultata, a r1 se postavlja u apsolutnu vrijednost
         mvnmi   r1, r1
         addmi   r1, r1, #1
+        mvnmi   r2, r2
+        addmi   r2, r2, #1
 
 dj                      ; r1 se uzastopnim oduzimanjem dijeli s 3
         subs    r1, r1, #3
@@ -90,7 +90,7 @@ dj                      ; r1 se uzastopnim oduzimanjem dijeli s 3
 
 bzp_2k
         stmfd   sp!, {r1, lr}   ; spremanje konteksta i učitavanje r1
-        ldr     r1, [sp, #12]
+        ldr     r1, [sp, #8]
         
         movs    r1, r1, lsl #17 ; bitshiftamo broj za 17 mjesta ulijevo da ubacimo njegov bit za predznak u zastavicu c
         mov     r1, r1, lsr #17
@@ -103,7 +103,21 @@ bzp_2k
         mov     pc, lr
 
 ; to bi trebalo biti to testirat ću program kad mi se bude dalo
-        
+
+
+        org     0x200
+rez     dw      0
+zadnji  dw      0x8080   
+
+        org     0x300
+        dw      0x3, 0x5, 0x8080
+        org     0x500
+        dw      0x6, 0x5, 0x8080
+        org     0x700
+        dw      0x9, 0x8001, 0x8080
+
+        org     0x1000
+ispis   dw      0, 0, 0, 0
 
         
         

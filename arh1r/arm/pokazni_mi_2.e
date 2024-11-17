@@ -12,57 +12,145 @@
 # Original file: Z:/home/tk/FER-stvari/arh1r/arm/pokazni_mi_2.a
 #
 #
-<1,0>	                      ;; r1, r2, r3 - pokazivači na memorijske adrese ulaznih podataka
-<2,0>	                      ;; r4, r5, r6 - podaci
-<3,0>	                      ;; r7 - broj 0x8080
-<4,0>	                      ;
-<5,0>	                      ;
-<6,0>	                      ;        org     0x200
-<7,0>	00000200! 00 00 00 00 ;rez     dw      0
-<8,0>	00000204! 80 80 00 00 ;zadnji  dw      0x8080
-<9,0>	                      ;
-<10,0>	                      ;
-<11,0>	                      ;start
-<12,0>	00000208  C0 1F A0 E3 ;        mov     r1, #0x300      ; inicijalizacija r1, r2, r3, i r7
-<13,0>	0000020C  50 2E A0 E3 ;        mov     r2, #0x500
-<14,0>	00000210  70 3E A0 E3 ;        mov     r3, #0x700
-<15,0>	00000214  18 70 1F E5 ;        ldr     r7, 0x204
-<16,0>	                      ;
-<17,0>	                      ;petlja
-<18,0>	00000218  B2 40 D1 E0 ;        ldrh    r4, [r1], #2    ; učitavanje podataka
-<19,0>	0000021C  B2 50 D2 E0 ;        ldrh    r5, [r2], #2
-<20,0>	00000220  B2 60 D3 E0 ;        ldrh    r6, [r3], #2
-<21,0>	                      ;        
-<22,0>	00000224  07 00 54 E1 ;        cmp     r4, r7          ; program se prekida kada je barem jedan od učitanih podataka jednak 0x8080
-<23,0>	00000228  06 00 00 0A ;        beq     kraj
+<1,0>	                      ;
+<2,0>	                      ;start
+<3,0>	                      ;; r1, r2, r3 - pokazivači na memorijske adrese ulaznih podataka
+<4,0>	                      ;; r4, r5, r6 - podaci
+<5,0>	                      ;; r7 - broj 0x8080
+<6,0>	00000000  C0 1F A0 E3 ;        mov     r1, #0x300      ; inicijalizacija r1, r2, r3, i r7
+<7,0>	00000004  50 2E A0 E3 ;        mov     r2, #0x500
+<8,0>	00000008  70 3E A0 E3 ;        mov     r3, #0x700
+<9,0>	0000000C  40 8D A0 E3 ;        mov     r8, #0x1000
+<10,0>	00000010  EC 71 9F E5 ;        ldr     r7, 0x204
+<11,0>	00000014  50 DC A0 E3 ;        mov     sp, #0x5000
+<12,0>	                      ;
+<13,0>	                      ;petlja
+<14,0>	00000018  B2 40 D1 E0 ;        ldrh    r4, [r1], #2    ; učitavanje podataka
+<15,0>	0000001C  B2 50 D2 E0 ;        ldrh    r5, [r2], #2
+<16,0>	00000020  B2 60 D3 E0 ;        ldrh    r6, [r3], #2
+<17,0>	                      ;        
+<18,0>	00000024  07 00 54 E1 ;        cmp     r4, r7          ; program se prekida kada je barem jedan od učitanih podataka jednak 0x8080
+<19,0>	00000028  05 00 00 0A ;        beq     kraj
+<20,0>	                      ;
+<21,0>	0000002C  70 00 2D E9 ;        stmfd   sp!, {r4, r5, r6}       ; spremanje argumenata i pozivanje potprograma srednja
+<22,0>	00000030  04 00 00 EB ;        bl      srednja
+<23,0>	00000034  0C D0 8D E2 ;        add     sp, sp, #12
 <24,0>	                      ;
-<25,0>	0000022C  70 00 2D E9 ;        stmfd   sp!, {r4, r5, r6}       ; spremanje argumenata i pozivanje potprograma srednja
-<26,0>	00000230  05 00 00 EB ;        bl      srednja
-<27,0>	00000234  0C D0 8D E2 ;        add     sp, sp, #12
-<28,0>	                      ;
-<29,0>	00000238  40 00 1F E5 ;        ldr     r0, rez         ; učitavanje rezultata sa fiksne lokacije
-<30,0>	                      ;
-<31,0>	0000023C  70 1E 81 E2 ;        add     r1, r1, #0x700  ;upisivanje rezultata u memoriju
-<32,0>	00000240  00 00 81 E5 ;        str     r0, [r1]
-<33,0>	00000244  70 1E 41 E2 ;        sub     r1, r1, #0x700
-<34,0>	                      ;
+<25,0>	00000038  C0 01 9F E5 ;        ldr     r0, rez         ; učitavanje rezultata sa fiksne lokacije
+<26,0>	                      ;
+<27,0>	                      ;        
+<28,0>	0000003C  04 00 88 E4 ;        str     r0, [r8], #4    ; upisivanje rezultata u memoriju
+<29,0>	                      ;
+<30,0>	00000040  F4 FF FF EA ;        b       petlja
+<31,0>	                      ;
+<32,0>	                      ;
+<33,0>	                      ;kraj
+<34,0>	00000044  56 34 12 EF ;        swi     0x123456
 <35,0>	                      ;
-<36,0>	                      ;kraj
-<37,0>	00000248  56 34 12 EF ;        swi     0x123456
-<38,0>	                      ;
-<39,0>	                      ;
-<40,0>	                      ;
-<41,0>	                      ;srednja
-<42,0>	0000024C  0E 40 2D E9 ;        stmfd   sp!, {r1, r2, r3, lr}
-<43,0>	00000250  14 10 9D E5 ;        ldr     r1, [sp, #20]
-<44,0>	00000254  18 20 9D E5 ;        ldr     r2, [sp, #24]
-<45,0>	00000258  1C 30 9D E5 ;        ldr     r3, [sp, #28]
-<46,0>	                      ;
+<36,0>	                      ;
+<37,0>	                      ;
+<38,0>	                      ;srednja
+<39,0>	                      ;; r1, r2, r3 - podaci
+<40,0>	00000048  0E 40 2D E9 ;        stmfd   sp!, {r1, r2, r3, lr}
+<41,0>	0000004C  10 10 9D E5 ;        ldr     r1, [sp, #16]   ; učitavanje podataka u r1, r2 i r3
+<42,0>	00000050  14 20 9D E5 ;        ldr     r2, [sp, #20]
+<43,0>	00000054  18 30 9D E5 ;        ldr     r3, [sp, #24]
+<44,0>	                      ;
+<45,0>	00000058  02 00 2D E9 ;        stmfd   sp!, {r1}       ; na r1, r2 i r3 primjenjuje se bzp_2k
+<46,0>	0000005C  1C 00 00 EB ;        bl      bzp_2k
+<47,0>	00000060  00 10 A0 E1 ;        mov     r1, r0
+<48,0>	00000064  04 D0 8D E2 ;        add     sp, sp, #4
+<49,0>	                      ;
+<50,0>	00000068  04 00 2D E9 ;        stmfd   sp!, {r2}
+<51,0>	0000006C  18 00 00 EB ;        bl      bzp_2k
+<52,0>	00000070  00 20 A0 E1 ;        mov     r2, r0
+<53,0>	00000074  04 D0 8D E2 ;        add     sp, sp, #4
+<54,0>	                      ;
+<55,0>	00000078  08 00 2D E9 ;        stmfd   sp!, {r3}
+<56,0>	0000007C  14 00 00 EB ;        bl      bzp_2k
+<57,0>	00000080  00 30 A0 E1 ;        mov     r3, r0
+<58,0>	00000084  04 D0 8D E2 ;        add     sp, sp, #4
+<59,0>	                      ;
+<60,0>	                      ;; r1 - zbroj podataka
+<61,0>	                      ;; r2 - predznak rezultata
+<62,0>	                      ;; r3 - rezultat koji će se upisati u adresu rez
+<63,0>	                      ;
+<64,0>	00000088  02 10 81 E0 ;        add     r1, r1, r2
+<65,0>	0000008C  03 10 81 E0 ;        add     r1, r1, r3
+<66,0>	                      ;
+<67,0>	00000090  01 20 A0 E3 ;        mov     r2, #1
+<68,0>	00000094  00 30 A0 E3 ;        mov     r3, #0
+<69,0>	                      ;
+<70,0>	00000098  00 00 51 E3 ;        cmp     r1, #0  ; postavlja se predznak rezultata, a r1 se postavlja u apsolutnu vrijednost
+<71,0>	0000009C  01 10 E0 41 ;        mvnmi   r1, r1
+<72,0>	000000A0  01 10 81 42 ;        addmi   r1, r1, #1
+<73,0>	000000A4  02 20 E0 41 ;        mvnmi   r2, r2
+<74,0>	000000A8  01 20 82 42 ;        addmi   r2, r2, #1
+<75,0>	                      ;
+<76,0>	                      ;dj                      ; r1 se uzastopnim oduzimanjem dijeli s 3
+<77,0>	000000AC  03 10 51 E2 ;        subs    r1, r1, #3
+<78,0>	000000B0  01 30 83 E2 ;        add     r3, r3, #1
+<79,0>	000000B4  FC FF FF 5A ;        bpl     dj
+<80,0>	000000B8  01 30 43 E2 ;        sub     r3, r3, #1
+<81,0>	                      ;
+<82,0>	000000BC  00 00 52 E3 ;        cmp     r2, #0  ; rezultat se prenosi u 2'k oblik
+<83,0>	000000C0  03 30 E0 41 ;        mvnmi   r3, r3
+<84,0>	000000C4  01 30 83 42 ;        addmi   r3, r3, #1
+<85,0>	                      ;
+<86,0>	000000C8  30 31 8F E5 ;        str     r3, rez ; upisivanje rezultata u memoriju
+<87,0>	000000CC  0E 40 BD E8 ;        ldmfd   sp!, {r1, r2, r3, lr}
+<88,0>	000000D0  0E F0 A0 E1 ;        mov     pc, lr
+<89,0>	                      ;
+<90,0>	                      ;
+<91,0>	                      ;bzp_2k
+<92,0>	000000D4  02 40 2D E9 ;        stmfd   sp!, {r1, lr}   ; spremanje konteksta i učitavanje r1
+<93,0>	000000D8  08 10 9D E5 ;        ldr     r1, [sp, #8]
+<94,0>	                      ;        
+<95,0>	000000DC  81 18 B0 E1 ;        movs    r1, r1, lsl #17 ; bitshiftamo broj za 17 mjesta ulijevo da ubacimo njegov bit za predznak u zastavicu c
+<96,0>	000000E0  A1 18 A0 E1 ;        mov     r1, r1, lsr #17
+<97,0>	                      ;
+<98,0>	000000E4  01 10 E0 21 ;        mvncs   r1, r1          ; sada ostaje apsolutna vrijednost koju po potrebi mijenjamo u 2'k negativan broj
+<99,0>	000000E8  01 10 81 22 ;        addcs   r1, r1, #1
+<100,0>	                      ;
+<101,0>	000000EC  01 00 A0 E1 ;        mov     r0, r1          ; onda se rezultat upisuje u r0 i izlazi se iz potprograma
+<102,0>	000000F0  02 40 BD E8 ;        ldmfd   sp!, {r1, lr}
+<103,0>	000000F4  0E F0 A0 E1 ;        mov     pc, lr
+<104,0>	                      ;
+<105,0>	                      ;; to bi trebalo biti to testirat ću program kad mi se bude dalo
+<106,0>	                      ;
+<107,0>	                      ;
+<108,0>	                      ;        org     0x200
+<109,0>	00000200! 00 00 00 00 ;rez     dw      0
+<110,0>	00000204! 80 80 00 00 ;zadnji  dw      0x8080   
+<111,0>	                      ;
+<112,0>	                      ;        org     0x300
+<113,0>	00000300! 03 00 00 00 ;        dw      0x3, 0x5, 0x8080
+|         05 00 00 00
+|         80 80 00 00
+<114,0>	                      ;        org     0x500
+<115,0>	00000500! 06 00 00 00 ;        dw      0x6, 0x5, 0x8080
+|         05 00 00 00
+|         80 80 00 00
+<116,0>	                      ;        org     0x700
+<117,0>	00000700! 09 00 00 00 ;        dw      0x9, 0x8001, 0x8080
+|         01 80 00 00
+|         80 80 00 00
+<118,0>	                      ;
+<119,0>	                      ;        org     0x1000
+<120,0>	00001000! 00 00 00 00 ;ispis   dw      0, 0, 0, 0
+|         00 00 00 00
+|         00 00 00 00
+|         00 00 00 00
+<121,0>	                      ;
+<122,0>	                      ;        
+<123,0>	                      ;        
+<124,0>	                      ;        
+<125,0>	                      ;
 #
 # Debug Data
 #
 .debug:
-
+<!h120,0> 
 #
 #
 # Assembling: OK

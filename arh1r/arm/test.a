@@ -1,18 +1,13 @@
-        org     0
-        mov     r0, #0x1000
 
-bruh    ldr     r1, [r0], #0
+start
+        ldr     r1, 0x200
+        
+        movs    r1, r1, lsl #17
+        mov     r1, r1, lsr #17
 
-        cmp     r1, #0
-        beq     kraj
+        str     r1, 0x200
 
-        mov     r1, #0
-        str     r1, [r0], #4
+        swi     0x123456
 
-        b       bruh
-
-kraj    swi     123456
-
-
-        org     0x1000
-        dw      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 0
+        org     0x200
+test    dw      0x6
