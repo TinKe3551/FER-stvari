@@ -117,7 +117,7 @@
 <103,0>	000000F4  0E F0 A0 E1 ;        mov     pc, lr
 <104,0>	                      ;
 <105,0>	                      ;; to bi trebalo biti to testirat ću program kad mi se bude dalo
-<106,0>	                      ;
+<106,0>	                      ;; update: eto testirao sam program i ispravio sam ga i sad radi
 <107,0>	                      ;
 <108,0>	                      ;        org     0x200
 <109,0>	00000200! 00 00 00 00 ;rez     dw      0

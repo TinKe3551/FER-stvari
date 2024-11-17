@@ -103,7 +103,7 @@ bzp_2k
         mov     pc, lr
 
 ; to bi trebalo biti to testirat ću program kad mi se bude dalo
-
+; update: eto testirao sam program i ispravio sam ga i sad radi
 
         org     0x200
 rez     dw      0
