@@ -1,0 +1,72 @@
+start
+        mov     r1, #0x1000     ; podaci počinju od adrese 0x1000
+        mov     sp, #0x10000    ; stog
+        
+        stmfd   sp!, {r1}       ; pozivanje potprograma obradi
+        bl      obradi
+        add     sp, sp, #4
+
+kraj                            ; eto gotovo program je odradio svoje
+        swi     0x123456
+
+obradi
+
+; r0 - paritet podatka
+; r1 - pokazivač na podatak
+; r2 - podatak
+; r3 - brojač petlje
+; r4 - onaj broj koji treba staviti tamo gdje su podaci sa neparnim paritetom
+
+        stmfd   sp!, {r0, r1, r2, r3, r4, lr}   ; spremanje konteksta
+
+        ldr     r1, [sp, #24]   ; učitavanje i inicijalizacija
+        mov     r3, #0x100      
+        ldr     r4, fofofo
+
+petlja1
+
+        ldr     r2, [r1], #4        ; učitavanje podatka
+
+        str     r2, arg         ; stavljanje r2 kao argument na lokaciju iza bl i pozivanje potprograma paritet
+        bl      paritet
+arg     dw      0
+
+        cmp     r0, #1          ; sad ce na r0 biti zapisano 0 ako podatak ima paran paritet a ako je paritet neparan
+        streq   r4, [r1]        ; onda će u r0 biti 1 i onda treba u memoriji taj podatak zamijeniti sa 0xf0f0f0f0
+
+        sub     r3, r3, #1          ; brojač se smanji za 1 i ako je veći od 0 onda ide još jedan prolaz petlje
+        cmp     r3, #0
+        bne     petlja1
+
+kr_obr
+        ldmfd   sp!, {r0, r1, r2, r3, r4, lr}   ; obnova konteksta i vraćanje iz potprograma
+        mov     pc, lr
+
+paritet
+
+; r0 - količina jedinica u podatku, kasnije paritet
+; r1 - podatak kojem se provjerava paritet
+
+        add     lr, lr, #4
+        stmfd   sp!, {r1, r2, lr}       ; spremanje konteksta, učitavanje i inicijalizacija
+        ldr     r1, [lr]
+        mov     r2, #0
+
+petlja2
+        movs    r1, r1, lsl #1  ; svaki bit podatka prebacuje se jedan za drugim u c
+        adc     r0, r0, #0      ; i vrijednost c se pribraja u r0 (dakle, ako je bit jednak 1 vrijednost r0 će se povećati za 1, a inače će ostati ista)
+        cmp     r1, #0          ; kada je r1 == 0, onda nema više jedinica za prebrojati i ova petlja je gotova
+        bne     petlja2         ; na kraju će u r0 biti broj jedinica koje su se nalazile u podatku r1
+
+
+        and     r0, r0, #1      ; n & 1 == n % 2
+
+kr_par
+        ldmfd   sp!, {r1, r2, lr}
+        mov     pc, lr
+
+
+
+
+        org     0x200
+fofofo  dw      0xf0f0f0f0
