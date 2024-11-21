@@ -1,0 +1,51 @@
+
+main
+        mov     sp, #0x10000
+        ldr     r1, podatak
+
+        stmfd   sp!, {r1}
+        bl      avgb
+        add     sp, sp, #4
+
+        str     r0, rez
+
+end
+        swi     0x123456
+
+
+avgb
+        stmfd   sp!, {r1, r2, lr}
+        ldr     r1, [sp, #12]
+        mov     r0, #0
+        mov     r2, #0
+
+loop1                   ; pojedini 8-bitni brojevi iz r1 zbrajaju se u r2
+        mov     r0, r1
+        and     r0, r0, #255    ; izdvajanje zadnjih 8 bitova iz registra
+
+        add     r2, r2, r0
+
+        mov     r1, r1, lsr #8  ; registar se logički pomiče udesno za 8 mjesta kako bi se prešlo na sljedećih 8 bitova
+        cmp     r1, #0          ; petlja prestaje kada više nema bitova različitih od nule
+        bne     loop1
+
+        mov     r0, #0
+
+loop2                           ; zbroj se cjelobrojno dijeli s 4, a rezultat se zapisuje u r0
+        sub     r2, r2, #4
+        add     r0, r0, #1
+        cmp     r2, #0
+        bpl     loop2
+
+        sub     r0, r0, #1
+
+kr_avgb
+        ldmfd   sp!, {r1, r2, lr}
+        mov     pc, lr
+
+
+        org     0x100
+podatak dw      0x03014f05
+
+        org     0x200
+rez     dw      0
