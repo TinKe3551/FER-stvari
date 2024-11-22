@@ -1,0 +1,44 @@
+
+start
+        mov     r1, #0x1000
+        mov     r2, #0x1000
+
+loop1                   ; postavljanje drugog pokazivača na zadnje mjesto u nizu
+        ldr     r3, [r2], #4
+        cmp     r3, #0
+        bne     loop1
+
+        mov     r3, #0
+        sub     r2, r2, #8
+
+p1
+        cmp     r1, r2  ; kada je p1 == p2, onda je program gotov
+        beq     end
+
+        ldr     r3, [r1]        ; učitavanje podatka
+
+        cmp     r3, #0  ; ako je podatak negativan, pokazivač se pomiče na sljedeće mjesto
+        addmi   r1, r1, #4      ; i petlja se nastavlja
+        bmi     p1      
+
+p2                      ; analogan postupak za drugi pokazivač
+        cmp     r1, r2
+        beq     end
+
+        ldr     r4, [r2]
+
+        cmp     r4, #0
+        subpl   r2, r2, #4
+        bpl     p2
+
+swap
+        str     r3, [r2]
+        str     r4, [r1]
+        b       p1
+
+
+end     swi     0x123456
+
+
+        org     0x1000
+podaci  dw      0x207, 0x2e3, -0x270, -0x1fe, 0x2cc, 0x32d, 0xfa, 0x5, 0x29b, 0x60, 0x1c, 0xba, 0xe, -0x322, 0x221, 0x283, -0x99, 0x2aa, -0x18c, 0x346, 0x2a1, -0x31, 0x30d, -0x2c1, 0x344, -0xba, -0xa7, -0x172, 0x10e, 0x26f, 0x0
