@@ -9,27 +9,15 @@
 32 ; address width
 #
 #
-# Original file: Z:/home/tk/FER-stvari/arh1r/arm/test.a
+# Original file: Z:/home/tinke/FER-stvari/arh1r/arm/test.a
 #
 #
 <1,0>	                      ;
-<2,0>	                      ;start
-<3,0>	00000000  F8 11 9F E5 ;        ldr     r1, 0x200
-<4,0>	                      ;        
-<5,0>	00000004  81 18 B0 E1 ;        movs    r1, r1, lsl #17
-<6,0>	00000008  A1 18 A0 E1 ;        mov     r1, r1, lsr #17
-<7,0>	                      ;
-<8,0>	0000000C  EC 11 8F E5 ;        str     r1, 0x200
-<9,0>	                      ;
-<10,0>	00000010  56 34 12 EF ;        swi     0x123456
-<11,0>	                      ;
-<12,0>	                      ;        org     0x200
-<13,0>	00000200! 06 00 00 00 ;test    dw      0x6
 #
 # Debug Data
 #
 .debug:
-<!h13,0> 
+
 #
 #
 # Assembling: OK

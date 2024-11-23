@@ -1,0 +1,113 @@
+main
+        mov     r1, #0x1000     ; pokazivač adresa
+; adresa bloka za upisati uvijek će biti za točno 0x1000 viša nego adresa bloka za pročitati,
+; adresa količie brojeva bit će veća za 0x2000, a adresa za količinu nula za 0x3000
+
+        mov     r5, #5          ; brojač petlje
+        mov     sp, #0x10000    ; stog
+
+loop
+        ldr     r2, [r1]        ; adresa bloka podataka za pročitati
+
+        cmp     r5, #0
+        beq     end
+
+        add     r1, r1, #0x1000         
+        ldr     r3, [r1]                ; početna adresa bloka za upisati
+        add     r1, r1, #0x1000         
+        ldr     r4, [r1]                ; količina brojeva u bloku za pročitati
+
+        stmfd   sp!, {r2, r3, r4}       ; potprogram izbaci upisuje novi blok podataka i preko r0 vraća količinu izbrisanih nula
+        bl      izbaci
+        add     sp, sp, #12
+
+        add     r1, r1, #0x1000         
+        str     r0, [r1]                ; spremi količinu izbrisanih nula
+
+        add     r1, r1, #4
+        sub     r1, r1, #0x3000
+        sub     r5, r5, #1
+        b       loop
+
+
+end
+        swi     0x123456
+
+
+izbaci
+
+; r0 - količina izbačenih nula (ovo se vraća)
+; r1 - pokazivač na elemente u bloku za pročitati
+; r2 - pokazivač na elemente u bloku za upisati
+; r3 - brojač petlje
+; r4 - trenutni element bloka za pročitati
+
+        stmfd   sp!, {r1, r2, r3, r4, lr}
+        ldr     r1, [sp, #20]
+        ldr     r2, [sp, #24]
+        ldr     r3, [sp, #28]
+        mov     r0, #0
+
+loop2
+        cmp     r3, #0          ; početna vrijednost brojača je količina brojeva u bloku za pročitati, po svakom prolazu petlje smanjuje se za 1 i, kada postane 0, petlja se završava
+        beq     end_izb
+        
+        ldrh    r4, [r1], #2
+
+        cmp     r4, #0          
+        addeq   r0, r0, #1
+        strneh  r4, [r2], #2
+
+        sub     r3, r3, #1
+        b       loop2
+
+
+end_izb
+        ldmfd   sp!, {r1, r2, r3, r4, lr}
+        mov     pc, lr
+
+
+
+        org     0x1000
+izv     dw      0x1100, 0x1200, 0x1300, 0x1400, 0x1500
+
+        org     0x1100
+izv1    dh      0, 1, 0, 1
+
+        org     0x1200
+izv2    dh      -5, 3, 0, 0, 40
+
+        org     0x1300
+izv3    dh      -1, 0, 0, 0, -1, -1
+
+        org     0x1400
+izv4    dh      99, 0, 100
+
+        org     0x1500
+izv5    dh      0, 0, 0, 0
+
+
+        org     0x2000
+odr     dw      0x2100, 0x2200, 0x2300, 0x2400, 0x2500
+
+        org     0x2100
+odr1    dh      0, 0, 0, 0
+
+        org     0x2200
+odr2    dh      0, 0, 0, 0, 0
+
+        org     0x2300
+odr3    dh      0, 0, 0, 0, 0, 0
+
+        org     0x2400
+odr4    dh      0, 0, 0
+
+        org     0x2500
+odr5    dh      0, 0, 0, 0
+
+
+        org     0x3000
+        dw      4, 5, 6, 3, 4
+
+        org     0x4000
+nule    dw      0, 0, 0, 0, 0
