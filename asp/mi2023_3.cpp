@@ -89,6 +89,13 @@ int main(void) {
 
     freopen("input", "r", stdin);
 
+    MyList<int> lista;
+    for (int i = 0; i < 10; i++) {
+        int n;
+        cin >> n;
+        lista.AddSorted(n);
+    }
+
     return 0;
 
 }
