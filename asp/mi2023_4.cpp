@@ -23,9 +23,25 @@ bool pop(T& val){
 
 
 template<typename T>
+void insert_bottom(Stack<T>* s, T newEl){
+Stack<T> tmp;
+T el;
+while(s->Pop(el)){
+tmp.Push(el);
+}
+s->Push(newEl);
+while(tmp.Pop(el)){
+s->Push(el);
+}
+}
+
+
+template<typename T>
 Stack<T>* copy_reverse(Stack<T>& s) {
 
-    Stack<T>* ret = new Stack<T>;
+    Stack<T> *ret = new Stack<T>;
+
+    
 
     return ret;
 
