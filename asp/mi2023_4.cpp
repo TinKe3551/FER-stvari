@@ -24,24 +24,39 @@ bool pop(T& val){
 
 template<typename T>
 void insert_bottom(Stack<T>* s, T newEl){
-Stack<T> tmp;
-T el;
-while(s->Pop(el)){
-tmp.Push(el);
-}
-s->Push(newEl);
-while(tmp.Pop(el)){
-s->Push(el);
-}
+
+    Stack<T> tmp;
+    T el;
+
+    while(s->Pop(el)){
+        tmp.Push(el);
+    }
+
+    s->Push(newEl);
+
+    while(tmp.Pop(el)){
+        s->Push(el);
+    }
+
 }
 
 
 template<typename T>
 Stack<T>* copy_reverse(Stack<T>& s) {
 
-    Stack<T> *ret = new Stack<T>;
+    T el;
+    Stack<T> *o = new Stack<T>;
 
-    
+    if (s.pop(el)) {
+        o = copy_reverse(s);
+        o.push(el);
+        return o;
+    }
+
+    else {
+        o.push(el);
+        return o;
+    }
 
     return ret;
 
