@@ -30,10 +30,6 @@ int zamijeniParne(int A[], int n) {
         z += zamijeniParne(&A[1], n - 2);
     }
 
-
-    for (int i = 0; i < n; i++) cout << A[i] << " ";
-    cout << '\n';
-
     return z;
 
 }
