@@ -1,32 +1,64 @@
 #include <iostream>
-#include <vector>
+#include <queue>
 #include <set>
+
 
 
 using namespace std;
 
 
 int mat_sus[15][15];
-vector<int> incidentni[15];
+set<int> incidentni[15];
 set<int> posjeceni;
+deque<int> put;
 
 
-void trazi(int v, int l, int &k) {
+void trazi(int &pocetni, int v, int l, int &k, bool &postoji) {
 
-    if (l == k) return;
+    #ifdef debug
+    cout << v << ' ';
+    #endif
+
+    if (postoji) return;
+
+    if (l == k && incidentni[v].count(pocetni) > 0) {
+        #ifdef debug
+        cout << " evo ciklusa trazene duljine";
+        #endif
+        postoji = true;
+        return;
+    }
+
+    else if (l == k) {
+        return;
+    }
 
     posjeceni.insert(v);
+    put.emplace_back(v);
 
     for (int i: incidentni[v]) {
-        trazi(i, l + 1, k);
+
+        if (posjeceni.count(i) > 0) continue;
+
+        trazi(pocetni, i, l + 1, k, postoji);
+
+        #ifdef debug
+        cout << "\n";
+        for (int i: put) cout << i << ' ';
+        #endif
     }
 
     posjeceni.erase(v);
+    put.pop_back();
 
 }
 
 
 int main(void) {
+
+    #ifdef debug
+    freopen("output", "w", stdout);
+    #endif
 
     string dat;
     cout << "Unesite ime datoteke: ";
@@ -40,30 +72,103 @@ int main(void) {
     int k;
     cin >> k;
 
+    if (k > n) {
+        cout << 0 << '\n';
+        return 0;
+    }
+
+    // matrica susjedstva
+
     for (int i = 0; i < n; i++) {
 
-        int redak;
+        string redak;
         cin >> redak;
 
-        for (int j = n - 1; j >= 0; j--) {
+        for (int j = 0; j < n; j++) {
 
-            mat_sus[n][j] = redak % 10;
-            redak /= 10;
+            if (redak[j] == '1') mat_sus[i][j] = 1;
+            else mat_sus[i][j] = 0;
 
         }
 
     }
+
+
+    #ifdef debug
+
+    cout << "matrica susjedstva:\n";
 
     for (int i = 0; i < n; i++) {
 
         for (int j = 0; j < n; j++) {
 
-            if (mat_sus[i][j] == 1) incidentni[n].push_back(j);
+            cout << mat_sus[i][j] << ' ';
+
+        }
+
+        cout << '\n';
+
+    }
+
+    #endif
+
+    // incidentni vrhovi
+
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            if (mat_sus[i][j] == 1) incidentni[i].emplace(j);
 
         }
 
     }
 
-    
+
+    #ifdef debug
+
+    cout << "incidentni vrhovi:\n";
+
+    for (int i = 0; i < n; i++) {
+
+        cout << i << ": ";
+
+        for (int j: incidentni[i]) {
+
+            cout << j << ' ';
+
+        }
+
+        cout << '\n';
+
+    }
+
+    #endif
+
+
+
+    bool postoji = false;
+
+    #ifdef debug
+    cout << "----------------\n";
+    #endif
+
+    // trazenje ciklusa
+
+    for (int i = 0; i < n; i++) {
+
+        trazi(i, i, 1, k, postoji);
+
+        #ifdef debug
+        cout << '\n';
+        #endif
+    }
+
+    #ifdef debug
+    cout << "----------------\n";
+    #endif
+
+    // konacni rezultat
+    cout << postoji << '\n';
 
 }
