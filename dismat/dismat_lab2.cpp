@@ -41,8 +41,9 @@ void trazi(int &pocetni, int v, int l, int &k, bool &postoji) {
 int main(void) {
 
     string dat;
-    cout << "Unesite ime datoteke: ";
-    cin >> dat;
+    //cout << "Unesite ime datoteke: ";
+    //cin >> dat;
+    dat = "graf.txt";
 
     freopen(dat.c_str(), "r", stdin);
 
@@ -94,10 +95,6 @@ int main(void) {
     for (int i = 0; i < n; i++) {
 
         trazi(i, i, 1, k, postoji);
-
-        #ifdef debug
-        cout << '\n';
-        #endif
     }
 
     // konacni rezultat

@@ -1,0 +1,255 @@
+; r1 - adresa gpio1 - lcd na vratima B
+; r2 - adresa gpio2 - tipka i LED diode na vratima A
+; r3 - adresa rtc
+; r0 - razne namjene
+
+
+        org     0
+        b       reset
+
+
+        org     0x18
+        b       irq
+
+
+        org     0x100
+
+reset
+        msr     cpsr, #0b11010011
+        mov     sp, #0x10000
+
+        msr     cpsr, #0b11010010
+        mov     sp, #0xf000
+
+
+main
+
+        msr     cpsr, #0b11010011
+
+        ldr     r1, gpio1
+
+        ldr     r2, gpio2
+        mov     r0, #0b11100000
+        str     r0, [r2, #8]
+
+        ldr     r3, rtc
+
+
+st1
+        msr     cpsr, #0b11010011       ; način rada svc za zabranjenim irq
+
+        mov     r0, #0b00000000
+        str     r0, [r2]
+
+        mov     r0, #txt1
+        stmfd   sp!, {r0}
+        bl      prnstr
+        add     sp, sp, #4
+
+st1_lp
+        ldr     r0, [r2]
+
+        str     r0, debug
+
+        tst     r0, #1
+        beq     st1_lp
+
+        mov     r0, #2
+        str     r0, tr_st
+        b       st2
+
+st2
+        msr     cpsr, #0b01010010
+
+        mov     r0, #0b00100000         ; LED diode
+        str     r0, [r2]
+        
+        mov     r0, #txt2
+        stmfd   sp!, {r0}
+        bl      prnstr
+        add     sp, sp, #4
+
+        bl      setrtc
+
+        b       wait
+
+st3
+        msr     cpsr, #0b01010010
+
+        mov     r0, #0b01000000
+        str     r0, [r2]
+
+        mov     r0, #txt3
+        stmfd   sp!, {r0}
+        bl      prnstr
+        add     sp, sp, #4
+
+        bl      setrtc
+
+        b       wait
+
+st4
+        msr     cpsr, #0b01010010
+
+        mov     r0, #0b10000000
+        str     r0, [r2]
+
+        mov     r0, #txt4
+        stmfd   sp!, {r0}
+        bl      prnstr
+        add     sp, sp, #4
+
+        bl      setrtc
+
+        b       wait
+
+st5
+        msr     cpsr, #0b01010010
+
+        mov     r0, #0b11100000
+        str     r0, [r2]
+
+        mov     r0, #txt5
+        stmfd   sp!, {r0}
+        bl      prnstr
+        add     sp, sp, #4
+
+        bl      setrtc
+
+        b wait
+
+
+wait    b       wait
+        
+
+
+
+
+lcdwr
+; r0 i r4 kao i u potprogramu prnstr
+; r4 - heksadekadski prikaz znaka
+
+        stmfd   sp!, {lr}
+        
+        and     r4, r4, #0b01111111
+
+        strb    r4, [r1, #4]
+
+        add     r4, r4, #128    ; rastući brid
+        strb    r4, [r1, #4]
+
+        sub     r4, r4, #128    ; padajući brid
+        strb    r4, [r1, #4]
+
+        ldmfd   sp!, {lr}
+        mov     pc, lr
+        
+        
+        
+
+prnstr
+; r0 - pokazivač na znak
+; r1 - heksadekadski zapis znaka
+
+        stmfd   sp!, {r0, r4, lr}
+        ldr     r0, [sp, #12]
+        mov     r4, #0x0d
+
+        bl      lcdwr
+
+prst_lp 
+        ldrb    r4, [r0], #1
+        cmp     r4, #0
+        blne    lcdwr
+        bne     prst_lp
+
+        ldmfd   sp!, {r0, r4, lr}
+        mov     pc, lr
+        
+
+setrtc
+        stmfd   sp!, {r0}
+
+        mov     r0, #0
+        str     r0, [r3, #16]
+
+        mov     r0, #0          ; resetiranje timera
+        str     r0, [r3, #12]
+
+        str     r0, [r3, #8]
+
+        ldr     r0, vr        
+        str     r0, [r3, #4]
+
+        mov     r0, #1          ; omogućavanje slanja zahtjeva za prekid
+        str     r0, [r3, #16]
+
+        ldmfd   sp!, {r0}
+        mov     pc, lr
+
+
+
+irq
+; todo onaj dio sa rtcom
+        msr     cpsr, #0b11010010       ; onemogućavanje dodatnih prekida
+        stmfd   sp!, {r0}
+
+        mov     r0, #0
+        str     r0, [r3, #16]
+
+        ldr     r0, tr_st
+        add     r0, r0, #1
+
+        cmp     r0, #6
+        moveq   r0, #1
+
+        str     r0, tr_st
+
+        cmp     r0, #1
+        moveq   lr, #st1
+        beq     end_irq
+
+        cmp     r0, #3
+        moveq   lr, #st3
+        beq     end_irq
+
+        cmp     r0, #4
+        moveq   lr, #st4
+        beq     end_irq
+
+        cmp     r0, #5
+        moveq   lr, #st5
+        beq     end_irq
+
+end_irq
+        ldmfd   sp!, {r0}
+        ; mov     pc, lr
+        add     lr, lr, #4
+        subs    pc, lr, #4
+        
+
+        org     0x300
+
+gpio1   dw      0xffff0f00
+gpio2   dw      0xffff0b00
+rtc     dw      0xffff0e00
+
+
+; "WELCOME"
+txt1    db      0x57, 0x45, 0x4c, 0x43, 0x4f, 0x4d, 0x45, 0x00
+; "HEATING"
+txt2    db      0x48, 0x45, 0x41, 0x54, 0x49, 0x4e, 0x47, 0x00
+; "COFFEE"
+txt3    db      0x43, 0x4f, 0x46, 0x46, 0x45, 0x45, 0x00
+; "MILK"
+        org     0x324
+txt4    db      0x4d, 0x49, 0x4c, 0x4b, 0x00
+; "DONE"
+        org     0x32c
+txt5    db      0x44, 0x4f, 0x4e, 0x45, 0x00
+
+vr      dw      2650
+
+tr_st   dw      1
+
+debug   dw      0

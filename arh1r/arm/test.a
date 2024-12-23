@@ -1,13 +1,18 @@
 main
-        ldr     r1, stvar
-        str     r1, stvar2
+
+        mov     r1, #0
+        mov     r2, #stvar
+
+loop    add     r1, r1, #1
+        str     r1, [r2]
+        mov     r5, #loop
+        mov     pc, r5
+
+
 end
         swi     0x123456
 
 
+
         org     0x100
-stvar   db      0x50
-
-
-        org     0x200
-stvar2  dw      0
+stvar   dw      0
