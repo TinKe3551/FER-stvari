@@ -1,0 +1,27 @@
+; Poziv funkcije koja registrom x12 vraća razliku većeg i manjeg broja te 
+; spremanje rezultata na adresu 0x100
+; Funkcija parametre prima registrima x10 i x11
+; Točan rezultat je 0x02 za trenutni setup
+;-----------------------------------------------------------------------------------------
+        org 0
+
+glavni  addi x10, x0, 5         ; stavi broj 5 u registar x10
+        addi x11, x0, 3         ; stavi broj 3 u registar x11
+
+        jal ra, oduzmi          ; pozovi potprogram
+        sw x12, 0x100(x0)       ; spremi rezultat na adresu 0x100
+
+        halt                    ; kraj
+;-----------------------------------------------------------------------------------------
+; potprogram za računanje razlike većeg i manjeg broja
+;-----------------------------------------------------------------------------------------
+oduzmi  bge x10, x11, veci1     ; ako je x10 > x11 treba izračunati x10 - x11,
+                                ; ako ne x11 - x10
+
+veci2   sub x12, x11, x10       ; x11 - x10
+        beq x0, x0, nazad       ; skok na povratak
+
+veci1   sub x12, x10, x11       ; x10 - x11
+
+nazad   jalr x0, 0(ra)          ; povratak u glavni program
+;-----------------------------------------------------------------------------------------
