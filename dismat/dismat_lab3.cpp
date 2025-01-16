@@ -8,6 +8,7 @@ using namespace std;
 map<int, vector<int>> susjedstva;
 vector<int> boje;
 
+//jebem ti ja git
 
 bool slj(int n, int k) {
 
