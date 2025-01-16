@@ -87,6 +87,9 @@ int main(void) {
 
     while (slj(n, k) && !obojiv) {
 
+        for (int i: boje) cout << i << " ";
+        cout << '\n';
+
         obojiv = true;
 
         for (int i = 0; i < n && obojiv; i++) {
