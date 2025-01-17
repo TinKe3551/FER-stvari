@@ -1,0 +1,59 @@
+4 ZADATAK
+
+# srednji sadrzaj informacije odlomka
+#167 znakova u tekstu
+probability_X = np.array([])
+
+for i in range(n_chars):
+    x_i = char_counts[i]/167
+    probability_X = np.insert(probability_X, i, x_i)
+
+transinformationXY = -np.sum(probability_X*np.log2(probability_X))
+print(transinformationXY)
+
+-------------------------------------------------------------
+5 ZADATAKA
+
+# pretvori sliku u niz
+color_array = np.array(parrot)
+gray_array = np.array(gray_parrot)
+
+# transformiraj sliku tako da svi pikseli budu pohranjeni u jednodimenzionalnom nizu
+shape = color_array.shape
+color_array = color_array.reshape(1,shape[0]*shape[1],shape[2])
+shape = gray_array.shape
+gray_array = gray_array.reshape(1,shape[0]*shape[1])
+
+# izračunaj skup jedinstvenih vrijednosti piksela i broj pojavljivanja pojedinog piksela
+unique_col_px, col_px_counts = np.unique(color_array, return_counts = True, axis = 1)
+unique_col_px = np.array([str(px) for px in unique_col_px[0,:]])
+color_dict = dict(zip(unique_col_px,col_px_counts))
+
+unique_gray_px, gray_px_counts = np.unique(gray_array, return_counts = True, axis = 1)
+unique_gray_px = np.array([str(px) for px in unique_gray_px[0]])
+gray_dict = dict(zip(unique_gray_px,gray_px_counts))
+
+# izracun gubitka informacije prilikom transformacije u crno-bijelu skalu
+p_colored = np.array([])
+a = len(unique_col_px)
+
+for i in range(len(col_px_counts)):
+    colored_i = col_px_counts[i]/a
+    p_colored = np.insert(p_colored, i, colored_i)
+
+transinformation_colored = 0
+
+for i in range(p_colored.size): transinformation_colored = transinformation_colored - log2(p_colored[i])
+
+p_gray = np.array([])
+b = len(unique_gray_px)
+
+for i in range(len(gray_px_counts)):
+    gray_i = gray_px_counts[i]/b
+    p_gray = np.insert(p_gray, i, gray_i)
+
+transinformation_gray = 0
+
+for i in range(p_gray.size): transinformation_gray = transinformation_gray - log2(p_gray[i])
+
+print(transinformation_colored - transinformation_gray)

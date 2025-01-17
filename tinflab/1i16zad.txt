@@ -1,0 +1,55 @@
+1a
+
+# (a) kolicina informacije po simbolu
+I_x1 = -log2(p_X[0])
+I_x2 = -log2(p_X[1])
+I_x3 = -log2(p_X[2])
+I_x4 = -log2(p_X[3])
+print("I(x1) =",I_x1, "[bit/simbol]")
+print("I(x2) =",I_x2, "[bit/simbol]")
+print("I(x3) =",I_x3, "[bit/simbol]")
+print("I(x4) =",I_x4, "[bit/simbol]")
+
+1b
+
+# (b) kolicina informacije poruke
+np.random.seed(sval+1)
+message = np.random.choice(X_symbols, size = 5, p = p_X)
+print("message: ", message)
+pi=1
+for i in message:
+    if(i=='a'):
+        pi*=0.4
+    elif(i=='b'):
+        pi*=0.3
+    elif(i=='c'):
+        pi*=0.2
+    elif(i=='d'):
+        pi*=0.1
+I_message = -log2(pi)
+print("I(message) =", I_message, "[bit/poruka]")
+
+
+16
+
+def transmission(message):
+    mask = np.random.rand(len(message))>0.9
+    return (message+mask)%2
+    
+wrong_decoded = 0
+cyc = block.FECCyclic('1011')
+for i in range(100):
+    # generiraj poruku
+    message = x[i%16]
+    # kodiraj poruku
+    coded_message = cyc.cyclic_encoder(message)
+    # simuliraj slanje poruke
+    received_message = transmission(coded_message)
+    # dekodiraj poruku
+    decoded_message = cyc.cyclic_decoder(received_message)
+    # ako je poruka neispravno dekodirana, povećaj broj neispravno dekodiranih poru
+    if((message == decoded_message).all() == False):
+        wrong_decoded += 1
+# izračunaj vjerojatnost pogrešnog dekodiranja
+rez = wrong_decoded/100
+print("result: ", rez)

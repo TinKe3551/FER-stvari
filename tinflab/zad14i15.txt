@@ -1,0 +1,77 @@
+---
+**Zadatak 14** 
+Sljedeći kôd predstavlja koder koji kodira horizontalnom i vertikalnom provjerom zalihosti parnim paritetom. Nadopunite linije koda koje nedostaju za generiranje zalihosnih simbola. Komentirajte može li se pomoću ovakvog kodera otkriti i/ili ispraviti pogreška, i ako da, na koji način.
+
+import numpy as np
+
+# broj poruka
+m = 4
+# duljina poruke
+k = 3
+
+# matrica poruka
+msg_matrix = np.random.randint(0,2,m*k).reshape(m,k)
+print("Nekodirane poruke:\n", msg_matrix)
+
+# dodaj mjesto za paritetni bit
+msg_matrix = np.append(msg_matrix, np.zeros((m,1), dtype=int), axis=1)
+msg_matrix = np.append(msg_matrix, np.zeros((1,k+1), dtype=int), axis=0)
+print("\nNekodirane poruke i 0 na mjestu zalihosnih bitova:\n", msg_matrix)
+
+# postavi paritetne bitove
+for row in msg_matrix[:1]:
+    row[k] = sum(row[:1]) % 2
+
+#znamenke u posljednjem retku -> paritetni bit stupca
+for j in range (k + 1):
+    msg_matrix[m, j] = sum(msg_matrix[:-1, j]) % 2
+
+print ("\nZaštitne kodne riječi:\n", msg_matrix)
+
+** Pomoću ovakvog kodera može se otkriti i ispraviti jedna pogreška.
+   Ako dođe do jedne pogreške narušava se paritet u odgovrajućem redku i stupcu.
+   Presjek tog retka i stupca označava točnu lokaciju pogrešnog bita i taj 
+   bit možemo ispraviti tako da ga promijenimo.
+**
+
+**Zadatak 15**
+Provjerite svojstvo Hammingovog koda da otkriva dvostruku i ispravlja jednostuku pogrešku za Hammingov koder iz biblioteke u kodu. Kodirajte proizvoljnu poruku, simulirajte pogreške promjenom nekih bitova kodirane poruke te istu dekodirajte. 
+
+import numpy as np
+from scikit_dsp_comm import fec_block as block
+
+# Definiramo Hammingov koder
+parity_bits = 3
+ham = block.FECHamming(parity_bits)
+
+# Prikaz svojstava kodera
+print("k = {}\nn = {}\nH = \n{}\nG = \n{}\n".format(ham.k, ham.n, ham.H, ham.G))
+
+# Kodiramo proizvoljnu poruku
+message = np.random.randint(0, 2, ham.k)
+print("\nOriginalna poruka: ", message)
+
+coded_message = ham.hamm_encoder(message.astype(int))
+print("Kodirana poruka:    ", coded_message)
+
+# Simuliramo jednostruku pogrešku u kodiranoj poruci
+error_index = np.random.randint(0, ham.n)  # nasumično biramo mjesto za pogrešku
+coded_message_with_error = coded_message.copy()
+coded_message_with_error[error_index] ^= 1  # mijenjamo 0 -> 1 ili 1 -> 0
+print("\nKodirana poruka s pogreškom na indeksu {}: {}".format(error_index, coded_message_with_error))
+
+# Dekodiramo poruku s pogreškom
+decoded_message = ham.hamm_decoder(coded_message_with_error.astype(int))
+print("Dekodirana poruka: ", decoded_message)
+
+# Provjera svojstva otkrivanja dvostruke pogreške
+# Dodajemo još jednu pogrešku
+second_error_index = (error_index + 1) % ham.n  # druga pogreška na drugom indeksu
+coded_message_with_two_errors = coded_message_with_error.copy()
+coded_message_with_two_errors[second_error_index] ^= 1
+print("\nKodirana poruka s dvije pogreške (indeksi {} i {}): {}".format(
+    error_index, second_error_index, coded_message_with_two_errors))
+
+# Dekodiramo poruku s dvije pogreške
+decoded_message_with_two_errors = ham.hamm_decoder(coded_message_with_two_errors.astype(int))
+print("Dekodirana poruka s dvije pogreške: ", decoded_message_with_two_errors)

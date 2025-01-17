@@ -1,0 +1,40 @@
+2. ZADATAK
+
+# vjerojatnosti na ulazu
+p_X = np.array([0.5,0.25,0.25])
+# uvjetne vjerojatnosti prijelaza
+p_YIX = np.array([[0.8,0.1,0.1],[0.1,0.8,0.1],[0.1,0.1,0.8]])
+# zdruzene vjerojatnosti (skalarno množenje stupca p_X i matrice p_YIX)
+p_XY = p_X[:, np.newaxis]*p_YIX
+# vjerojatnosti na izlazu (zbroj elemenata matrice po stupcima)
+p_Y = np.sum(p_XY,0)
+print ("[p(Y)] = ", p_Y)
+
+
+
+
+
+
+
+
+3. ZADATAK
+
+# entropija na ulazu
+H_X = -np.sum(p_X*np.log2(p_X))
+# entropija na izlazu
+H_Y = -np.sum(p_Y*np.log2(p_Y))
+# zdruzena entropija
+H_XY = -np.sum(p_XY*np.log2(p_XY))
+# entropija suma (irelevantnost)
+H_YuzX = H_XY - H_X
+# ekvivokacija (mnogoznacnost)
+H_XuzY = H_XY - H_Y
+# srednji uzajamni sadržaj informacije (transinformacija)
+I_XY = H_X - H_XuzY
+
+print("H(X) =", H_X, "[bit/simbol]")
+print("H(Y) =", H_Y, "[bit/simbol]")
+print("H(X,Y) =", H_XY, "[bit/simbol]")
+print("H(Y|X) =", H_YuzX, "[bit/simbol]")
+print("H(X|Y) =", H_XuzY, "[bit/simbol]")
+print("I(X;Y) =", I_XY, "[bit/simbol]")

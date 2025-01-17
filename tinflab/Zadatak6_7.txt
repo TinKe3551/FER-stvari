@@ -1,0 +1,58 @@
+ZADATAK 6:
+
+# (a) izračun stacionarnih vjerojatnosti pojave piksela
+p_xjIxi = np.array([[0.5,0.5,0,0,0],
+[0.25,0.5,0.25,0,0],
+[0,0.25,0.5,0.25,0],
+[0,0,0.25,0.5,0.25],
+[0,0,0,0.5,0.5]])
+A = np.array([[-0.5,0.25,0,0,0],
+[0.5,-0.5,0.25,0,0],
+[0,0.25,-0.5,0.25,0],[0,0,0.25,-0.5,0.5],
+[1,1,1,1,1]])
+b = np.array([0,0,0,0,1])
+p_X = np.linalg.solve(A,b)
+print (p_X)
+# (b) entropija izvorišta za neovisne piksele
+H_X = -np.sum(p_X * np.log2(p_X))
+print("H(X) =", H_X, "[bit/simbol]")
+# (c) entropija izvorišta za ovisne piksele
+p_XiXj = p_X[:, np.newaxis]*p_xjIxi
+print(p_XiXj)
+H2_x = 0
+
+for i in range(5):
+    for j in range(5):
+        if (p_xjIxi[i][j] != 0) :
+            H2_x -= p_XiXj[i][j] * np.log2(p_xjIxi[i][j])
+
+print("H2(X) =", H2_x, "[bit/simbol]")
+
+
+
+(d) Stvarne slike je bolje zamisliti kao izvorište s memorijom jer su susjedni pikseli često povezani: 
+oni s istom ili sličnom bojom obično su jedan do drugog. 
+Zbog te povezanosti, slike sadrže manje informacije po simbolu. 
+Zato je entropija slike, odnosno količina informacije, 
+manja kad je gledamo kao izvorište s memorijom nego kad piksele smatramo potpuno neovisnima.
+
+
+ZADATAK 6:
+
+Kad pogledamo grafove i teoriju, vidimo da oba kanala imaju maksimalan kapacitet kad je p_e = 0, 
+odnosno kad nema nikakvih grešaka u prijenosu, jer tada poruka uvijek stiže točno. 
+Kod binarnog simetričnog kanala (BSC), kad greška poraste na p_e = 0.5, 
+kapacitet pada na nulu jer više nemamo nikakvu sigurnost – simbol koji primimo mogao je jednako lako biti transformiran ili ne, 
+pa zapravo ništa ne znamo o tome što je stvarno poslano. 
+
+Zanimljivo je da kod BSC-a kapacitet ponovno raste kad je p_e = 1. 
+U tom slučaju znamo da je uvijek poslan simbol suprotan od onog koji smo primili, 
+pa opet možemo pouzdano rekonstruirati poruku. S druge strane, 
+kod kanala s brisanjem (BEC) kad je p_e = 1, 
+kapacitet je 0 jer se svi simboli brišu i ništa ne dolazi do primatelja.
+
+Što se tiče oblika grafova, kod BSC-a kapacitet ima oblik parabole – prvo opada, 
+dosegne nulu kod p_e = 0.5, a onda ponovno raste. 
+Kod BEC-a kapacitet jednostavno ravno pada – što je više grešaka, manje informacije stiže do primatelja. 
+Razlika je u tome što kod BSC-a korisnost informacije eksponencijalno opada (do p_e = 0.5), 
+dok kod BEC-a informacija opada ravnomjerno, bez ikakvog skoka.
