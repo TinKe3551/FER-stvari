@@ -3,7 +3,7 @@
 
 
 #define vpb 9223372036854775783
-#define verbint 1
+#define interval 100000
 
 
 using namespace std;
@@ -11,7 +11,7 @@ using namespace std;
 
 map<int, vector<int>> susjedstva;
 vector<int> boje;
-set<long long> stanja;
+unordered_set<long long> stanja;
 
 
 long long hash_kod(int &n, int &k) {
@@ -96,20 +96,41 @@ int main(void) {
     stack<pair<int, int>> izmjene;
     stack<bool> pretrazi;
 
-    izmjene.emplace(new pair<int, int>(0, 0));
+    izmjene.emplace(pair<int, int>(0, 0));
 
     set<int> neispravni; // vrhovi koji imaju istu boju kao barem jedan njihov susjedni vrh
 
-    while (!izmjene.empty() && obojiv) {
+    int kol_stanja = 0;
+    double t = clock();
+
+    while (!izmjene.empty() && !obojiv) {
+
+        if (kol_stanja % interval == 0) {
+            if ((clock() - t) / CLOCKS_PER_SEC > n / 2 + 1) {
+                break;
+            }
+        }
 
         pair<int, int> izmj = izmjene.top();
         izmjene.pop();
         
         boje[izmj.first] += izmj.second;
 
-        long long stanje = hash_kod(n, k);
-        if (stanja.count(stanje) > 0) continue;
-        stanja.insert(stanje);
+        kol_stanja++;
+
+        long long kod_stanja = hash_kod(n, k);
+        
+        #ifdef verbose
+        cout << "--------------------------------\n";
+        cout << "broj obiđenih stanja: " << kol_stanja << '\n';
+        cout << "boje: "; for (int i: boje) cout << i << " "; cout << '\n';
+        cout << "broj stanja za obići: " << izmjene.size() << '\n';
+        cout << "je li ovakvo stanje već obiđeno prije: " << stanja.count(kod_stanja) << '\n';
+        cout << "broj jedinstvenih obiđenih stanja: " << stanja.size() << '\n';
+        #endif
+
+        if (stanja.count(kod_stanja) > 0) continue;
+        stanja.insert(kod_stanja);
 
         neispravni.clear();
         obojiv = true;
@@ -121,13 +142,31 @@ int main(void) {
                 if (boje[i] == boje[j]) {
                     neispravni.insert(i);
                     neispravni.insert(j);
+                    obojiv = false;
                 }
 
             }
 
         }
 
+        for (int i: neispravni) {
+            if (boje[i] + 1 < k) {
+                izmjene.emplace(pair<int, int>(i, -1));
+                izmjene.emplace(pair<int, int>(i, 1));
+            }
+            if (boje[i] > 0) {
+                izmjene.emplace(pair<int, int>(i, 1));
+                izmjene.emplace(pair<int, int>(i, -1));
+            }
+        }
+
     }
+
+    #ifdef debug
+    if (obojiv) {
+        cout << "pronađen način bojanja: "; for (int i: boje) cout << i << " "; cout << '\n';
+    }
+    #endif
 
     cout << obojiv << '\n';
 
