@@ -51,99 +51,6 @@ long long hash_kod(int &n, int &k) {
 }
 
 
-bool provjeri(bool &obojiv, int &n) {
-
-    if (obojiv) return true;
-
-    for (int i = 0; i < n; i++) {
-
-        for (int j: susjedstva[i]) {
-
-            if (boje[i] == boje[j]) {
-                return false;
-            }
-
-        }
-
-    }
-
-    obojiv = true;
-
-    #ifdef debug
-    cout << "----------------\n";
-    cout << "pronađen način bojanja: ";
-    for (int i: boje) cout << i << " ";
-    cout << '\n';
-    #endif
-
-    return true;
-
-}
-
-
-void boji(bool &obojiv, int &n, int &k, int dubina, int &kol_poziva) {
-
-    kol_poziva++;
-
-    if (provjeri(obojiv, n)) return;
-
-    #ifdef verbose
-    if (stanja.size() % verbint == 0) {
-        cout << "----------------\n";
-        cout << dubina << ". razina rekurzije\n";
-    }
-    #endif
-
-    long long stanje = hash_kod(n, k);
-
-    #ifdef verbose
-    if (stanja.size() % verbint == 0) {
-        cout << "kod stanja: " << stanje << '\n';
-        cout << "boje: "; for (int i: boje) cout << i << " "; cout << '\n';
-        cout << "stanje već prije zabilježeno: " << stanja.count(stanje) << '\n';
-        cout << "dosada zabilježeno stanja: " << stanja.size() << '\n';
-    }
-    #endif
-
-    if (stanja.count(stanje) > 0) return;
-    stanja.insert(stanje);
-
-    bool obojan = true;
-
-    set<int> promijeniti;
-
-    for (int i = 0; i < n; i++) {
-
-        for (int j: susjedstva[i]) {
-
-            if (boje[i] == boje[j]) {
-                
-                obojan = false;
-
-                promijeniti.insert(i);
-                promijeniti.insert(j);
-
-            }
-
-        }
-
-    }
-
-    for (int i: promijeniti) {
-
-        boje[i]++;
-        if (boje[i] < k) boji(obojiv, n, k, dubina + 1, kol_poziva);
-        boje[i]--;
-
-        boje[i]--;
-        if (boje[i] > 0) boji(obojiv, n, k, dubina + 1, kol_poziva);
-        boje[i]++;
-
-    }
-
-}
-
-
 int main(void) {
     
     string  dat;
@@ -162,9 +69,6 @@ int main(void) {
     int n, k;
     cin >> n;
     cin >> k;
-
-    int max_deg = 0;
-    bool potpun = true;
 
     for (int i = 0; i < n; i++) {
 
@@ -185,44 +89,47 @@ int main(void) {
 
         }
 
-        if (deg > max_deg) max_deg = deg;
-        if (deg < n - 1) potpun = false;
-
     }
 
-    #ifdef verbose
-    
-    cout << "najveći stupanj: " << max_deg << '\n';
+    bool obojiv = false;
 
-    if (potpun) cout << "graf je potpun\n";
-    else cout << "graf nije potpun\n";
+    stack<pair<int, int>> izmjene;
+    stack<bool> pretrazi;
 
-    for (int i = 0; i < n; i++) {
+    izmjene.emplace(new pair<int, int>(0, 0));
 
-        cout << i << ":";
-        for (int j: susjedstva[i]) cout << " " << j;
+    set<int> neispravni; // vrhovi koji imaju istu boju kao barem jedan njihov susjedni vrh
 
-        cout << '\n';
+    while (!izmjene.empty() && obojiv) {
+
+        pair<int, int> izmj = izmjene.top();
+        izmjene.pop();
+        
+        boje[izmj.first] += izmj.second;
+
+        long long stanje = hash_kod(n, k);
+        if (stanja.count(stanje) > 0) continue;
+        stanja.insert(stanje);
+
+        neispravni.clear();
+        obojiv = true;
+
+        for (int i = 0; i < n; i++) {
+
+            for (int j: susjedstva[i]) {
+
+                if (boje[i] == boje[j]) {
+                    neispravni.insert(i);
+                    neispravni.insert(j);
+                }
+
+            }
+
+        }
 
     }
-    #endif
-
-
-    bool obojiv = k >= max_deg;
-    if (potpun && k < n) {
-        cout << 0;
-        return 0;
-    }
-
-    int kol_poziva = 0;
-
-    boji(obojiv, n, k, 0, kol_poziva);
 
     cout << obojiv << '\n';
-
-    #ifdef debug
-    cout << "količina poziva funkcije: " << kol_poziva << '\n';
-    #endif
 
     return 0;
 
