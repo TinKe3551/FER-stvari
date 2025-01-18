@@ -30,6 +30,7 @@ long long hash_kod(int &n, int &k) {
     for (int i = 0; i < n; i++) {
 
         if (preslikavanje.count(boje[i]) == 0) preslikavanje[boje[i]] = slj++;
+        //if (preslikavanje.count(boje[i]) == 0) preslikavanje[boje[i]] = boje[i];
         int j = preslikavanje[boje[i]];
 
         #ifdef verbose
