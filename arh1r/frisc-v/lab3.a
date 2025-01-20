@@ -1,0 +1,36 @@
+
+
+main
+
+        jal     x0, kraj
+
+
+
+obradi
+
+        addi    a0, zero, 10
+        add     a1, zero, a7
+
+        blt     a1, a0, jzn
+
+dzn
+
+        sub     a1, a1, a0
+        jal     zero, ispis
+
+jzn
+
+        add     a1, zero, zero
+        jal     zero, ispis
+
+
+ispis
+
+
+kraj
+        halt
+
+
+
+gpio1   dw      0xffff0f00
+gpio2   dw      0xffff0b00

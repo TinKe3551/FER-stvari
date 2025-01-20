@@ -3,7 +3,7 @@
 
 
 #define vpb 9223372036854775783
-#define interval 100000
+#define interval 1000000
 
 
 using namespace std;
@@ -106,7 +106,8 @@ int main(void) {
     while (!izmjene.empty() && !obojiv) {
 
         if (kol_stanja % interval == 0) {
-            if ((clock() - t) / CLOCKS_PER_SEC > n / 2 + 1) {
+
+            if ((clock() - t) / CLOCKS_PER_SEC > (double)n / 2) {
                 break;
             }
         }

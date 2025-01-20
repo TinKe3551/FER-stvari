@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <bits/stdc++.h>
 #define kol_prostih 500069
 
