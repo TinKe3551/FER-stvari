@@ -71,6 +71,8 @@ int main(void) {
     cin >> n;
     cin >> k;
 
+    // čitanje matrice
+
     for (int i = 0; i < n; i++) {
 
         string redak;
@@ -92,10 +94,11 @@ int main(void) {
 
     }
 
+    // inicijalizacija varijabli za pretraživanje obojivosti
+
     bool obojiv = false;
 
     stack<pair<int, int>> izmjene;
-    stack<bool> pretrazi;
 
     izmjene.emplace(pair<int, int>(0, 0));
 
@@ -103,6 +106,8 @@ int main(void) {
 
     int kol_stanja = 0;
     double t = clock();
+
+    // pretraživanje obojivosti
 
     while (!izmjene.empty() && !obojiv) {
 
