@@ -106,19 +106,12 @@ int main(void) {
 
     while (!izmjene.empty() && !obojiv) {
 
-        if (kol_stanja % interval == 0) {
-
-            if ((clock() - t) / CLOCKS_PER_SEC > (double)n / 2) {
-                break;
-            }
-        }
+        kol_stanja++;
 
         pair<int, int> izmj = izmjene.top();
         izmjene.pop();
         
         boje[izmj.first] += izmj.second;
-
-        kol_stanja++;
 
         long long kod_stanja = hash_kod(n, k);
         
