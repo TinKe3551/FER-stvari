@@ -1,12 +1,87 @@
+; a0 - znamenka desetice
+; a1 - znamenka jedinice
+; a2 - očitano stanje gpio2A
+; a3 - je li brojač već osvježen po pritisku gumba
+; a7 - brojač
+
+; s1 - adresa gpio1
+; s2 - adresa gpio2
+; s3 - "gumb je pritisnut i sklopka je spuštena"
+; s4 - gornja granica brojača
+; s5 - kod za pražnjenje LCD-a
+
+main    ; inicijalizacija varijabli
+
+        addi    a7, zero, 0
+        addi    a3, zero, 0
+
+        lui     s1, %hi(0xffff0f00)     ; s1 - adresa gpio1
+        addi    s1, s1, %lo(0xffff0f00)
+
+        lui     s2, %hi(0xffff0b00)     ; s2 - adresa gpio2
+        addi    s2, s2, %lo(0xffff0b00)
+
+        addi    s3, zero, 0b11
+
+        addi    s4, zero, 12
+
+        lui     sp, %hi(0x10000)
+        addi    sp, sp, %lo(0x10000)
+
+        addi    s5, zero, 0x0d
 
 
-main
+petlja  ; čekanje na zatvaranje sklopke i pritisak gumba
 
-        jal     x0, kraj
+        lw      a2, 0(s2)
+        sw      a2, 0x304(zero)
+        andi    a2, a2, 0b11
+        bne     a2, s3, petlja
+
+osvjezi ; osvježavanje brojača i zapisa na LCD-u
+        
+        bne     a3, zero, petlja
+        addi    a3, zero, 1             ; a3 != 0 -> obnavljanje brojača i ispisa u tijeku,
+                                        ; ne može se opet pokrenuti dok trenutno obnavljanje
+                                        ; ne bude gotovo i gumb se ne otpusti
+
+        blt     a7, s4, slj     ; brojač
+        addi    a7, zero, 0
+slj     addi    a7, a7, 1
+
+        jal     ra, obradi
+
+LCDclr  ; pražnjenje LCD-a
+        addi    sp, sp, -4
+        sw      s5, 0(sp)
+        jal     ra, lcdwr
+        addi    sp, sp, 4
+
+        beq     a0, zero, upisj
+
+upisd   ; ispis znamenke desetica
+        addi    sp, sp, -4
+        sw      a0, 0(sp)
+        jal     ra, lcdwr
+        addi    sp, sp, 4
+
+upisj   ; ispis znamenke jedinica
+        addi    sp, sp, -4
+        sw      a1, 0(sp)
+        jal     ra, lcdwr
+        addi    sp, sp, 4
+
+petlja2                         ; čekanje otpuštanja gumba
+        lw      a2, 0(s2)
+        andi    a2, a2, 0b1     
+        beq     a2, a3, petlja2 ; je li gumb još uvijek pritisnut
+
+        addi    a3, zero, 0
+        jal     zero, petlja
 
 
-
-obradi
+obradi  ; preko a7 prima vrijednost brojača, a preko a0 i a1
+        ; vraća kodove za znamenke desetica i jedinica
 
         addi    a0, zero, 10
         add     a1, zero, a7
@@ -15,22 +90,46 @@ obradi
 
 dzn
 
-        sub     a1, a1, a0
-        jal     zero, ispis
+        sub     a1, a1, a0      
+        addi    a1, a1, 0x30      ; znamenka jedinice -> kod za tu znamenku
+
+        addi    a0, zero, 0x31    ; znamenka desetice -> kod znamenke '1'
+        
+        jalr    zero, 0(ra)
 
 jzn
 
-        add     a1, zero, zero
-        jal     zero, ispis
+        addi    a0, zero, 0     ; znamenka desetice -> 0 (nema je)
+        addi    a1, a1, 0x30      ; znamenka jedinice -> kod za tu znamenku
+        jalr    zero, 0(ra)
 
 
-ispis
+lcdwr
+
+        addi    sp, sp, -4      ; spremanje konteksta
+        sw      a0, 0(sp)
+
+        lw      a0, 4(sp)
+
+        andi    a0, a0, 0x7f    ; upis znaka na LCD
+        sb      a0, 4(s1)
+        ori     a0, a0, 0x80
+        sb      a0, 4(s1)
+        andi    a0, a0, 0x7f
+        sb      a0, 4(s1)
+
+        lw      a0, 0(sp)       ; obnova konteksta
+        addi    sp, sp, 4
+
+        jalr    x0, 0(ra)
 
 
 kraj
         halt
 
 
-
-gpio1   dw      0xffff0f00
-gpio2   dw      0xffff0b00
+        org     0x300
+brojac  dw      0
+gpio2a  dw      0
+zndes   dw      0
+znjed   dw      0
