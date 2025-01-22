@@ -113,6 +113,17 @@ int main(void) {
 
         kol_stanja++;
 
+        if (kol_stanja % interval == 0) {
+
+            if ((clock() - t) / CLOCKS_PER_SEC > n) {
+
+                cout << 0 << '\n';
+                return 0;
+
+            }
+
+        }
+
         pair<int, int> izmj = izmjene.top();
         izmjene.pop();
         

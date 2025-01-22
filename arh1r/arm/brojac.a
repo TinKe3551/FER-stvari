@@ -1,0 +1,147 @@
+; kao lab3.a iz frisc-v mape, ali prilagođeno tako da
+; brojač može prikazivati bilo koji broj do 99999999
+
+main
+
+        mov     sp, #0x10000    ; stog
+
+        mov     r1, #0          ; r1 - broj na brojaču
+        mov     r2, #0          ; r2 - je li već u tijeku promjena brojača
+        ldr     r3, limit       ; r3 - najveći broj koji brojač može postići
+
+
+cekaj
+
+        ldr     r0, gpio2       ; učitavanje stanja sa gpio2A
+        ldr     r0, [r0]
+
+        and     r0, r0, #0b11   ; provjera je li gumb pritisnut dok je
+        cmp     r0, #0b11       ; sklopka spuštena
+
+        beq     brojac
+
+        b       cekaj
+
+brojac
+
+        cmp     r2, #0          ; ako je mijenjanje brojača već
+        bne     cekaj           ; u tijeku, odi nazad na čekanje
+        mov     r2, #1
+
+        add     r1, r1, #1      ; sljedeća vrijednost brojača
+        cmp     r1, r3;
+        movgt   r1, #1
+
+        stmfd   sp!, {r1}
+        bl      obradi
+        add     sp, sp, #4
+
+        bl      ispis
+
+        mov     r2, #0
+
+        b       cekaj
+
+cekaj2  ; čekaj dok se gumb ne otpusti
+        
+        ldr     r0, gpio2
+        ldr     r0, [r0]
+
+        and     r0, r0, #1
+        cmp     r0, #1
+
+        beq     cekaj2
+        b       cekaj
+
+
+kraj
+        swi     0x123456
+
+
+obradi
+
+        stmfd   sp!, {r0, r1, r2, r3, r4, r5, lr}
+        ldr     r0, [sp, #28]           ; r0 - broj na brojaču
+        ldr     r1, oznaka              ; r1 - oznaka za kraj niza
+        ldr     r2, rvel                ; r2 - početak niza redova veličine
+        mov     r3, #0                  ; r3 - iznos pojedine znamenke
+        mov     r4, #0                  ; r4 - red veličine
+        ldr     r5, znmnke              ; r5 - adresa koda za pojedinu znamenku
+
+obr_p1          ; ptelja 1 - rastavljanje broja na znamenke
+                ; i upisivanje kodova znamenki u memoriju
+        
+        ldr     r4, [r2], #4            ; provjera je li potprogram došao do
+        cmp     r4, r1                  ; kraja niza sa redovima veličine
+        beq     obr_kr
+
+        mov     r3, #0
+
+obr_p1_1          ; petlja 1_1 - postavljanje vrijednosti pojedine znamenke
+        cmp     r0, r4
+        addge   r3, r3, #1
+        subge   r0, r0, r4
+        bge     obr_p1_1
+
+        add     r3, r3, #0x30   ; vrijednost znamenke -> kod za tu znamenku
+        str     r3, [r5], #4    ; upisivanje koda znamenke u memoriju
+
+        b       obr_p1
+
+obr_kr  ; kraj potprograma obradi
+
+        ldmfd   sp!, {r0, r1, r2, r3, r4, r5, lr}
+        mov     pc, lr
+        
+
+ispis
+
+        stmfd   sp!, {r0, r1, r2, r3, lr}
+
+        ldr     r0, znmnke      ; r0 - adresa koda pojedine znamenke
+        mov     r1, #0          ; r1 - je li ispisana znamenka razl. od '0'
+        mov     r2, #0x0d       ; r2 - kod pojedine znamenke
+        ldr     r3, oznaka      ; r3 - oznaka za kraj niza znamenki
+
+        stmfd   sp!, {r2}
+        bl      lcdwr
+        add     sp, sp, #4
+
+isp_p1
+
+        ldr     r2, [r0], #4
+
+        cmp     r2, r3;
+        beq     isp_kr
+
+        stmfd   sp!, {r2}
+        beq     lcdwr
+        add     sp, sp, #4
+        mov     r1, #1
+
+        b       isp_p1
+
+isp_kr
+
+        ldmfd   sp!, {r0, r1, r2, r3, r4, lr}
+        mov     pc, lr
+
+lcdwr
+
+        stmfd   sp!, {r0, lr}
+        ldr     r0, [sp, #8]    ; r0 - kod znamenke
+
+        and     r0, r0, #0x7f
+
+        strb
+
+
+
+gpio1   dw      0xffff0f00
+gpio2   dw      0xffff0b00
+
+rvel    dw      10000000, 1000000, 100000, 10000, 1000, 100, 10, 1, 0x7fffffff
+znmnke  dw      0, 0, 0, 0, 0, 0, 0, 0, 0x7fffffff
+oznaka  dw      0x7fffffff
+limit   dw      12345678
+

@@ -34,7 +34,6 @@ main    ; inicijalizacija varijabli
 petlja  ; čekanje na zatvaranje sklopke i pritisak gumba
 
         lw      a2, 0(s2)
-        sw      a2, 0x304(zero)
         andi    a2, a2, 0b11
         bne     a2, s3, petlja
 
@@ -45,7 +44,7 @@ osvjezi ; osvježavanje brojača i zapisa na LCD-u
                                         ; ne može se opet pokrenuti dok trenutno obnavljanje
                                         ; ne bude gotovo i gumb se ne otpusti
 
-        blt     a7, s4, slj     ; brojač
+        blt     a7, s4, slj     ; postavljanje brojača na sljedeći broj
         addi    a7, zero, 0
 slj     addi    a7, a7, 1
 
@@ -81,7 +80,7 @@ petlja2                         ; čekanje otpuštanja gumba
 
 
 obradi  ; preko a7 prima vrijednost brojača, a preko a0 i a1
-        ; vraća kodove za znamenke desetica i jedinica
+        ; vraća ASCII kodove za znamenke desetica i jedinica
 
         addi    a0, zero, 10
         add     a1, zero, a7
@@ -104,7 +103,7 @@ jzn
         jalr    zero, 0(ra)
 
 
-lcdwr
+lcdwr   ; kod lcdwr sa predavanja izmijenjen tako da se može koristiti kao potprogram
 
         addi    sp, sp, -4      ; spremanje konteksta
         sw      a0, 0(sp)
@@ -126,10 +125,3 @@ lcdwr
 
 kraj
         halt
-
-
-        org     0x300
-brojac  dw      0
-gpio2a  dw      0
-zndes   dw      0
-znjed   dw      0
