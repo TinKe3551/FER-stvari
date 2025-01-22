@@ -9,7 +9,7 @@
 32 ; address width
 #
 #
-# Original file: Z:/home/tk/FER-stvari/arh1r/arm/brojac.a
+# Original file: Z:/home/tinke/FER-stvari/arh1r/arm/brojac.a
 #
 #
 <1,0>	                      ;; kao lab3.a iz frisc-v mape, ali prilagođeno tako da
@@ -21,12 +21,12 @@
 <7,0>	                      ;
 <8,0>	00000004  00 10 A0 E3 ;        mov     r1, #0          ; r1 - broj na brojaču
 <9,0>	00000008  00 20 A0 E3 ;        mov     r2, #0          ; r2 - je li već u tijeku promjena brojača
-<10,0>	0000000C  D8 30 9F E5 ;        ldr     r3, limit       ; r3 - najveći broj koji brojač može postići
+<10,0>	0000000C  94 31 9F E5 ;        ldr     r3, limit       ; r3 - najveći broj koji brojač može postići
 <11,0>	                      ;
 <12,0>	                      ;
 <13,0>	                      ;cekaj
 <14,0>	                      ;
-<15,0>	00000010  84 00 9F E5 ;        ldr     r0, gpio2       ; učitavanje stanja sa gpio2A
+<15,0>	00000010  40 01 9F E5 ;        ldr     r0, gpio2       ; učitavanje stanja sa gpio2A
 <16,0>	00000014  00 00 90 E5 ;        ldr     r0, [r0]
 <17,0>	                      ;
 <18,0>	00000018  03 00 00 E2 ;        and     r0, r0, #0b11   ; provjera je li gumb pritisnut dok je
@@ -40,61 +40,143 @@
 <26,0>	                      ;
 <27,0>	00000028  00 00 52 E3 ;        cmp     r2, #0          ; ako je mijenjanje brojača već
 <28,0>	0000002C  F7 FF FF 1A ;        bne     cekaj           ; u tijeku, odi nazad na čekanje
-<29,0>	00000030  01 20 82 E2 ;        add     r2, r2, #1
+<29,0>	00000030  01 20 A0 E3 ;        mov     r2, #1
 <30,0>	                      ;
 <31,0>	00000034  01 10 81 E2 ;        add     r1, r1, #1      ; sljedeća vrijednost brojača
 <32,0>	00000038  03 00 51 E1 ;        cmp     r1, r3;
-<33,0>	0000003C  01 10 A0 03 ;        moveq   r1, #1
+<33,0>	0000003C  01 10 A0 C3 ;        movgt   r1, #1
 <34,0>	                      ;
-<35,0>	00000040  02 00 2D E9 ;        stmfd   sp!, {r1}
-<36,0>	00000044  01 00 00 EB ;        bl      obradi
-<37,0>	00000048  04 D0 8D E2 ;        add     sp, sp, #4
-<38,0>	                      ;
-<39,0>	                      ;
-<40,0>	                      ;kraj
-<41,0>	0000004C  56 34 12 EF ;        swi     0x123456
+<35,0>	00000040  64 11 8F E5 ;        str     r1, broj
+<36,0>	                      ;
+<37,0>	00000044  02 00 2D E9 ;        stmfd   sp!, {r1}
+<38,0>	00000048  0A 00 00 EB ;        bl      obradi
+<39,0>	0000004C  04 D0 8D E2 ;        add     sp, sp, #4
+<40,0>	                      ;
+<41,0>	00000050  1C 00 00 EB ;        bl      ispis
 <42,0>	                      ;
-<43,0>	                      ;
-<44,0>	                      ;obradi
-<45,0>	                      ;
-<46,0>	00000050  07 40 2D E9 ;        stmfd   sp!, {r0, r1, r2, lr}
-<47,0>	00000054  0C 00 9D E5 ;        ldr     r0, [sp, #12]           ; r0 - broj na brojaču
-<48,0>	00000058  88 10 9F E5 ;        ldr     r1, oznaka              ; r1 - oznaka za kraj niza
-<49,0>	0000005C  3C 20 9F E5 ;        ldr     r2, rvel                ; r2 - početak niza redova veličine
-<50,0>	00000060  00 30 A0 E3 ;        mov     r3, #0                  ; r3 - iznos pojedine znamenke
-<51,0>	00000064  00 40 A0 E3 ;        mov     r4, #0                  ; r4 - red veličine
-<52,0>	00000068  54 50 9F E5 ;        ldr     r5, znmnke              ; r5 - adresa koda za pojedinu znamenku
-<53,0>	                      ;
-<54,0>	                      ;obr_p1          ; ptelja 1 - rastavljanje broja na znamenke
-<55,0>	                      ;                ; i upisivanje kodova znamenki u memoriju
-<56,0>	                      ;        
-<57,0>	0000006C  00 40 92 E5 ;        ldr     r4, [r2]                ; provjera je li potprogram došao do
-<58,0>	00000070  01 00 54 E1 ;        cmp     r4, r1                  ; kraja niza sa redovima veličine
-<59,0>	00000074  07 00 00 0A ;        beq     obr_kr
-<60,0>	                      ;
-<61,0>	00000078  00 30 A0 E3 ;        mov     r3, #0
+<43,0>	00000054  00 20 A0 E3 ;        mov     r2, #0
+<44,0>	                      ;
+<45,0>	00000058  EC FF FF EA ;        b       cekaj
+<46,0>	                      ;
+<47,0>	                      ;cekaj2  ; čekaj dok se gumb ne otpusti
+<48,0>	                      ;        
+<49,0>	0000005C  F4 00 9F E5 ;        ldr     r0, gpio2
+<50,0>	00000060  00 00 90 E5 ;        ldr     r0, [r0]
+<51,0>	                      ;
+<52,0>	00000064  01 00 00 E2 ;        and     r0, r0, #1
+<53,0>	00000068  01 00 50 E3 ;        cmp     r0, #1
+<54,0>	                      ;
+<55,0>	0000006C  FA FF FF 0A ;        beq     cekaj2
+<56,0>	00000070  E6 FF FF EA ;        b       cekaj
+<57,0>	                      ;
+<58,0>	                      ;
+<59,0>	                      ;kraj
+<60,0>	00000074  56 34 12 EF ;        swi     0x123456
+<61,0>	                      ;
 <62,0>	                      ;
-<63,0>	                      ;obr_p1_1          ; petlja 1_1 - postavljanje vrijednosti pojedine znamenke
-<64,0>	0000007C  04 00 50 E1 ;        cmp     r0, r4
-<65,0>	00000080  01 30 83 A2 ;        addge   r3, r3, #1
-<66,0>	00000084  04 00 40 A0 ;        subge   r0, r0, r4
-<67,0>	00000088  FB FF FF AA ;        bge     obr_p1_1
-<68,0>	                      ;
-<69,0>	0000008C  1E 30 83 E2 ;        add     r3, r3, #30     ; vrijednost znamenke -> kod za tu znamenku
-<70,0>	00000090  04 30 85 E4 ;        str     r3, [r5], #4    ; upisivanje koda znamenke u memoriju
-<71,0>	                      ;
-<72,0>	00000094  F4 FF FF EA ;        b       obr_p1
-<73,0>	                      ;
-<74,0>	                      ;obr_kr  ; kraj potprograma obradi
+<63,0>	                      ;obradi
+<64,0>	                      ;
+<65,0>	00000078  3F 40 2D E9 ;        stmfd   sp!, {r0, r1, r2, r3, r4, r5, lr}
+<66,0>	0000007C  1C 00 9D E5 ;        ldr     r0, [sp, #28]           ; r0 - broj na brojaču
+<67,0>	00000080  1C 11 9F E5 ;        ldr     r1, oznaka              ; r1 - oznaka za kraj niza
+<68,0>	00000084  57 2F A0 E3 ;        mov     r2, #rvel               ; r2 - početak niza redova veličine
+<69,0>	00000088  00 30 A0 E3 ;        mov     r3, #0                  ; r3 - iznos pojedine znamenke
+<70,0>	0000008C  00 40 A0 E3 ;        mov     r4, #0                  ; r4 - red veličine
+<71,0>	00000090  60 5F A0 E3 ;        mov     r5, #znmnke             ; r5 - adresa koda za pojedinu znamenku
+<72,0>	                      ;
+<73,0>	                      ;obr_p1          ; ptelja 1 - rastavljanje broja na znamenke
+<74,0>	                      ;                ; i upisivanje kodova znamenki u memoriju
 <75,0>	                      ;        
-<76,0>	                      ;
-<77,0>	                      ;
-<78,0>	                      ;
+<76,0>	00000094  04 40 92 E4 ;        ldr     r4, [r2], #4            ; provjera je li potprogram došao do
+<77,0>	00000098  01 00 54 E1 ;        cmp     r4, r1                  ; kraja niza sa redovima veličine
+<78,0>	0000009C  07 00 00 0A ;        beq     obr_kr
 <79,0>	                      ;
-<80,0>	00000098! 00 0F FF FF ;gpio1   dw      0xffff0f00
-<81,0>	0000009C! 00 0B FF FF ;gpio2   dw      0xffff0b00
-<82,0>	                      ;
-<83,0>	000000A0! 80 96 98 00 ;rvel    dw      10000000, 1000000, 100000, 10000, 1000, 100, 10, 1, 0x7fffffff
+<80,0>	000000A0  00 30 A0 E3 ;        mov     r3, #0
+<81,0>	                      ;
+<82,0>	                      ;obr_p1_1          ; petlja 1_1 - postavljanje vrijednosti pojedine znamenke
+<83,0>	000000A4  04 00 50 E1 ;        cmp     r0, r4
+<84,0>	000000A8  01 30 83 A2 ;        addge   r3, r3, #1
+<85,0>	000000AC  04 00 40 A0 ;        subge   r0, r0, r4
+<86,0>	000000B0  FB FF FF AA ;        bge     obr_p1_1
+<87,0>	                      ;
+<88,0>	000000B4  30 30 83 E2 ;        add     r3, r3, #0x30   ; vrijednost znamenke -> kod za tu znamenku
+<89,0>	000000B8  04 30 85 E4 ;        str     r3, [r5], #4    ; upisivanje koda znamenke u memoriju
+<90,0>	                      ;
+<91,0>	000000BC  F4 FF FF EA ;        b       obr_p1
+<92,0>	                      ;
+<93,0>	                      ;obr_kr  ; kraj potprograma obradi
+<94,0>	                      ;
+<95,0>	000000C0  3F 40 BD E8 ;        ldmfd   sp!, {r0, r1, r2, r3, r4, r5, lr}
+<96,0>	000000C4  0E F0 A0 E1 ;        mov     pc, lr
+<97,0>	                      ;        
+<98,0>	                      ;
+<99,0>	                      ;ispis
+<100,0>	                      ;
+<101,0>	000000C8  0F 40 2D E9 ;        stmfd   sp!, {r0, r1, r2, r3, lr}
+<102,0>	                      ;
+<103,0>	000000CC  60 0F A0 E3 ;        mov     r0, #znmnke     ; r0 - adresa koda pojedine znamenke
+<104,0>	000000D0  00 10 A0 E3 ;        mov     r1, #0          ; r1 - je li ispisana znamenka razl. od '0'
+<105,0>	000000D4  0D 20 A0 E3 ;        mov     r2, #0x0d       ; r2 - kod pojedine znamenke
+<106,0>	000000D8  C4 30 9F E5 ;        ldr     r3, oznaka      ; r3 - oznaka za kraj niza znamenki
+<107,0>	                      ;
+<108,0>	000000DC  04 00 2D E9 ;        stmfd   sp!, {r2}
+<109,0>	000000E0  0E 00 00 EB ;        bl      lcdwr
+<110,0>	000000E4  04 D0 8D E2 ;        add     sp, sp, #4
+<111,0>	                      ;
+<112,0>	                      ;isp_p1
+<113,0>	                      ;
+<114,0>	000000E8  04 20 90 E4 ;        ldr     r2, [r0], #4
+<115,0>	                      ;
+<116,0>	000000EC  03 00 52 E1 ;        cmp     r2, r3;
+<117,0>	000000F0  08 00 00 0A ;        beq     isp_kr
+<118,0>	                      ;
+<119,0>	000000F4  01 00 51 E3 ;        cmp     r1, #1
+<120,0>	000000F8  01 00 00 0A ;        beq     nenul
+<121,0>	                      ;
+<122,0>	000000FC  30 00 52 E3 ;        cmp     r2, #0x30
+<123,0>	00000100  F8 FF FF 0A ;        beq     isp_p1
+<124,0>	                      ;
+<125,0>	                      ;nenul
+<126,0>	00000104  04 00 2D E9 ;        stmfd   sp!, {r2}
+<127,0>	00000108  04 00 00 EB ;        bl      lcdwr
+<128,0>	0000010C  04 D0 8D E2 ;        add     sp, sp, #4
+<129,0>	00000110  01 10 A0 E3 ;        mov     r1, #1
+<130,0>	                      ;
+<131,0>	00000114  F3 FF FF EA ;        b       isp_p1
+<132,0>	                      ;
+<133,0>	                      ;isp_kr
+<134,0>	                      ;
+<135,0>	00000118  0F 40 BD E8 ;        ldmfd   sp!, {r0, r1, r2, r3, lr}
+<136,0>	0000011C  0E F0 A0 E1 ;        mov     pc, lr
+<137,0>	                      ;
+<138,0>	                      ;lcdwr
+<139,0>	                      ;
+<140,0>	00000120  03 40 2D E9 ;        stmfd   sp!, {r0, r1, lr}
+<141,0>	00000124  0C 00 9D E5 ;        ldr     r0, [sp, #12]    ; r0 - kod znamenke
+<142,0>	00000128  24 10 9F E5 ;        ldr     r1, gpio1
+<143,0>	0000012C  04 10 81 E2 ;        add     r1, r1, #4
+<144,0>	                      ;
+<145,0>	00000130  78 00 8F E5 ;        str     r0, brojka
+<146,0>	                      ;
+<147,0>	00000134  7F 00 00 E2 ;        and     r0, r0, #127
+<148,0>	                      ;
+<149,0>	00000138  00 00 C1 E5 ;        strb    r0, [r1]
+<150,0>	                      ;
+<151,0>	0000013C  80 00 80 E3 ;        orr     r0, r0, #128
+<152,0>	00000140  00 00 C1 E5 ;        strb    r0, [r1]
+<153,0>	                      ;
+<154,0>	00000144  7F 00 00 E2 ;        and     r0, r0, #127
+<155,0>	00000148  00 00 C1 E5 ;        strb    r0, [r1]
+<156,0>	                      ;
+<157,0>	0000014C  03 40 BD E8 ;        ldmfd   sp!, {r0, r1, lr}
+<158,0>	00000150  0E F0 A0 E1 ;        mov     pc, lr
+<159,0>	                      ;
+<160,0>	                      ;
+<161,0>	                      ;
+<162,0>	00000154! 00 0F FF FF ;gpio1   dw      0xffff0f00
+<163,0>	00000158! 00 0B FF FF ;gpio2   dw      0xffff0b00
+<164,0>	                      ;
+<165,0>	0000015C! 80 96 98 00 ;rvel    dw      10000000, 1000000, 100000, 10000, 1000, 100, 10, 1, 0x7fffffff
 |         40 42 0F 00
 |         A0 86 01 00
 |         10 27 00 00
@@ -103,7 +185,7 @@
 |         0A 00 00 00
 |         01 00 00 00
 |         FF FF FF 7F
-<84,0>	000000C4! 00 00 00 00 ;znmnke  dw      0, 0, 0, 0, 0, 0, 0, 0, 0x7fffffff
+<166,0>	00000180! 00 00 00 00 ;znmnke  dw      0, 0, 0, 0, 0, 0, 0, 0, 0x7fffffff
 |         00 00 00 00
 |         00 00 00 00
 |         00 00 00 00
@@ -112,15 +194,19 @@
 |         00 00 00 00
 |         00 00 00 00
 |         FF FF FF 7F
-<85,0>	000000E8! FF FF FF 7F ;oznaka  dw      0x7fffffff
-<86,0>	000000EC! 4E 61 BC 00 ;limit   dw      12345678
-<87,0>	                      ;
-<88,0>	                      ;
+<167,0>	000001A4! FF FF FF 7F ;oznaka  dw      0x7fffffff
+<168,0>	                      ;
+<169,0>	000001A8! 80 00 00 00 ;limit   dw      128
+<170,0>	                      ;
+<171,0>	000001AC! 00 00 00 00 ;broj    dw      0
+<172,0>	000001B0! 00 00 00 00 ;brojka  dw      0
+<173,0>	                      ;
+<174,0>	                      ;
 #
 # Debug Data
 #
 .debug:
-<!h80,0> <!h81,0> 
+<!h162,0> <!h166,0> <!h171,0> <!h172,0> 
 #
 #
 # Assembling: OK
