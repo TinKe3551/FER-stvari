@@ -9,7 +9,7 @@
 32 ; address width
 #
 #
-# Original file: Z:/home/tinke/FER-stvari/arh1r/arm/brojac.a
+# Original file: Z:/home/tk/FER-stvari/arh1r/arm/brojac.a
 #
 #
 <1,0>	                      ;; kao lab3.a iz frisc-v mape, ali prilagođeno tako da
