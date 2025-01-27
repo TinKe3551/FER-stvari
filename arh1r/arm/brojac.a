@@ -166,7 +166,7 @@ rvel    dw      10000000, 1000000, 100000, 10000, 1000, 100, 10, 1, 0x7fffffff
 znmnke  dw      0, 0, 0, 0, 0, 0, 0, 0, 0x7fffffff
 oznaka  dw      0x7fffffff
 
-limit   dw      128
+limit   dw      1024
 
 broj    dw      0
 brojka  dw      0
