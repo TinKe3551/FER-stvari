@@ -23,123 +23,131 @@
 <9,0>	                      ;; s3 - "gumb je pritisnut i sklopka je spuštena"
 <10,0>	                      ;; s4 - gornja granica brojača
 <11,0>	                      ;; s5 - kod za pražnjenje LCD-a
-<12,0>	                      ;
-<13,0>	                      ;main    ; inicijalizacija varijabli
-<14,0>	                      ;
-<15,0>	00000000  93 08 00 00 ;        addi    a7, zero, 0
-<16,0>	00000004  93 06 00 00 ;        addi    a3, zero, 0
-<17,0>	                      ;
-<18,0>	00000008  B7 14 FF FF ;        lui     s1, %hi(0xffff0f00)     ; s1 - adresa gpio1
-<19,0>	0000000C  93 84 04 F0 ;        addi    s1, s1, %lo(0xffff0f00)
-<20,0>	                      ;
-<21,0>	00000010  37 19 FF FF ;        lui     s2, %hi(0xffff0b00)     ; s2 - adresa gpio2
-<22,0>	00000014  13 09 09 B0 ;        addi    s2, s2, %lo(0xffff0b00)
-<23,0>	                      ;
-<24,0>	00000018  93 09 30 00 ;        addi    s3, zero, 0b11
-<25,0>	                      ;
-<26,0>	0000001C  13 0A C0 00 ;        addi    s4, zero, 12
-<27,0>	                      ;
-<28,0>	00000020  37 01 01 00 ;        lui     sp, %hi(0x10000)
-<29,0>	00000024  13 01 01 00 ;        addi    sp, sp, %lo(0x10000)
-<30,0>	                      ;
-<31,0>	00000028  93 0A D0 00 ;        addi    s5, zero, 0x0d
-<32,0>	                      ;
-<33,0>	                      ;
-<34,0>	                      ;petlja  ; čekanje na zatvaranje sklopke i pritisak gumba
+<12,0>	                      ;; s6 - kod za prikazivanje sadržaja na zaslonu LCD-a
+<13,0>	                      ;
+<14,0>	                      ;main    ; inicijalizacija varijabli
+<15,0>	                      ;
+<16,0>	00000000  93 08 00 00 ;        addi    a7, zero, 0
+<17,0>	00000004  93 06 00 00 ;        addi    a3, zero, 0
+<18,0>	                      ;
+<19,0>	00000008  B7 14 FF FF ;        lui     s1, %hi(0xffff0f00)     ; s1 - adresa gpio1
+<20,0>	0000000C  93 84 04 F0 ;        addi    s1, s1, %lo(0xffff0f00)
+<21,0>	                      ;
+<22,0>	00000010  37 19 FF FF ;        lui     s2, %hi(0xffff0b00)     ; s2 - adresa gpio2
+<23,0>	00000014  13 09 09 B0 ;        addi    s2, s2, %lo(0xffff0b00)
+<24,0>	                      ;
+<25,0>	00000018  93 09 30 00 ;        addi    s3, zero, 0b11
+<26,0>	                      ;
+<27,0>	0000001C  13 0A C0 00 ;        addi    s4, zero, 12
+<28,0>	                      ;
+<29,0>	00000020  37 01 01 00 ;        lui     sp, %hi(0x10000)
+<30,0>	00000024  13 01 01 00 ;        addi    sp, sp, %lo(0x10000)
+<31,0>	                      ;
+<32,0>	00000028  93 0A D0 00 ;        addi    s5, zero, 0x0d
+<33,0>	0000002C  13 0B A0 00 ;        addi    s6, zero, 0x0a
+<34,0>	                      ;
 <35,0>	                      ;
-<36,0>	0000002C  03 26 09 00 ;        lw      a2, 0(s2)
-<37,0>	00000030  13 76 36 00 ;        andi    a2, a2, 0b11
-<38,0>	00000034  E3 1C 36 FF ;        bne     a2, s3, petlja
-<39,0>	                      ;
-<40,0>	                      ;osvjezi ; osvježavanje brojača i zapisa na LCD-u
-<41,0>	                      ;        
-<42,0>	00000038  E3 9A 06 FE ;        bne     a3, zero, petlja
-<43,0>	0000003C  93 06 10 00 ;        addi    a3, zero, 1             ; a3 != 0 -> obnavljanje brojača i ispisa u tijeku,
-<44,0>	                      ;                                        ; ne može se opet pokrenuti dok trenutno obnavljanje
-<45,0>	                      ;                                        ; ne bude gotovo i gumb se ne otpusti
-<46,0>	                      ;
-<47,0>	00000040  63 C4 48 01 ;        blt     a7, s4, slj     ; postavljanje brojača na sljedeći broj
-<48,0>	00000044  93 08 00 00 ;        addi    a7, zero, 0
-<49,0>	00000048  93 88 18 00 ;slj     addi    a7, a7, 1
-<50,0>	                      ;
-<51,0>	0000004C  EF 00 C0 04 ;        jal     ra, obradi
+<36,0>	                      ;petlja  ; čekanje na zatvaranje sklopke i pritisak gumba
+<37,0>	                      ;
+<38,0>	00000030  03 26 09 00 ;        lw      a2, 0(s2)
+<39,0>	00000034  13 76 36 00 ;        andi    a2, a2, 0b11
+<40,0>	00000038  E3 1C 36 FF ;        bne     a2, s3, petlja
+<41,0>	                      ;
+<42,0>	                      ;osvjezi ; osvježavanje brojača i zapisa na LCD-u
+<43,0>	                      ;        
+<44,0>	0000003C  E3 9A 06 FE ;        bne     a3, zero, petlja
+<45,0>	00000040  93 06 10 00 ;        addi    a3, zero, 1             ; a3 != 0 -> obnavljanje brojača i ispisa u tijeku,
+<46,0>	                      ;                                        ; ne može se opet pokrenuti dok trenutno obnavljanje
+<47,0>	                      ;                                        ; ne bude gotovo i gumb se ne otpusti
+<48,0>	                      ;
+<49,0>	00000044  63 C4 48 01 ;        blt     a7, s4, slj     ; postavljanje brojača na sljedeći broj
+<50,0>	00000048  93 08 00 00 ;        addi    a7, zero, 0
+<51,0>	0000004C  93 88 18 00 ;slj     addi    a7, a7, 1
 <52,0>	                      ;
-<53,0>	                      ;LCDclr  ; pražnjenje LCD-a
-<54,0>	00000050  13 01 C1 FF ;        addi    sp, sp, -4
-<55,0>	00000054  23 20 51 01 ;        sw      s5, 0(sp)
-<56,0>	00000058  EF 00 80 06 ;        jal     ra, lcdwr
-<57,0>	0000005C  13 01 41 00 ;        addi    sp, sp, 4
-<58,0>	                      ;
-<59,0>	00000060  63 0A 05 00 ;        beq     a0, zero, upisj
+<53,0>	00000050  EF 00 C0 05 ;        jal     ra, obradi
+<54,0>	                      ;
+<55,0>	                      ;LCDclr  ; pražnjenje LCD-a
+<56,0>	00000054  13 01 C1 FF ;        addi    sp, sp, -4
+<57,0>	00000058  23 20 51 01 ;        sw      s5, 0(sp)
+<58,0>	0000005C  EF 00 80 07 ;        jal     ra, lcdwr
+<59,0>	00000060  13 01 41 00 ;        addi    sp, sp, 4
 <60,0>	                      ;
-<61,0>	                      ;upisd   ; ispis znamenke desetica
-<62,0>	00000064  13 01 C1 FF ;        addi    sp, sp, -4
-<63,0>	00000068  23 20 A1 00 ;        sw      a0, 0(sp)
-<64,0>	0000006C  EF 00 40 05 ;        jal     ra, lcdwr
-<65,0>	00000070  13 01 41 00 ;        addi    sp, sp, 4
-<66,0>	                      ;
-<67,0>	                      ;upisj   ; ispis znamenke jedinica
-<68,0>	00000074  13 01 C1 FF ;        addi    sp, sp, -4
-<69,0>	00000078  23 20 B1 00 ;        sw      a1, 0(sp)
-<70,0>	0000007C  EF 00 40 04 ;        jal     ra, lcdwr
-<71,0>	00000080  13 01 41 00 ;        addi    sp, sp, 4
-<72,0>	                      ;
-<73,0>	                      ;petlja2                         ; čekanje otpuštanja gumba
-<74,0>	00000084  03 26 09 00 ;        lw      a2, 0(s2)
-<75,0>	00000088  13 76 16 00 ;        andi    a2, a2, 0b1     
-<76,0>	0000008C  E3 0C D6 FE ;        beq     a2, a3, petlja2 ; je li gumb još uvijek pritisnut
-<77,0>	                      ;
-<78,0>	00000090  93 06 00 00 ;        addi    a3, zero, 0
-<79,0>	00000094  6F F0 9F F9 ;        jal     zero, petlja
+<61,0>	00000064  63 0A 05 00 ;        beq     a0, zero, upisj
+<62,0>	                      ;
+<63,0>	                      ;upisd   ; ispis znamenke desetica
+<64,0>	00000068  13 01 C1 FF ;        addi    sp, sp, -4
+<65,0>	0000006C  23 20 A1 00 ;        sw      a0, 0(sp)
+<66,0>	00000070  EF 00 40 06 ;        jal     ra, lcdwr
+<67,0>	00000074  13 01 41 00 ;        addi    sp, sp, 4
+<68,0>	                      ;
+<69,0>	                      ;upisj   ; ispis znamenke jedinica
+<70,0>	00000078  13 01 C1 FF ;        addi    sp, sp, -4
+<71,0>	0000007C  23 20 B1 00 ;        sw      a1, 0(sp)
+<72,0>	00000080  EF 00 40 05 ;        jal     ra, lcdwr
+<73,0>	00000084  13 01 41 00 ;        addi    sp, sp, 4
+<74,0>	                      ;
+<75,0>	                      ;prikaz  ; prikaz ispisanih znakova na LCD-u
+<76,0>	00000088  13 01 C1 FF ;        addi    sp, sp, -4
+<77,0>	0000008C  23 20 61 01 ;        sw      s6, 0(sp)
+<78,0>	00000090  EF 00 40 04 ;        jal     ra, lcdwr
+<79,0>	00000094  13 01 41 00 ;        addi    sp, sp, 4
 <80,0>	                      ;
-<81,0>	                      ;
-<82,0>	                      ;obradi  ; preko a7 prima vrijednost brojača, a preko a0 i a1
-<83,0>	                      ;        ; vraća ASCII kodove za znamenke desetica i jedinica
-<84,0>	                      ;
-<85,0>	00000098  13 05 A0 00 ;        addi    a0, zero, 10
-<86,0>	0000009C  B3 05 10 01 ;        add     a1, zero, a7
-<87,0>	                      ;
-<88,0>	000000A0  63 CA A5 00 ;        blt     a1, a0, jzn
+<81,0>	                      ;petlja2                         ; čekanje otpuštanja gumba
+<82,0>	00000098  03 26 09 00 ;        lw      a2, 0(s2)
+<83,0>	0000009C  13 76 16 00 ;        andi    a2, a2, 0b1     
+<84,0>	000000A0  E3 0C D6 FE ;        beq     a2, a3, petlja2 ; je li gumb još uvijek pritisnut
+<85,0>	                      ;
+<86,0>	000000A4  93 06 00 00 ;        addi    a3, zero, 0
+<87,0>	000000A8  6F F0 9F F8 ;        jal     zero, petlja
+<88,0>	                      ;
 <89,0>	                      ;
-<90,0>	                      ;dzn
-<91,0>	                      ;
-<92,0>	000000A4  B3 85 A5 40 ;        sub     a1, a1, a0      
-<93,0>	000000A8  93 85 05 03 ;        addi    a1, a1, 0x30      ; znamenka jedinice -> kod za tu znamenku
-<94,0>	                      ;
-<95,0>	000000AC  13 05 10 03 ;        addi    a0, zero, 0x31    ; znamenka desetice -> kod znamenke '1'
-<96,0>	                      ;        
-<97,0>	000000B0  67 80 00 00 ;        jalr    zero, 0(ra)
-<98,0>	                      ;
-<99,0>	                      ;jzn
-<100,0>	                      ;
-<101,0>	000000B4  13 05 00 00 ;        addi    a0, zero, 0     ; znamenka desetice -> 0 (nema je)
-<102,0>	000000B8  93 85 05 03 ;        addi    a1, a1, 0x30      ; znamenka jedinice -> kod za tu znamenku
-<103,0>	000000BC  67 80 00 00 ;        jalr    zero, 0(ra)
-<104,0>	                      ;
-<105,0>	                      ;
-<106,0>	                      ;lcdwr   ; kod lcdwr sa predavanja izmijenjen tako da se može koristiti kao potprogram
-<107,0>	                      ;
-<108,0>	000000C0  13 01 C1 FF ;        addi    sp, sp, -4      ; spremanje konteksta
-<109,0>	000000C4  23 20 A1 00 ;        sw      a0, 0(sp)
-<110,0>	                      ;
-<111,0>	000000C8  03 25 41 00 ;        lw      a0, 4(sp)
+<90,0>	                      ;obradi  ; preko a7 prima vrijednost brojača, a preko a0 i a1
+<91,0>	                      ;        ; vraća ASCII kodove za znamenke desetica i jedinica
+<92,0>	                      ;
+<93,0>	000000AC  13 05 A0 00 ;        addi    a0, zero, 10
+<94,0>	000000B0  B3 05 10 01 ;        add     a1, zero, a7
+<95,0>	                      ;
+<96,0>	000000B4  63 CA A5 00 ;        blt     a1, a0, jzn
+<97,0>	                      ;
+<98,0>	                      ;dzn
+<99,0>	                      ;
+<100,0>	000000B8  B3 85 A5 40 ;        sub     a1, a1, a0      
+<101,0>	000000BC  93 85 05 03 ;        addi    a1, a1, 0x30      ; znamenka jedinice -> kod za tu znamenku
+<102,0>	                      ;
+<103,0>	000000C0  13 05 10 03 ;        addi    a0, zero, 0x31    ; znamenka desetice -> kod znamenke '1'
+<104,0>	                      ;        
+<105,0>	000000C4  67 80 00 00 ;        jalr    zero, 0(ra)
+<106,0>	                      ;
+<107,0>	                      ;jzn
+<108,0>	                      ;
+<109,0>	000000C8  13 05 00 00 ;        addi    a0, zero, 0     ; znamenka desetice -> 0 (nema je)
+<110,0>	000000CC  93 85 05 03 ;        addi    a1, a1, 0x30      ; znamenka jedinice -> kod za tu znamenku
+<111,0>	000000D0  67 80 00 00 ;        jalr    zero, 0(ra)
 <112,0>	                      ;
-<113,0>	000000CC  13 75 F5 07 ;        andi    a0, a0, 0x7f    ; upis znaka na LCD
-<114,0>	000000D0  23 82 A4 00 ;        sb      a0, 4(s1)
-<115,0>	000000D4  13 65 05 08 ;        ori     a0, a0, 0x80
-<116,0>	000000D8  23 82 A4 00 ;        sb      a0, 4(s1)
-<117,0>	000000DC  13 75 F5 07 ;        andi    a0, a0, 0x7f
-<118,0>	000000E0  23 82 A4 00 ;        sb      a0, 4(s1)
-<119,0>	                      ;
-<120,0>	000000E4  03 25 01 00 ;        lw      a0, 0(sp)       ; obnova konteksta
-<121,0>	000000E8  13 01 41 00 ;        addi    sp, sp, 4
-<122,0>	                      ;
-<123,0>	000000EC  67 80 00 00 ;        jalr    x0, 0(ra)
-<124,0>	                      ;
-<125,0>	                      ;
-<126,0>	                      ;kraj
-<127,0>	000000F0  6F F0 10 71 ;        halt
-<128,0>	                      ;
+<113,0>	                      ;
+<114,0>	                      ;lcdwr   ; kod lcdwr sa predavanja izmijenjen tako da se može koristiti kao potprogram
+<115,0>	                      ;
+<116,0>	000000D4  13 01 C1 FF ;        addi    sp, sp, -4      ; spremanje konteksta
+<117,0>	000000D8  23 20 A1 00 ;        sw      a0, 0(sp)
+<118,0>	                      ;
+<119,0>	000000DC  03 25 41 00 ;        lw      a0, 4(sp)
+<120,0>	                      ;
+<121,0>	000000E0  13 75 F5 07 ;        andi    a0, a0, 0x7f    ; upis znaka na LCD
+<122,0>	000000E4  23 82 A4 00 ;        sb      a0, 4(s1)
+<123,0>	000000E8  13 65 05 08 ;        ori     a0, a0, 0x80
+<124,0>	000000EC  23 82 A4 00 ;        sb      a0, 4(s1)
+<125,0>	000000F0  13 75 F5 07 ;        andi    a0, a0, 0x7f
+<126,0>	000000F4  23 82 A4 00 ;        sb      a0, 4(s1)
+<127,0>	                      ;
+<128,0>	000000F8  03 25 01 00 ;        lw      a0, 0(sp)       ; obnova konteksta
+<129,0>	000000FC  13 01 41 00 ;        addi    sp, sp, 4
+<130,0>	                      ;
+<131,0>	00000100  67 80 00 00 ;        jalr    x0, 0(ra)
+<132,0>	                      ;
+<133,0>	                      ;
+<134,0>	                      ;kraj
+<135,0>	00000104  6F F0 D0 6F ;        halt
+<136,0>	                      ;
 #
 # Debug Data
 #

@@ -9,6 +9,7 @@
 ; s3 - "gumb je pritisnut i sklopka je spuštena"
 ; s4 - gornja granica brojača
 ; s5 - kod za pražnjenje LCD-a
+; s6 - kod za prikazivanje sadržaja na zaslonu LCD-a
 
 main    ; inicijalizacija varijabli
 
@@ -29,6 +30,7 @@ main    ; inicijalizacija varijabli
         addi    sp, sp, %lo(0x10000)
 
         addi    s5, zero, 0x0d
+        addi    s6, zero, 0x0a
 
 
 petlja  ; čekanje na zatvaranje sklopke i pritisak gumba
@@ -67,6 +69,12 @@ upisd   ; ispis znamenke desetica
 upisj   ; ispis znamenke jedinica
         addi    sp, sp, -4
         sw      a1, 0(sp)
+        jal     ra, lcdwr
+        addi    sp, sp, 4
+
+prikaz  ; prikaz ispisanih znakova na LCD-u
+        addi    sp, sp, -4
+        sw      s6, 0(sp)
         jal     ra, lcdwr
         addi    sp, sp, 4
 
