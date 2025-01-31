@@ -9,9 +9,13 @@ int main(void) {
 
     set<int> x_razine;
     map<int, set<int>> y_po_x_razinama;
+
     set<int> y_koordinate;
     map<pair<int, int>, bool> lijevo;
-    map<pair<int, int>, bool> dolje;
+
+    map<int, set<pair<int, int>>> duzine;
+    map<pair<int, pair<int, int>>, bool> dolje;
+
     long long P = 0;
 
     int n;
@@ -43,7 +47,17 @@ int main(void) {
         dolje[pair<int, int>(x2, y1)] = true;
         dolje[pair<int, int>(x2, y2)] = false;
 
+        duzine[y1].insert(pair<int, int>(x1, x2));
+        duzine[y2].insert(pair<int, int>(x1, x2));
+
+        dolje[pair<int, pair<int, int>>(y1, pair<int, int>(x1, x2))] = true;
+        dolje[pair<int, pair<int, int>>(y2, pair<int, int>(x1, x2))] = false;
+
+
     }
+
+    int A;
+    cin >> A;
 
     while (x_razine.size() > 1) {
 
@@ -58,10 +72,31 @@ int main(void) {
 
         }
 
+        int faktor = 0;
+        int y0 = *(y_koordinate.begin());
+        int m = 0;
+
+        for (int y: y_koordinate) {
+
+            pair<int, int> tocka = pair<int, int>(x, y);
+
+            if (dolje[tocka]) m++;
+            else m--;
+
+            if (m == 0) {
+                faktor += y - y0;
+                y0 = y;
+            }
+
+        }
+
         x_razine.erase(x);
 
+        #ifdef debug
         cout << "x = " << x << '\n';
         cout << "relevantne y koordinate: "; for (int y: y_koordinate) cout << y << ' '; cout << '\n';
+        cout << "faktor za ovaj sloj: " << faktor << '\n';
+        #endif
 
     }
 
