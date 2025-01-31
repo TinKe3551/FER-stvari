@@ -42,11 +42,6 @@ int main(void) {
         lijevo[pair<int, int>(x2, y1)] = false;
         lijevo[pair<int, int>(x2, y2)] = false;
 
-        dolje[pair<int, int>(x1, y1)] = true;
-        dolje[pair<int, int>(x1, y2)] = false;
-        dolje[pair<int, int>(x2, y1)] = true;
-        dolje[pair<int, int>(x2, y2)] = false;
-
         duzine[y1].insert(pair<int, int>(x1, x2));
         duzine[y2].insert(pair<int, int>(x1, x2));
 
@@ -59,9 +54,10 @@ int main(void) {
     int A;
     cin >> A;
 
-    while (x_razine.size() > 1) {
+    while (1) {
 
         int x = *(x_razine.begin());
+        x_razine.erase(x);
 
         for (int y: y_po_x_razinama[x]) {
 
@@ -72,25 +68,29 @@ int main(void) {
 
         }
 
+        if (x_razine.empty()) break;
+
         int faktor = 0;
         int y0 = *(y_koordinate.begin());
         int m = 0;
 
         for (int y: y_koordinate) {
 
-            pair<int, int> tocka = pair<int, int>(x, y);
+            for (auto d: duzine[y]) {
 
-            if (dolje[tocka]) m++;
-            else m--;
+                pair<int, pair<int, int>> duzina = pair<int, pair<int, int>>(y, pair<int, int>(d.first, d.second));
 
-            if (m == 0) {
-                faktor += y - y0;
-                y0 = y;
+                if (dolje[duzina]) m++;
+                else m--;
+
+                if (m == 0) {
+                    faktor += y - y0 + 1;
+                    y0 = y;
+                }
+
             }
 
         }
-
-        x_razine.erase(x);
 
         #ifdef debug
         cout << "x = " << x << '\n';
@@ -98,7 +98,13 @@ int main(void) {
         cout << "faktor za ovaj sloj: " << faktor << '\n';
         #endif
 
+        P += faktor * (*(x_razine.begin()) - x - 1);
+
     }
+
+    #ifdef debug
+    cout << "P = " << P << '\n';
+    #endif
 
     return 0;
 }
