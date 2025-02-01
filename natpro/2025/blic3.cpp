@@ -11,11 +11,11 @@ int main(void) {
     map<int, set<int>> y_po_x_razinama;
 
     set<int> y_koordinate;
-    map<pair<int, int>, bool> lijevo;
-    map<pair<int, int>, bool> dolje_t;
+    map<pair<int, int>, int> lijevo;
+    map<pair<int, int>, int> dolje_t;
 
     map<int, set<pair<int, int>>> duzine;
-    map<pair<int, pair<int, int>>, bool> dolje_d;
+    map<pair<int, pair<int, int>>, int> dolje_d;
 
     long long P = 0;
 
@@ -24,35 +24,39 @@ int main(void) {
 
     for (int i = 0; i < n; i++) {
 
-        int x1, y1, x2, y2;
-        cin >> x1;
-        cin >> y1;
-        cin >> x2;
-        cin >> y2;
+        int x[2];
+        int y[2];
+        cin >> x[0];
+        cin >> y[0];
+        cin >> x[1];
+        cin >> y[1];
 
-        x_razine.insert(x1);
-        x_razine.insert(x2);
+        for (int j = 0; j < 2; j++) {
 
-        y_po_x_razinama[x1].insert(y1);
-        y_po_x_razinama[x1].insert(y2);
-        y_po_x_razinama[x2].insert(y1);
-        y_po_x_razinama[x2].insert(y2);
+            x_razine.insert(x[j]);
 
-        lijevo[pair<int, int>(x1, y1)] = true;
-        lijevo[pair<int, int>(x1, y2)] = true;
-        lijevo[pair<int, int>(x2, y1)] = false;
-        lijevo[pair<int, int>(x2, y2)] = false;
+            for (int k = 0; k < 2; k++) {
 
-        dolje_t[pair<int, int>(x1, y1)] = true;
-        dolje_t[pair<int, int>(x1, y2)] = false;
-        dolje_t[pair<int, int>(x2, y1)] = true;
-        dolje_t[pair<int, int>(x2, y2)] = false;
+                y_po_x_razinama[x[j]].insert(y[k]);
 
-        duzine[y1].insert(pair<int, int>(x1, x2));
-        duzine[y2].insert(pair<int, int>(x1, x2));
+                lijevo[pair<int, int>(x[j], y[k])] = bool(j==0);
 
-        dolje_d[pair<int, pair<int, int>>(y1, pair<int, int>(x1, x2))] = true;
-        dolje_d[pair<int, pair<int, int>>(y2, pair<int, int>(x1, x2))] = false;
+                pair<int, int> tocka = pair<int, int>(x[j], y[k]);
+                if (dolje_t.count(tocka) == 0) dolje_t[tocka] = 0;
+                if (k == 0) dolje_t[tocka]++;
+                else dolje_t[tocka]--;
+
+
+                if (j == 1) continue;
+                pair<int, pair<int, int>> duzina = pair<int, pair<int, int>>(y[k], pair<int, int>(x[0], x[1]));
+                duzine[duzina.first].insert(duzina.second);
+                if (dolje_d.count(duzina) == 0) dolje_d[duzina] = 0;
+                if (k == 0) dolje_d[duzina]++;
+                else dolje_d[duzina]--;
+                
+            }
+
+        }
 
 
     }
@@ -77,8 +81,10 @@ int main(void) {
 
             pair<int, int> tocka = pair<int, int>(x, y);
 
-            if(dolje_t[tocka]) m++;
-            else m--;
+            // if(dolje_t[tocka]) m++;
+            // else m--;
+            if (m == 0) y0 = y;
+            m += dolje_t[tocka];
 
             if (m == 0) {
                 faktor += y - y0 + 1;
@@ -108,8 +114,10 @@ int main(void) {
 
                 pair<int, pair<int, int>> duzina = pair<int, pair<int, int>>(y, pair<int, int>(d.first, d.second));
 
-                if (dolje_d[duzina]) m++;
-                else m--;
+                // if (dolje_d[duzina]) m++;
+                // else m--;
+                if (m == 0) y0 = y;
+                m += dolje_d[duzina];
 
                 if (m == 0) {
                     faktor += y - y0 + 1;
