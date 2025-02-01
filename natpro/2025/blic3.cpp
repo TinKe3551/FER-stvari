@@ -12,9 +12,10 @@ int main(void) {
 
     set<int> y_koordinate;
     map<pair<int, int>, bool> lijevo;
+    map<pair<int, int>, bool> dolje_t;
 
     map<int, set<pair<int, int>>> duzine;
-    map<pair<int, pair<int, int>>, bool> dolje;
+    map<pair<int, pair<int, int>>, bool> dolje_d;
 
     long long P = 0;
 
@@ -42,11 +43,16 @@ int main(void) {
         lijevo[pair<int, int>(x2, y1)] = false;
         lijevo[pair<int, int>(x2, y2)] = false;
 
+        dolje_t[pair<int, int>(x1, y1)] = true;
+        dolje_t[pair<int, int>(x1, y2)] = false;
+        dolje_t[pair<int, int>(x2, y1)] = true;
+        dolje_t[pair<int, int>(x2, y2)] = false;
+
         duzine[y1].insert(pair<int, int>(x1, x2));
         duzine[y2].insert(pair<int, int>(x1, x2));
 
-        dolje[pair<int, pair<int, int>>(y1, pair<int, int>(x1, x2))] = true;
-        dolje[pair<int, pair<int, int>>(y2, pair<int, int>(x1, x2))] = false;
+        dolje_d[pair<int, pair<int, int>>(y1, pair<int, int>(x1, x2))] = true;
+        dolje_d[pair<int, pair<int, int>>(y2, pair<int, int>(x1, x2))] = false;
 
 
     }
@@ -59,20 +65,42 @@ int main(void) {
         int x = *(x_razine.begin());
         x_razine.erase(x);
 
+        #ifdef debug
+        cout << "x = " << x << '\n';
+        #endif
+
+        int faktor = 0;
+        int y0 = *(y_koordinate.begin());
+        int m = 0;
+
         for (int y: y_po_x_razinama[x]) {
 
             pair<int, int> tocka = pair<int, int>(x, y);
+
+            if(dolje_t[tocka]) m++;
+            else m--;
+
+            if (m == 0) {
+                faktor += y - y0 + 1;
+                y0 = y;
+            }
 
             if (lijevo[tocka]) y_koordinate.insert(y);
             else y_koordinate.erase(y);
 
         }
 
+        #ifdef debug
+        cout << "povrsina na ovoj x koordinati: " << faktor << '\n';
+        #endif
+
+        P += faktor;
+
         if (x_razine.empty()) break;
 
-        int faktor = 0;
-        int y0 = *(y_koordinate.begin());
-        int m = 0;
+        faktor = 0;
+        y0 = *(y_koordinate.begin());
+        m = 0;
 
         for (int y: y_koordinate) {
 
@@ -80,7 +108,7 @@ int main(void) {
 
                 pair<int, pair<int, int>> duzina = pair<int, pair<int, int>>(y, pair<int, int>(d.first, d.second));
 
-                if (dolje[duzina]) m++;
+                if (dolje_d[duzina]) m++;
                 else m--;
 
                 if (m == 0) {
@@ -93,7 +121,6 @@ int main(void) {
         }
 
         #ifdef debug
-        cout << "x = " << x << '\n';
         cout << "relevantne y koordinate: "; for (int y: y_koordinate) cout << y << ' '; cout << '\n';
         cout << "faktor za ovaj sloj: " << faktor << '\n';
         #endif
@@ -106,7 +133,8 @@ int main(void) {
     cout << "P = " << P << '\n';
     #endif
 
-
+    if (P == A) cout << "YES\n";
+    else cout << "NO\n";
 
     return 0;
 }
