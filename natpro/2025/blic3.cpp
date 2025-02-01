@@ -106,7 +106,7 @@ int main(void) {
     cout << "P = " << P << '\n';
     #endif
 
-    //aaaa
+
 
     return 0;
 }
