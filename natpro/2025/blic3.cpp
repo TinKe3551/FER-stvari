@@ -97,7 +97,7 @@ int main(void) {
                 y0 = y;
             }
 
-            if (lijevo.count(tocka) < 1) makni.insert(y);
+            if (y_po_x_razinama[x].count(y) > 0 && lijevo.count(tocka) < 1) makni.insert(y);
 
         }
 

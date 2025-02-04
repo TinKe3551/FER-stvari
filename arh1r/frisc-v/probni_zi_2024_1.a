@@ -52,11 +52,14 @@ readtemp
 
         lw      a3, 0(s0)       ; učitavanje stanja na temperaturnom uređaju
 
-        addi    t0, x0, 0       ; slanje signala 0 u ACK
-        lw      t0, 0(s0)
+        add     t0, x0, a3              ; slanje impulsa na ack
+        ori     t0, x0, 0b10000000
+        sw      t0, 0(s0)
+        andi    t0, t0, 0b01111111
+        sw      t0, 0(s0)
 
-        andi    a3, a3, 0b11000000      ; čitanje i upisivanje temperature
-        sw      a3, 0(a4)
+        andi    a3, a3, 0b00111111      ; čitanje i upisivanje temperature
+        sw      a3, 8(a4)
 
 
 waitrdy0                        ; čekanje signala rdy=0
@@ -64,14 +67,24 @@ waitrdy0                        ; čekanje signala rdy=0
         andi    t0, a3, 0b01000000
         bne     t0, x0, waitrdy0
 
-        addi    a1, a1, -31     ; namještanje brojača količine mjerenja
-        ble     a1, x0, aaa
-        addi    a1, a1, -1
-aaa     addi    a1, a1, 32
+        addi    a1, a1, -32     ; namještanje brojača količine mjerenja
+        blt     a1, x0, aaa
+        addi    a1, x0, -1
+aaa     addi    a1, a1, 33
 
-        addi    a4, a4, 4       ; namještanje adrese za upis sljedećeg mjerenja
-        blt     a4, s2, wait1
-        addi    a4, a4, -0x20
+        sw      a1, 0(s2)
+
+        addi    a4, a4, -0x500
+        srli    a4, a4, 2       ; namještanje adrese za upisivanje mjerenja
+        addi    a4, a4, -31
+        bne     a4, x0, aba
+        addi    a4, x0, -32
+aba     addi    a4, a4, 32
+        slli    a4, a4, 2
+        addi    a4, a4, 0x500
+        
+        sw      a4, 4(s2)
+
         jal     x0, wait1
 
         
@@ -95,7 +108,11 @@ djloop
         jalr    x0, 0(ra)
 
 
+
+
         org     0x500
+brojac  dw      0
+adresa  dw      0
 podatci dw      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
         org     0x1000
