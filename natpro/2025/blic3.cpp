@@ -39,8 +39,6 @@ int main(void) {
 
                 y_po_x_razinama[x[j]].insert(y[k]);
 
-                if (j == 0) lijevo.insert(pair<int, int>(x[j], y[k]));
-
                 pair<int, int> tocka = pair<int, int>(x[j], y[k]);
                 if (dolje_t.count(tocka) == 0) dolje_t[tocka] = 0;
                 if (k == 0) dolje_t[tocka]++;
@@ -53,6 +51,7 @@ int main(void) {
                 if (dolje_d.count(duzina) == 0) dolje_d[duzina] = 0;
                 if (k == 0) dolje_d[duzina]++;
                 else dolje_d[duzina]--;
+                lijevo.insert(pair<int, int>(x[j], y[k]));
 
             }
 
@@ -77,12 +76,19 @@ int main(void) {
         int y0 = *(y_koordinate.begin());
         int m = 0;
 
-        for (int y: y_po_x_razinama[x]) {
+        set<int> makni;
+        makni.clear();
+
+        for (int y: y_po_x_razinama[x]) y_koordinate.insert(y);
+
+        for (int y: y_koordinate) {
+
+            #ifdef debug
+            cout << y << ' ';
+            #endif
 
             pair<int, int> tocka = pair<int, int>(x, y);
 
-            // if(dolje_t[tocka]) m++;
-            // else m--;
             if (m == 0) y0 = y - 1;
             m += dolje_t[tocka];
 
@@ -91,12 +97,14 @@ int main(void) {
                 y0 = y;
             }
 
-            if (lijevo.count(tocka) > 0) y_koordinate.insert(y);
-            else y_koordinate.erase(y);
+            if (lijevo.count(tocka) < 1) makni.insert(y);
 
         }
 
+        for (int y: makni) y_koordinate.erase(y);
+
         #ifdef debug
+        cout << '\n';
         cout << "povrsina na ovoj x koordinati: " << faktor << '\n';
         #endif
 
