@@ -53,7 +53,7 @@ int main(void) {
                 if (dolje_d.count(duzina) == 0) dolje_d[duzina] = 0;
                 if (k == 0) dolje_d[duzina]++;
                 else dolje_d[duzina]--;
-                
+
             }
 
         }
@@ -83,11 +83,11 @@ int main(void) {
 
             // if(dolje_t[tocka]) m++;
             // else m--;
-            if (m == 0) y0 = y;
+            if (m == 0) y0 = y - 1;
             m += dolje_t[tocka];
 
             if (m == 0) {
-                faktor += y - y0 + 1;
+                faktor += y - y0;
                 y0 = y;
             }
 
