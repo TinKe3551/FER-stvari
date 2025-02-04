@@ -163,6 +163,9 @@ prst_lp
         blne    lcdwr
         bne     prst_lp
 
+        mov     r4, #0x0a
+        bl      lcdwr
+
         ldmfd   sp!, {r0, r4, lr}
         mov     pc, lr
         

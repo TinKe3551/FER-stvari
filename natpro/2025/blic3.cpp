@@ -11,7 +11,7 @@ int main(void) {
     map<int, set<int>> y_po_x_razinama;
 
     set<int> y_koordinate;
-    map<pair<int, int>, int> lijevo;
+    set<pair<int, int>> lijevo;
     map<pair<int, int>, int> dolje_t;
 
     map<int, set<pair<int, int>>> duzine;
@@ -39,7 +39,7 @@ int main(void) {
 
                 y_po_x_razinama[x[j]].insert(y[k]);
 
-                lijevo[pair<int, int>(x[j], y[k])] = bool(j==0);
+                if (j == 0) lijevo.insert(pair<int, int>(x[j], y[k]));
 
                 pair<int, int> tocka = pair<int, int>(x[j], y[k]);
                 if (dolje_t.count(tocka) == 0) dolje_t[tocka] = 0;
@@ -91,7 +91,7 @@ int main(void) {
                 y0 = y;
             }
 
-            if (lijevo[tocka]) y_koordinate.insert(y);
+            if (lijevo.count(tocka) > 0) y_koordinate.insert(y);
             else y_koordinate.erase(y);
 
         }
