@@ -1,3 +1,5 @@
+; jebeno katastrofalan kod lmao
+
 reset   jal     x0, main
 
 
@@ -7,6 +9,8 @@ main
 ; s0 - adresa sklopa gpio0
 ; s1 - adresa sklopa gpio1
 ; s2 - adresa kraja bloka sa mjerenjima
+; s3 - hoće li potprogram check utjecati na registar a2
+; s4 - adresa 0x1000
 ; a0 - prosjecna vrijednost mjerenja
 ; a1 - kolicina mjerenja
 ; a2 - stanje gpio1A (prekidač)
@@ -32,10 +36,17 @@ main
         addi    a1, x0, 0
         addi    a4, x0, 0x500
 
+        lui     s4, %hi(0x1000)
+        addi    s4, s4, %lo(0x1000)
+
+p1
+        addi    s3, x0, 1
+        addi    a2, x0, 0
+
 wait1
-        lw      a2, 0(s1)
+        jal     ra, check
         andi    a2, a2, 1
-        bne     a2, x0, kraj
+        bne     a2, x0, p0
 
         addi    t0, x0, 0b10000000
         sw      t0, 0(s0)
@@ -45,6 +56,8 @@ waitrdy1                        ; čekanje signala rdy=1
 
         addi    t0, x0, 0b01000000
         and     t0, t0, a3
+
+        jal     ra, check
 
         beq     t0, x0, waitrdy1
 
@@ -58,13 +71,19 @@ readtemp
         andi    t0, t0, 0b01111111
         sw      t0, 0(s0)
 
+        jal     ra, check
+
         andi    a3, a3, 0b00111111      ; čitanje i upisivanje temperature
         sw      a3, 8(a4)
+
+        jal     ra, check
 
 
 waitrdy0                        ; čekanje signala rdy=0
         lw      a3, 0(s0)
         andi    t0, a3, 0b01000000
+
+        jal     ra, check
         bne     t0, x0, waitrdy0
 
         addi    a1, a1, -32     ; namještanje brojača količine mjerenja
@@ -74,6 +93,13 @@ aaa     addi    a1, a1, 33
 
         sw      a1, 0(s2)
 
+        jal     ra, next
+        jal     ra, check
+
+        addi    s3, x0, 0
+        jal     x0, wait1
+
+next
         addi    a4, a4, -0x500
         srli    a4, a4, 2       ; namještanje adrese za upisivanje mjerenja
         addi    a4, a4, -31
@@ -85,11 +111,33 @@ aba     addi    a4, a4, 32
         
         sw      a4, 4(s2)
 
-        jal     x0, wait1
+        jalr    x0, 0(ra)
+
+p0
+        addi    s3, x0, 1
+        addi    a0, x0, 0
+        addi    a2, x0, 0
+        addi    t0, x0, 0
+
+izrpr
+        lw      t1, 0(a4)       ; akumulacija rezultata mjerenja u a0
+        jal     ra, next
+        add     a0, a0, t1
+        addi    t0, t0, 1
+        bne     t0, a1, izrpr
+        
+        jal     ra, dijeli    ; izračunavanje prosjeka
+        sw      a0, 0(s4)
+        addi    s3, x0, 0
+
+wait0
+        jal     ra, check
+        andi    a2, a2, 1
+        bne     a2, x0, p1
+        jal     x0, wait0
+
 
         
-
-
         
 
 
@@ -107,7 +155,19 @@ djloop
 
         jalr    x0, 0(ra)
 
+check
+        bne     s3, x0, check_e
+        lw      a2, 0(s1)
+        andi    s3, a2, 1
+check_e sw      s3, bruh(x0)
+        jalr    x0, 0(ra)
 
+
+
+     
+
+        org     0x200
+bruh    dw      1
 
 
         org     0x500
