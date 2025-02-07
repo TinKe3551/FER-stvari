@@ -16,12 +16,7 @@ void unesi_duzinu(stack<pair<int, int>> &duzine, int l, int d) {
 
 	while (!duzine.empty()) {
 
-		if (duzine.top().first > d) {
-
-			duzine2.emplace(pair<int, int>(l, d));
-			break;
-
-		}
+		if (duzine.top().first > d) break;
 
 		if (duzine.top().second < l) {
 
@@ -37,12 +32,21 @@ void unesi_duzinu(stack<pair<int, int>> &duzine, int l, int d) {
 
 	}
 
+	duzine.emplace(pair<int, int>(l, d));
+	
+	while (!duzine2.empty()) {
+
+		duzine.emplace(duzine2.top());
+		duzine2.pop();
+
+	}
+
 }
 
 
 int main(void) {
 
-	unordered_map<int, stack<pair<int, int>>> duzine;
+	map<int, stack<pair<int, int>>> duzine;
 	int n;
 	cin >> n;
 
@@ -87,6 +91,10 @@ int main(void) {
 		}
 
 	}
+
+	#ifdef debug
+	cout << P << ' ' << A << '\n';
+	#endif
 
 
 	if (P == A) cout << "YES\n";
