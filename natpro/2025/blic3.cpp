@@ -7,150 +7,172 @@ using namespace std;
 
 int main(void) {
 
-    set<int> x_razine;
-    map<int, set<int>> y_po_x_razinama;
+	map<int, set<pair<int, int>>> duzine;
+	set<int> x_razine;
+	set<int> y_razine;
+	map<int, set<int>> tocke; // tocke[x_i] = {y_j, y_(j+1), ...}
+	map<pair<int, int>, int> donje_t;
+	map<pair<int, pair<int, int>>, int> donje_d;
+	int n;
+	long long A;
 
-    set<int> y_koordinate;
-    set<pair<int, int>> lijevo;
-    map<pair<int, int>, int> dolje_t;
+	cin >> n;
 
-    map<int, set<pair<int, int>>> duzine;
-    map<pair<int, pair<int, int>>, int> dolje_d;
+	for (int i = 0; i < n; i++) {
 
-    long long P = 0;
+		int x[2];
+		int y[2];
 
-    int n;
-    cin >> n;
+		cin >> x[0];
+		cin >> y[0];
+		cin >> x[1];
+		cin >> y[1];
 
-    for (int i = 0; i < n; i++) {
+		for (int j = 0; j < 2; j++) {
 
-        int x[2];
-        int y[2];
-        cin >> x[0];
-        cin >> y[0];
-        cin >> x[1];
-        cin >> y[1];
+			x_razine.insert(x[j]);
+			y_razine.insert(y[j]);
 
-        for (int j = 0; j < 2; j++) {
+			for (int k = 0; k < 2; k++) {
 
-            x_razine.insert(x[j]);
+				tocke[x[j]].insert(y[k]);
 
-            for (int k = 0; k < 2; k++) {
+				pair<int, int> t = pair<int, int>(x[j], y[k]);
+				if (donje_t.count(t) == 0) donje_t[t] = 0;
+				donje_t[t] -= 2 * k - 1;
 
-                y_po_x_razinama[x[j]].insert(y[k]);
+			}
 
-                pair<int, int> tocka = pair<int, int>(x[j], y[k]);
-                if (dolje_t.count(tocka) == 0) dolje_t[tocka] = 0;
-                if (k == 0) dolje_t[tocka]++;
-                else dolje_t[tocka]--;
+		}
 
+		for (int k = 0; k < 2; k++) {
 
-                if (j == 1) continue;
-                pair<int, pair<int, int>> duzina = pair<int, pair<int, int>>(y[k], pair<int, int>(x[0], x[1]));
-                duzine[duzina.first].insert(duzina.second);
-                if (dolje_d.count(duzina) == 0) dolje_d[duzina] = 0;
-                if (k == 0) dolje_d[duzina]++;
-                else dolje_d[duzina]--;
-                lijevo.insert(pair<int, int>(x[j], y[k]));
+			pair<int, pair<int, int>> d = pair<int, pair<int, int>>(y[k], pair<int, int>(x[0], x[1]));
+			duzine[d.first].insert(d.second);
+			if (donje_d.count(d) == 0) donje_d[d] = 0;
+			donje_d[d] -= 2 * k - 1;
 
-            }
+		}
 
-        }
+	}
 
+	cin >> A;
 
-    }
+	long long P = 0;
 
-    int A;
-    cin >> A;
+	while (!x_razine.empty()) {
 
-    while (1) {
+		int x = *(x_razine.begin());
+		int m = 0;
+		int y0 = 0;
+		int f = 0;
 
-        int x = *(x_razine.begin());
-        x_razine.erase(x);
+		#ifdef debug
+		cout << "----------------\n";
+		cout << "pravac x = " << x << '\n';
+		cout << "y: ";
+		#endif
 
-        #ifdef debug
-        cout << "x = " << x << '\n';
-        #endif
+		for (int y: y_razine) {
 
-        int faktor = 0;
-        int y0 = *(y_koordinate.begin());
-        int m = 0;
+			for (auto d: duzine[y]) {
 
-        set<int> makni;
-        makni.clear();
+				if (d.first > x || d.second < x) continue;
 
-        for (int y: y_po_x_razinama[x]) y_koordinate.insert(y);
+				tocke[x].insert(y);
+				pair<int, int> t = pair<int, int>(x, y);
+				if (donje_t.count(t) == 0) donje_t[t] = 0;
+				donje_t[t] += donje_d[pair<int, pair<int, int>>(y, d)];
 
-        for (int y: y_koordinate) {
+			}
+		}
 
-            #ifdef debug
-            cout << y << ' ';
-            #endif
+		for (int y: tocke[x]) {
 
-            pair<int, int> tocka = pair<int, int>(x, y);
+			#ifdef debug
+			cout << y << ' ';
+			#endif
+			
+			pair<int, int> tocka = pair<int, int>(x, y);
 
-            if (m == 0) y0 = y - 1;
-            m += dolje_t[tocka];
+			if (m == 0) y0 = y;
 
-            if (m == 0) {
-                faktor += y - y0;
-                y0 = y;
-            }
+			m += donje_t[tocka];
+			if (m == 0) {
+				f += y - y0 + 1;
+				y0 = y;
+			}
 
-            if (y_po_x_razinama[x].count(y) > 0 && lijevo.count(tocka) < 1) makni.insert(y);
+		}
 
-        }
+		P += f;
 
-        for (int y: makni) y_koordinate.erase(y);
+		#ifdef debug
+		cout << '\n';
+		cout << "površina na ovom pravcu: " << f << '\n';
+		cout << "ukupna površina dosad: " << P << '\n';
+		#endif
 
-        #ifdef debug
-        cout << '\n';
-        cout << "povrsina na ovoj x koordinati: " << faktor << '\n';
-        #endif
+		x_razine.erase(x);
+		if (x_razine.empty()) break;
 
-        P += faktor;
+		int x2 = *(x_razine.begin());
+		m = 0;
+		f = 0;
+		y0 = 0;
 
-        if (x_razine.empty()) break;
+		#ifdef debug
+		cout << "----------------\n";
+		cout << "prostor između pravaca x = " << x << " i x = " << x2 << '\n';
+		cout << "duzine (y, x1, x2): ";
+		#endif
 
-        faktor = 0;
-        y0 = *(y_koordinate.begin());
-        m = 0;
+		for (int y: y_razine) {
 
-        for (int y: y_koordinate) {
+			if (m == 0) y0 = y;
+			bool aaa = false;
 
-            for (auto d: duzine[y]) {
+			for (auto d: duzine[y]) {
 
-                pair<int, pair<int, int>> duzina = pair<int, pair<int, int>>(y, pair<int, int>(d.first, d.second));
+				if (d.first > x || d.second < x2) continue;
+				aaa = true;
 
-                // if (dolje_d[duzina]) m++;
-                // else m--;
-                if (m == 0) y0 = y;
-                m += dolje_d[duzina];
+				#ifdef debug
+				printf("(%d, %d, %d) ", y, d.first, d.second);
+				#endif
 
-                if (m == 0) {
-                    faktor += y - y0 + 1;
-                    y0 = y;
-                }
+				pair<int, pair<int, int>> duzina = pair<int, pair<int, int>>(y, d);
 
-            }
+				m += donje_d[duzina];
 
-        }
+			}
 
-        #ifdef debug
-        cout << "relevantne y koordinate: "; for (int y: y_koordinate) cout << y << ' '; cout << '\n';
-        cout << "faktor za ovaj sloj: " << faktor << '\n';
-        #endif
+			#ifdef debug
+			cout << aaa << '\n';
+			#endif
 
-        P += faktor * (*(x_razine.begin()) - x - 1);
+			if (m == 0 && aaa) {
+				f += y - y0 + 1;
+				y0 = y;
+			}
 
-    }
+		}
 
-    #ifdef debug
-    cout << "P = " << P << '\n';
-    #endif
+		P += f * (x2 - x - 1);
 
-    if (P == A) cout << "YES\n";
-    else cout << "NO\n";
+		#ifdef debug
+		cout << '\n';
+		cout << "faktor za površinu na ovom prostoru: " << f << '\n';
+		cout << "ukupna površina dosad: " << P << '\n';
+		#endif
 
-    return 0;
+	}
+
+	if (A == P) cout << "YES\n";
+	else cout << "NO\n";
+
+	//cout << P << endl;
+
+	return 0;
+
 }

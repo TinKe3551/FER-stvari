@@ -67,10 +67,10 @@ int main(void) {
 
 	}
 
-	int A;
+	long long A;
 	cin >> A;
 
-	int P;
+	long long P;
 	P = 0;
 
 	for (auto i: duzine) {
@@ -92,13 +92,7 @@ int main(void) {
 
 	}
 
-	#ifdef debug
-	cout << P << ' ' << A << '\n';
-	#endif
-
-
-	if (P == A) cout << "YES\n";
-	else cout << "NO\n";
+	cout << P << '\n';
 	
 
 	
