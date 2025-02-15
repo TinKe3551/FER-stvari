@@ -7,9 +7,10 @@ using namespace std;
 
 int main(void) {
 
+    vector<int> ulazni_niz;
     set<int> dulj;
     unordered_map<int, int> kol;
-    int niz[500069];
+    unordered_map<int, vector<vector<int>>> nizevi;
     int kol_pr = 0;
 
     int n;
@@ -18,6 +19,7 @@ int main(void) {
     for (int i = 0; i < n; i++) {
         int d;
         cin >> d;
+        ulazni_niz.push_back(d);
         dulj.insert(d);
         if (kol.count(d) == 0) kol[d] = 0;
         kol[d]++;
@@ -29,11 +31,10 @@ int main(void) {
         kol_pr += d - d0;
         d0 = d;
 
-        for (int i = 0; i < d; i++) niz[i] = 0;
-        for (int i = d - 1; i >= 0; i--) {
-            cout << niz[i] + 1 << ' ';
-        }
-        cout << '\n';
+        vector<int> niz;
+
+        for (int i = 0; i < d; i++) niz.push_back(0);
+        nizevi[d].push_back(niz);
 
         for (int i = 1; i < kol[d]; i++) {
 
@@ -53,13 +54,31 @@ int main(void) {
 
             kol_pr += promjene;
 
-            for (int j = d - 1; j >= 0; j--) {
-                cout << niz[j] + 1 << ' ';
-            }
-            cout << '\n';
+            nizevi[d].push_back(niz);
 
         }
 
     }
+
+    cout << kol_pr << '\n';
+    
+    unordered_map<int, int> ispisani;
+    for (int d: dulj) ispisani[d] = 0;
+
+    for (int i: ulazni_niz) {
+
+        vector<int> &izlazni = nizevi[i][ispisani[i]++];
+
+        for (int j = izlazni.size() - 1; j >= 0; j--) {
+
+            cout << izlazni[j] + 1 << ' ';
+
+        }
+
+        cout << '\n';
+
+    }
+
+    return 0;
 
 }
