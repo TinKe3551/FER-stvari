@@ -10,7 +10,7 @@ vector<string> splitstr(string s, string delim) {
     string part = "";
     vector<string> parts;
 
-    for (int i = 0; i < s.size();) {
+    for (unsigned int i = 0; i < s.size();) {
 
         if (s.substr(i, delim.size()) == delim) {
             parts.push_back(part);
@@ -59,7 +59,7 @@ void ispis(set<string> &trenutna_stanja) {
         return;
     }
 
-    int i = 1;
+    unsigned int i = 1;
 
     for (string st: trenutna_stanja) {
         cout << st;
@@ -90,9 +90,6 @@ int main(void) {
     set<string> pocetna_stanja;
     cin >> redak;
     pocetna_stanja.emplace(redak);
-
-    for (string i: stanja) cout << i << ' ';
-    cout << endl;
     
     map<string, vector<string>> epsilon_prijelazi;
     map<pair<string, string>, vector<string>> prijelazi;
@@ -101,8 +98,6 @@ int main(void) {
 
         if (redak == "") continue;
 
-        cout << redak << endl;
-
         vector<string> podaci;
 
         for (string s: splitstr(redak, "->")) {
@@ -110,12 +105,12 @@ int main(void) {
         }
 
         if (podaci[1] == "$") {
-            for (int i = 2; i < podaci.size(); i++) if (podaci[i] != "#") epsilon_prijelazi[podaci[0]].push_back(podaci[i]);
+            for (unsigned int i = 2; i < podaci.size(); i++) if (podaci[i] != "#") epsilon_prijelazi[podaci[0]].push_back(podaci[i]);
         }
 
         else {
             pair<string, string> temp = pair<string, string>(podaci[0], podaci[1]);
-            for (int i = 2; i < podaci.size(); i++) if (podaci[i] != "#") prijelazi[temp].push_back(podaci[i]);
+            for (unsigned int i = 2; i < podaci.size(); i++) if (podaci[i] != "#") prijelazi[temp].push_back(podaci[i]);
         }
 
     }    
@@ -130,7 +125,6 @@ int main(void) {
         ispis(trenutna_stanja);
 
         vector<string> znakovi = splitstr(niz, ",");
-        int i = 1;
 
         for (string znak: splitstr(niz, ",")) {
 
