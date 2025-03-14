@@ -25,3 +25,12 @@ td, th {
     min-width:200px;
     text-align:left;
 }
+
+a {
+    padding: 3px;
+}
+
+a:hover {
+    border: 1px solid blue;
+    padding: 3px;
+}
