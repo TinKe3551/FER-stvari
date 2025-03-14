@@ -63,16 +63,35 @@
                 <tbody>
                     <tr>
                         <td colspan="3">
-                            <a href="https://www.fer.unizg.hr/">ferweb</a>
+                            <a href="https://www.fer.unizg.hr/" class="ferweblink">ferweb</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </p>
         
-        <form>
-            <input type="text">
+        <form target="_self" action="/bruh" method="GET">
+            <input type="text" class="textinput" placeholder="ovdje se upisuje tekst" name="tekst1"><br/>
+            <input type="text" class="textinput" placeholder="ovdje se upisuje još teksta" name="tekst2">
+            <input type="submit">
         </form>
+
+        <p><a href="https://edgar.fer.hr/"><button>edgar</button></a></p>
+
+        <p>
+            <textarea name="textarea1">
+
+            </textarea>
+        </p>
+
+        <p>
+            <select name="odabir">
+                <option value="stvar1">stvar1</option>
+                <option value="stvar2">stvar2</option>
+            </select>
+        </p>
+
+        <button name="gumblol" onclick="alert('you have pressed the button')">the button</button>
 
     </body>
 
