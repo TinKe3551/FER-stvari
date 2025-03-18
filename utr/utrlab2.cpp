@@ -52,4 +52,6 @@ int main(void) {
     queue<string> red_stanja;
     red_stanja.emplace(redak);
 
+    
+
 }
