@@ -44,13 +44,30 @@ int main(void) {
     set<string> prihvatljiva_stanja;
     for (auto i: splitstr(redak, ",")) prihvatljiva_stanja.emplace(i);
 
-    cin >> redak;
+    cin >> redak; // pocetno stanje
     
     set<string> stanja;
     stanja.emplace(redak);
     
     queue<string> red_stanja;
     red_stanja.emplace(redak);
+
+    map<pair<string, string>, string> prijelazi;
+
+    while (getline(cin, redak)) {
+
+        if (redak == "") continue;
+
+        vector<string> podaci;
+
+        for (string i: splitstr(redak, "->"))
+            for(string j: splitstr(i, ","))
+                podaci.push_back(j);
+        
+        for (int i = 1; i < podaci.size() - 1; i++)
+            prijelazi[pair<string,string>()]        
+
+    }
 
     
 

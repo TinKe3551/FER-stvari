@@ -58,9 +58,9 @@ void obrada_signala(int signal)
         prioritet = 3;
         break;
 
-    case SIGTRAP:
+case SIGTRAP:
         prioritet = 4;
-        break;
+	break;
 
     case SIGABRT:
         prioritet = 5;
