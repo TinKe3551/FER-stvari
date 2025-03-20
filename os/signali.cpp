@@ -1,105 +1,168 @@
 #include <iostream>
 #include <deque>
-#include <queue>
-#include <string>
 #include <csignal>
 #include <map>
+#include <signal.h>
 
 
 using namespace std;
 
-
-int K_Z[5] = {0};
+string K_Z = "00000";
 deque<string> suSto;
-priority_queue<int> pokrenute_obrade;
 map<string, int> ostalo;
+// GP - je li trenutna radnja glavni program
+// t brojac
+// T_P - tekuci prioritet
 
+void ispis_stanja(string radnja, bool povecaj_vr)
+{
 
-void ispis_stanja(int T_P, string radnja) {
+    if (povecaj_vr)
+        cout << "--------vrijeme t" << ++ostalo["t"] << "--------\n";
 
-    cout << "radnja: " << radnja << '\n';
+    cout << "> " << radnja << '\n';
 
-    cout << "K_Z: ";
-    for (int i: K_Z) cout << i;
-    cout << '\n';
+    cout << "K_Z: " << K_Z << "; ";
 
-    string TPbin = "";
-    for (int i = 1; i < T_P; i++) TPbin += "0";
-    TPbin += "1";
-    for (int i = 0; i < 5 - T_P; i++) TPbin += "0";
+    string TPbin = "00000";
+    if (ostalo["T_P"] > 0)
+        TPbin[ostalo["T_P"] - 1] = '1';
     cout << "T_P: " << TPbin << '\n';
 
     cout << "sistemski stog (od najkasnije dodanog do najranije dodanog elementa):\n";
-    for (string i: suSto) {
-        cout << i << '\n';
-    }
+    for (string i : suSto)
+        cout << i << ' ';
 
-    
-
+    cout << endl;
 }
 
+void obrada_signala(int signal)
+{
 
-void obrada_signala(int signal) {
+    ostalo["GP"] = 0;
 
-    string prioritet;
+    int prioritet;
 
-    switch (signal) {
+    switch (signal)
+    {
 
-        case SIGHUP:
-        prioritet = "1";
+    case SIGHUP:
+        prioritet = 1;
         break;
 
-        case SIGUSR1:
-        prioritet = "2";
-        
-        case SIGQUIT:
-        prioritet = "3";
-
-        case SIGTRAP:
-        prioritet = "4";
-
-        case SIGABRT:
-        prioritet = "5";
-
-        default:
+    case SIGUSR1:
+        prioritet = 2;
         break;
-    
+
+    case SIGQUIT:
+        prioritet = 3;
+        break;
+
+    case SIGTRAP:
+        prioritet = 4;
+        break;
+
+    case SIGABRT:
+        prioritet = 5;
+        break;
+
+    default:
+        break;
     }
 
-    if (signal == SIGINT) ispis_stanja(5, "obrada nekog signala valjda");
+    K_Z[prioritet - 1] = '1';
+    // cout << "> K_Z: " << K_Z << '\n';
+    ispis_stanja("u registar K_Z upisuje se zastavica za prekid prioriteta " + to_string(prioritet), false);
 
-    
+    if (ostalo["T_P"] >= prioritet)
+    {
+        cout << "> nastavlja se s obradom prekida prioriteta " << ostalo["T_P"] << '\n';
+        return;
+    }
+
+    suSto.emplace_front("reg[" + to_string(ostalo["T_P"]) + "]");
+    string TPbin = "00000";
+    if (ostalo["T_P"] != 0)
+        TPbin[ostalo["T_P"] - 1] = '1';
+    suSto.emplace_front(TPbin);
+
+    bool prvi_prolaz = true;
+
+    for (ostalo["T_P"] = prioritet; ostalo["T_P"] > 0 && suSto.front()[ostalo["T_P"] - 1] == '0';)
+    {
+
+        if (K_Z[ostalo["T_P"] - 1] == '0')
+        {
+            ostalo["T_P"]--;
+            continue;
+        }
+
+        // if (suSto.front()[ostalo["T_P"] - 1] == '1' || ostalo["T_P"] == 0) break;
+
+        K_Z[ostalo["T_P"] - 1] = '0';
+
+        if (prvi_prolaz)
+        {
+            ispis_stanja("spremanje konteksta", true);
+            ispis_stanja("obrada signala prioriteta " + to_string(ostalo["T_P"]), false);
+            prvi_prolaz = false;
+        }
+        else
+            ispis_stanja("obrada prekida prioriteta " + to_string(ostalo["T_P"]), true);
+
+        for (int i = 0; i < 5; i++)
+            sleep(1);
+    }
+
+    int t;
+    for (t = 5; t > 0 && suSto.front()[t - 1] == '0'; t--)
+        ;
+
+    suSto.pop_front();
+    suSto.pop_front();
+
+    ispis_stanja("obnova konteksta", true);
+
+    if (t > 0)
+        ispis_stanja("nastavak obrade signala prioriteta " + to_string(t), false);
+    else
+    {
+        ostalo["GP"] = 1;
+        ispis_stanja("nastavak rada glavnog programa", false);
+    }
 }
 
+int main(void)
+{
 
-int main(void) {
-
-    signal(SIGINT, obrada_signala);
+    signal(SIGHUP, obrada_signala);
+    signal(SIGUSR1, obrada_signala);
+    signal(SIGQUIT, obrada_signala);
+    signal(SIGTRAP, obrada_signala);
+    signal(SIGABRT, obrada_signala);
 
     int PID = getpid();
-    cout << "signali poredani od najmanjeg do najvećeg prioriteta:\n";
+    cout << "signali poredani od najmanjeg do najveceg prioriteta:\n";
     cout << "1 SIGHUP\n";
     cout << "2 SIGUSR1\n";
     cout << "3 SIGQUIT\n";
     cout << "4 SIGTRAP\n";
     cout << "5 SIGABRT\n";
     cout << "\nPID" << PID << '\n';
+    cout << "program se prekida slanjem signala SIGINT\n\n";
 
     ostalo["GP"] = false;
     ostalo["t"] = -1;
 
-    for (;;) {
-        
-        if (!ostalo["GP"]) {
-            
-            ostalo["t"]++;
-            ispis_stanja(0, "U glavnom programu");
-            ostalo["GP"] = 1;
+    for (;;)
+    {
 
+        if (!ostalo["GP"])
+        {
+            ispis_stanja("glavni program", true);
+            ostalo["GP"] = 1;
         }
-        
     }
 
     return 0;
-
 }
