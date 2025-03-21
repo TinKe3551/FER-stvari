@@ -72,7 +72,7 @@ case SIGTRAP:
 
     K_Z[prioritet - 1] = '1';
     // cout << "> K_Z: " << K_Z << '\n';
-    ispis_stanja("u registar K_Z upisuje se zastavica za prekid prioriteta " + to_string(prioritet), false);
+    ispis_stanja("u registar K_Z upisuje se zastavica za prekid prioriteta " + to_string(prioritet), true);
 
     if (ostalo["T_P"] >= prioritet)
     {
@@ -124,7 +124,7 @@ case SIGTRAP:
     ispis_stanja("obnova konteksta", true);
 
     if (t > 0)
-        ispis_stanja("nastavak obrade signala prioriteta " + to_string(t), false);
+        ispis_stanja("jos uvijek traje obrada signala prioriteta " + to_string(t), false);
     else
     {
         ostalo["GP"] = 1;
