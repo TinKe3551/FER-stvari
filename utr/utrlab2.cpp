@@ -93,7 +93,15 @@ int main(void) {
         cout << stanje << ' ';
     cout << '\n';
 
-    map<int, set<string>> podjela1;
-    for ()
+    vector<set<string>> podjela1;
+    podjela1.push_back(set<string>());
+    podjela1.push_back(set<string>());
+
+    for (string st: stanja) {
+        if (prihvatljiva_stanja.count(st) == 0) {
+            podjela1[0].emplace(st);
+        }
+    }
+        
 
 }
