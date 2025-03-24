@@ -21,6 +21,7 @@ vector<string> splitstr(string s, string delim) {
         else {
             part += s[i];
             i++;
+            
         }
     }
 
@@ -38,6 +39,7 @@ int main(void) {
     cin >> redak; // stanja odvojena zarezom
 
     cin >> redak; // simboli odvojeni zarezom
+    vector<string> abeceda = splitstr(redak, ",");
 
     cin >> redak; // prihvatljiva stanja odvojena zarezom;
 
@@ -64,11 +66,34 @@ int main(void) {
             for(string j: splitstr(i, ","))
                 podaci.push_back(j);
         
-        for (int i = 1; i < podaci.size() - 1; i++)
-            prijelazi[pair<string,string>()]        
+        prijelazi[pair<string,string>(podaci[0], podaci[1])] = podaci[2];
 
     }
 
     
+    while (!red_stanja.empty()) {
+
+        string stanje = red_stanja.front();
+        red_stanja.pop();
+
+        for (string zn: abeceda) {
+
+            string pr = prijelazi[pair<string, string>(stanje, zn)];
+
+            if (stanja.count(pr) == 0) {
+                stanja.emplace(pr);
+                red_stanja.emplace(pr);
+            }
+
+        }
+
+    }
+
+    for (string stanje: stanja)
+        cout << stanje << ' ';
+    cout << '\n';
+
+    map<int, set<string>> podjela1;
+    for ()
 
 }
