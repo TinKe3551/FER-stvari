@@ -89,19 +89,49 @@ int main(void) {
 
     }
 
-    for (string stanje: stanja)
-        cout << stanje << ' ';
-    cout << '\n';
+    vector<string> vektor_stanja;
+    for (string st: stanja) vektor_stanja.push_back(st);
 
-    vector<set<string>> podjela1;
-    podjela1.push_back(set<string>());
-    podjela1.push_back(set<string>());
+    map<string, int> podjela1;
 
-    for (string st: stanja) {
-        if (prihvatljiva_stanja.count(st) == 0) {
-            podjela1[0].emplace(st);
+    for (string st: stanja) 
+        podjela1[st] = prihvatljiva_stanja.count(st);
+
+    map<string, int> podjela2;
+
+    while (1) {
+
+        for (int i = 0; i < vektor_stanja.size(); i++) {
+
+            for (int j = i; j < vektor_stanja.size(); j++) {
+
+                if (podjela1[vektor_stanja[i]] != podjela1[vektor_stanja[j]])
+                    continue;
+
+                bool uvrsti = false;
+
+                for (string zn: abeceda) {
+
+                    string pr1 = prijelazi[pair<string, string>(vektor_stanja[i], zn)];
+                    string pr2 = prijelazi[pair<string, string>(vektor_stanja[j], zn)];
+
+                    if (podjela1[pr1] == podjela1[pr2]) {
+                        uvrsti = true;
+                        break;
+                    }
+
+                }
+
+                if (uvrsti) {
+
+                    
+
+                }
+
+            }
+
         }
+
     }
-        
 
 }
