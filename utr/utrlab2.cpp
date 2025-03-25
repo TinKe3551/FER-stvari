@@ -90,43 +90,46 @@ int main(void) {
     }
 
     vector<string> vektor_stanja;
-    for (string st: stanja) vektor_stanja.push_back(st);
+    for (string i: stanja) vektor_stanja.push_back(i);
 
-    map<string, int> podjela1;
+    set<pair<string, string>> ekvivalentna_st;
 
-    for (string st: stanja) 
-        podjela1[st] = prihvatljiva_stanja.count(st);
+    for (int i = 0; i < vektor_stanja.size(); i++) {
 
-    map<string, int> podjela2;
+        for (int j = i + 1; i < vektor_stanja.size(); j++) {
 
-    while (1) {
+            set<pair<string, string>> pregledani_parovi;
+            queue<pair<string, string>> parovi;
 
-        for (int i = 0; i < vektor_stanja.size(); i++) {
+            string st1 = vektor_stanja[i];
+            string st2 = vektor_stanja[j];
 
-            for (int j = i; j < vektor_stanja.size(); j++) {
+            parovi.emplace(pair<string,string>(st1, st2));
 
-                if (podjela1[vektor_stanja[i]] != podjela1[vektor_stanja[j]])
-                    continue;
+            cout << "----------------\n";
 
-                bool uvrsti = false;
+            while (!parovi.empty()) {
+
+                cout << parovi.front().first << " " << parovi.front().second << "\n";
+
+                pregledani_parovi.emplace(pair<string, string>(parovi.front().first, parovi.front().second));
+
+                if (prihvatljiva_stanja.count(parovi.front().first) ^ prihvatljiva_stanja.count(parovi.front().second)) break;
 
                 for (string zn: abeceda) {
 
-                    string pr1 = prijelazi[pair<string, string>(vektor_stanja[i], zn)];
-                    string pr2 = prijelazi[pair<string, string>(vektor_stanja[j], zn)];
+                    pair<string, string> par_pr;
+                    par_pr.first = prijelazi[pair<string, string>(st1, zn)];
+                    par_pr.second = prijelazi[pair<string, string>(st2, zn)];
 
-                    if (podjela1[pr1] == podjela1[pr2]) {
-                        uvrsti = true;
-                        break;
+                    if (pregledani_parovi.count(par_pr) == 0) {
+                        pregledani_parovi.emplace(par_pr);
+                        parovi.emplace(par_pr);
                     }
 
                 }
 
-                if (uvrsti) {
-
-                    
-
-                }
+                parovi.pop();
 
             }
 

@@ -72,13 +72,14 @@ case SIGTRAP:
 
     K_Z[prioritet - 1] = '1';
     // cout << "> K_Z: " << K_Z << '\n';
-    ispis_stanja("u registar K_Z upisuje se zastavica za prekid prioriteta " + to_string(prioritet), true);
+    ispis_stanja("u K_Z je postavljena zastavica za prekid prioriteta " + to_string(prioritet), true);
 
     if (ostalo["T_P"] >= prioritet)
     {
-        cout << "> nastavlja se s obradom prekida prioriteta " << ostalo["T_P"] << '\n';
+        cout << "> jos uvijek traje obrada prekida prioriteta " << ostalo["T_P"] << '\n';
         return;
     }
+    
 
     suSto.emplace_front("reg[" + to_string(ostalo["T_P"]) + "]");
     string TPbin = "00000";
