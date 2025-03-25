@@ -92,48 +92,38 @@ int main(void) {
     vector<string> vektor_stanja;
     for (string i: stanja) vektor_stanja.push_back(i);
 
-    set<pair<string, string>> ekvivalentna_st;
+    set<vector<string>> podjela1;
 
-    for (int i = 0; i < vektor_stanja.size(); i++) {
+    vector<vector<string>> grupa_stanja;
+    grupa_stanja.push_back(vector<string>());
+    grupa_stanja.push_back(vector<string>());
 
-        for (int j = i + 1; i < vektor_stanja.size(); j++) {
+    for (string st: vektor_stanja) grupa_stanja[prihvatljiva_stanja.count(st)].push_back(st);
+    for (auto G: grupa_stanja) podjela1.emplace(G);
 
-            set<pair<string, string>> pregledani_parovi;
-            queue<pair<string, string>> parovi;
+    map<string, int> stanje_grupa;
+    set<vector<string>> podjela2;
+    set<string> upisana_st;
 
-            string st1 = vektor_stanja[i];
-            string st2 = vektor_stanja[j];
+    while (1) {
 
-            parovi.emplace(pair<string,string>(st1, st2));
-
-            cout << "----------------\n";
-
-            while (!parovi.empty()) {
-
-                cout << parovi.front().first << " " << parovi.front().second << "\n";
-
-                pregledani_parovi.emplace(pair<string, string>(parovi.front().first, parovi.front().second));
-
-                if (prihvatljiva_stanja.count(parovi.front().first) ^ prihvatljiva_stanja.count(parovi.front().second)) break;
-
-                for (string zn: abeceda) {
-
-                    pair<string, string> par_pr;
-                    par_pr.first = prijelazi[pair<string, string>(st1, zn)];
-                    par_pr.second = prijelazi[pair<string, string>(st2, zn)];
-
-                    if (pregledani_parovi.count(par_pr) == 0) {
-                        pregledani_parovi.emplace(par_pr);
-                        parovi.emplace(par_pr);
-                    }
-
-                }
-
-                parovi.pop();
-
-            }
-
+        cout << "--------------------\n";
+        for (auto G: podjela1) {
+            for (string st: G) cout << st << ", ";
+            cout << "\n";
         }
+
+        stanje_grupa.clear();
+        podjela2.clear();
+        upisana_st.clear();
+
+        int i = 0;
+        for (auto G: podjela1) {
+            for (string st: G) stanje_grupa[st] = i;
+            i++;
+        }
+
+        
 
     }
 
