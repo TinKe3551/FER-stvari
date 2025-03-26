@@ -15,6 +15,6 @@ read out_f
 for i in $(echo $n_primjera | python brojac.py);
 do
     echo "--------test primjer $i""--------"
-    ./program < "lab$n_lab""_primjeri/test$i/$in_f" > output
-    diff -s output "lab$n_lab""_primjeri/test$i/$out_f"
+    ./program < "lab$n_lab""_primjeri/test$i/$in_f" > "rezultati/output$i"
+    diff -s "rezultati/output$i" "lab$n_lab""_primjeri/test$i/$out_f"
 done

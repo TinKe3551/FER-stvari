@@ -11,6 +11,8 @@ vector<string> splitstr(string s, string delim) {
     string part = "";
     vector<string> parts;
 
+    if (s == "") return parts;
+
     for (unsigned int i = 0; i < s.size();) {
 
         if (s.substr(i, delim.size()) == delim) {
@@ -34,6 +36,8 @@ vector<string> splitstr(string s, string delim) {
 
 
 string joinstr(vector<string> &c, string delim) {
+
+    if (c.size() == 0) return "";
 
     string r = "";
 
@@ -96,17 +100,18 @@ int main(void) {
 
     string redak;
 
-    cin >> redak; // stanja odvojena zarezom
+    getline(cin, redak); // stanja odvojena zarezom
 
-    cin >> redak; // simboli odvojeni zarezom
+    getline(cin, redak); // simboli odvojeni zarezom
     vector<string> abeceda = splitstr(redak, ",");
 
-    cin >> redak; // prihvatljiva stanja odvojena zarezom;
+    getline(cin, redak); // prihvatljiva stanja odvojena zarezom;
 
-    set<string> prihvatljiva_stanja;
-    for (auto i: splitstr(redak, ",")) prihvatljiva_stanja.emplace(i);
+    set<string> prihvatljiva_st;
+    vector<string> prihvatljiva_st_v = splitstr(redak, ",");
+    if (prihvatljiva_st_v.size()) for (string st: prihvatljiva_st_v) prihvatljiva_st.emplace(st);
 
-    cin >> redak; // pocetno stanje
+    getline(cin, redak); // pocetno stanje
 
     string pocetno_st = redak;
     
@@ -152,25 +157,14 @@ int main(void) {
     }
 
 
-    set<string> ukloniti;
+    set<string> nedohvatljiva_st;
     for (auto st: prijelazi) 
         if (stanja.count(st.first) == 0) 
-            ukloniti.emplace(st.first);
-        cout << "a";
-    cout << "\n";
-    for (string st: ukloniti) prijelazi.erase(st);
-
-    #ifdef debug
-    for (auto st: prijelazi) {
-
-        for (auto pr: st.second) {
-
-            cout << st.first << "," << pr.first << "->" << pr.second << "\n";
-
-        }
-
+            nedohvatljiva_st.emplace(st.first);
+    for (string st: nedohvatljiva_st) {
+        prijelazi.erase(st);
+        prihvatljiva_st.erase(st);
     }
-    #endif
 
     vector<string> vektor_stanja;
     for (string i: stanja) vektor_stanja.push_back(i);
@@ -179,7 +173,7 @@ int main(void) {
 
     map<string, vector<string>> podgrupe;
 
-    for (string st: vektor_stanja) podgrupe[to_string(prihvatljiva_stanja.count(st))].push_back(st);
+    for (string st: vektor_stanja) podgrupe[to_string(prihvatljiva_st.count(st))].push_back(st);
     for (auto G: podgrupe) podjela1.emplace(G.second);
     
     set<vector<string>> podjela2;
@@ -202,18 +196,21 @@ int main(void) {
         ekvivalentna.clear();
 
         for (auto G:podjela1) {
-            for (auto st: G) ekvivalentna[st] = ekvivalentna[G[0]];
+            for (auto st: G) ekvivalentna[st] = G[0];
         }
+
+        #ifdef debug
+        cout << ">> "; 
+        for (auto i: ekvivalentna) printf("(%s %s)", i.first.c_str(), i.second.c_str());
+        cout << "\n";
+        #endif
 
         for (auto G: podjela1) {
 
             podgrupe.clear();
 
-            for (string st: G) {
-
+            for (string st: G)
                 podgrupe[otisak(st, prijelazi, ekvivalentna)].push_back(st);
-
-            }
 
             for (auto PG: podgrupe)
                 podjela2.emplace(PG.second);
@@ -227,6 +224,29 @@ int main(void) {
 
     }
 
+    for (auto st_ekv: ekvivalentna) {
+        if (st_ekv.first != st_ekv.second) {
+            stanja.erase(st_ekv.first);
+            prijelazi.erase(st_ekv.first);
+            prihvatljiva_st.erase(st_ekv.first);
+        }
+    }
 
+    for (string st: stanja)
+        for (string zn: abeceda)
+            prijelazi[st][zn] = ekvivalentna[prijelazi[st][zn]];
+
+    pocetno_st = ekvivalentna[pocetno_st];
+    
+    cout << joinstr(stanja, ",") << "\n";
+    cout << joinstr(abeceda, ",") << "\n";
+    cout << joinstr(prihvatljiva_st, ",") << "\n";
+    cout << pocetno_st << "\n";
+
+    for (auto st_pr: prijelazi) {
+        for (auto zn: st_pr.second) {
+            cout << st_pr.first << "," << zn.first << "->" << zn.second << "\n";
+        }
+    }
 
 }
