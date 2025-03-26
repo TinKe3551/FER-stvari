@@ -12,7 +12,7 @@ read in_f
 echo "naziv izlaznih datoteka"
 read out_f
 
-for i in $(echo $n_primjera | python brojac.py);
+for i in $(seq 1 $n_primjera);
 do
     echo "--------test primjer $i""--------"
     ./program < "lab$n_lab""_primjeri/test$i/$in_f" > "rezultati/output$i"

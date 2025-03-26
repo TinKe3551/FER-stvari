@@ -1,7 +1,6 @@
 n = int(input())
 
-sirina = len(str(n))
+sirina = 4
 
-for i in range(1, n + 1):
-    isp = str(i)
-    print((sirina - len(isp)) * '0' + isp)
+isp = str(n)
+print((sirina - len(isp)) * '0' + isp)
