@@ -75,6 +75,23 @@ int provjera (string st1, string st2, vector<string> &abeceda, map<pair<string, 
 }
 
 
+string otisak(string &st, map<string, map<string, string>> &prijelazi, map<string, string> &ekvivalentna) {
+
+    vector<string> ot_v;
+
+    for (auto zn: prijelazi[st]) ot_v.push_back(ekvivalentna[zn.second]);
+    
+    string ot_str = joinstr(ot_v, ",");
+
+    #ifdef debug
+    cout << "> " << st << " " << ot_str << "\n";
+    #endif
+
+    return ot_str;
+
+}
+
+
 int main(void) {
 
     string redak;
@@ -99,7 +116,7 @@ int main(void) {
     queue<string> red_stanja;
     red_stanja.emplace(redak);
 
-    map<pair<string, string>, string> prijelazi;
+    map<string, map<string, string>> prijelazi;
 
     while (getline(cin, redak)) {
 
@@ -111,7 +128,7 @@ int main(void) {
             for(string j: splitstr(i, ","))
                 podaci.push_back(j);
         
-        prijelazi[pair<string,string>(podaci[0], podaci[1])] = podaci[2];
+        prijelazi[podaci[0]][podaci[1]] = podaci[2];
 
     }
 
@@ -123,7 +140,7 @@ int main(void) {
 
         for (string zn: abeceda) {
 
-            string pr = prijelazi[pair<string, string>(stanje, zn)];
+            string pr = prijelazi[stanje][zn];
 
             if (stanja.count(pr) == 0) {
                 stanja.emplace(pr);
@@ -134,126 +151,82 @@ int main(void) {
 
     }
 
+
+    set<string> ukloniti;
+    for (auto st: prijelazi) 
+        if (stanja.count(st.first) == 0) 
+            ukloniti.emplace(st.first);
+        cout << "a";
+    cout << "\n";
+    for (string st: ukloniti) prijelazi.erase(st);
+
+    #ifdef debug
+    for (auto st: prijelazi) {
+
+        for (auto pr: st.second) {
+
+            cout << st.first << "," << pr.first << "->" << pr.second << "\n";
+
+        }
+
+    }
+    #endif
+
     vector<string> vektor_stanja;
     for (string i: stanja) vektor_stanja.push_back(i);
 
     set<vector<string>> podjela1;
 
-    map<int, vector<string>> podgrupa_stanja;
+    map<string, vector<string>> podgrupe;
 
-    for (string st: vektor_stanja) podgrupa_stanja[prihvatljiva_stanja.count(st)].push_back(st);
-    for (auto G: podgrupa_stanja) podjela1.emplace(G.second);
-
-    map<string, int> stanje_grupa;
+    for (string st: vektor_stanja) podgrupe[to_string(prihvatljiva_stanja.count(st))].push_back(st);
+    for (auto G: podgrupe) podjela1.emplace(G.second);
+    
     set<vector<string>> podjela2;
-    map<string, int> upisana_st;
+    map<string, string> ekvivalentna;
 
     bool jednake = false;
 
     while (!jednake) {
 
         #ifdef debug
-        cout << "--------------------\n";
+
+        cout << "----------------\n";
         for (auto G: podjela1) {
             for (string st: G) cout << st << " ";
-            cout << "\n\n";
+            cout << "\n";
         }
+
         #endif
 
-        stanje_grupa.clear();
-        upisana_st.clear();
+        ekvivalentna.clear();
 
-        int i = 1;
-        for (auto G: podjela1) {
-            for (string st: G) stanje_grupa[st] = i;
-            i++;
+        for (auto G:podjela1) {
+            for (auto st: G) ekvivalentna[st] = ekvivalentna[G[0]];
         }
 
         for (auto G: podjela1) {
 
-            podgrupa_stanja.clear();
+            podgrupe.clear();
 
-            int pgr;
+            for (string st: G) {
 
-            for (int i = 0; i < G.size(); i++) {
+                podgrupe[otisak(st, prijelazi, ekvivalentna)].push_back(st);
 
-                if (upisana_st.count(G[i])) pgr = upisana_st[G[i]];
-                else pgr = upisana_st.size() + 1;
-
-                for (int j = i + 1; j < G.size(); j++) {
-
-                    if (!provjera(G[i], G[j], abeceda, prijelazi, stanje_grupa)) continue;
-
-                    if (!upisana_st.count(G[i])) {
-                        podgrupa_stanja[pgr].push_back(G[i]);
-                        upisana_st[G[i]] = pgr;
-                    }
-
-                    if (!upisana_st.count(G[j])) {
-                        podgrupa_stanja[pgr].push_back(G[j]);
-                        upisana_st[G[i]] = pgr;
-                    }
-
-                }
-                
             }
 
-            for (auto G: podgrupa_stanja) podjela2.emplace(G.second);
+            for (auto PG: podgrupe)
+                podjela2.emplace(PG.second);
 
         }
 
-        jednake = podjela1 == podjela2;
+        jednake = podjela1==podjela2;
 
         podjela1 = podjela2;
         podjela2.clear();
 
     }
 
-    map<string, string> zamjene;
-    set<string> ukloniti;
 
-    for (auto G: podjela1) {
-        for (int i = 1; i < G.size(); i++) {
-            zamjene[G[i]] = G[0];
-            ukloniti.emplace(G[i]);
-        }
-    }
-    
-    for (auto st_zn: prijelazi) if (stanja.count(st_zn.first.first) == 0) ukloniti.emplace(st_zn.first.first);
-
-    for (string st: stanja) {
-
-        for (string zn: abeceda) {
-
-            pair<string, string> st_zn = pair<string, string>(st, zn);
-
-            if (ukloniti.count(st)) {
-                prijelazi.erase(st_zn);
-                continue;
-            }
-
-            if (zamjene.count(prijelazi[st_zn])) 
-                prijelazi[st_zn] = zamjene[prijelazi[st_zn]];
-
-        }
-
-    }
-
-    for (string st: ukloniti) {
-        if (stanja.count(st)) stanja.erase(st);
-        if (prihvatljiva_stanja.count(st)) prihvatljiva_stanja.erase(st);
-    }
-
-
-    #ifndef debug
-    cout << joinstr(stanja, ",") << "\n";
-    cout << joinstr(abeceda, ",") << "\n";
-    cout << joinstr(prihvatljiva_stanja, ",") << "\n";
-    cout << pocetno_st << "\n";
-
-    for (auto i: prijelazi) {
-        cout << i.first.first << "," << i.first.second << "->" << i.second << "\n";
-    }
-    #endif
 
 }
