@@ -133,7 +133,8 @@ int main(void) {
             for(string j: splitstr(i, ","))
                 podaci.push_back(j);
         
-        prijelazi[podaci[0]][podaci[1]] = podaci[2];
+        for (int i = 1; i < podaci.size() - 1; i++)
+            prijelazi[podaci[0]][podaci[i]] = podaci[podaci.size() - 1];
 
     }
 
