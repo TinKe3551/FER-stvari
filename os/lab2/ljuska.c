@@ -60,11 +60,31 @@ void obradi_signal_zavrsio_neki_proces_dijete(int id)
 {
 	//ako je već dole pozvan waitpid, onda na ovaj signal waitpid ne daje informaciju (ponovo)
 	pid_t pid_zavrsio = waitpid(-1, NULL, WNOHANG); //ne čeka
-	if (pid_zavrsio > 0)
-		if (kill(pid_zavrsio, 0) == -1) //možda je samo promijenio stanje ili je bas završio
+	if (pid_zavrsio > 0) {
+		
+		if (kill(pid_zavrsio, 0) == -1) {//možda je samo promijenio stanje ili je bas završio
+			
 			printf("\n[roditelj %d - SIGCHLD + waitpid] dijete %d zavrsilo s radom\n", (int) getpid(), pid_zavrsio);
-	//else
-		//printf("\n[roditelj %d - SIGCHLD + waitpid] waitpid ne daje informaciju\n", (int) getpid());
+			
+			int i;
+			for (i = 0; ps_pid[i] != pid_zavrsio && i < ps_c; i++);
+			
+			for (int j = i; j < ps_c - 1; j++) {
+		
+				ps_pid[j] = ps_pid[j + 1];
+				ps_pid[j + 1] = (pid_t)0;
+
+				asprintf(&ps_nazivi[j], "%s", ps_nazivi[j + 1]);
+				ps_nazivi[j + 1] = NULL;
+		
+			}
+		
+			ps_c--;
+		}
+
+	}
+	
+
 }
 
 
@@ -117,9 +137,9 @@ int main()
 	tcgetattr(STDIN_FILENO, &shell_term_settings);
 
 	//primjer stvaranja procesa i u njemu pokretanja programa
-	char *naredba_echo[] = {"echo", "-e", "Jedan\nDva\nTri", NULL};
-	pid_novi = pokreni_program(naredba_echo, 0);
-	waitpid(pid_novi, NULL, 0); //čekaj da završi
+	// char *naredba_echo[] = {"echo", "-e", "Jedan\nDva\nTri", NULL};
+	// pid_novi = pokreni_program(naredba_echo, 0);
+	// waitpid(pid_novi, NULL, 0); //čekaj da završi
 
 	//uzmi natrag kontrolu nad terminalom
 	tcsetpgrp(STDIN_FILENO, getpgid(0));
@@ -174,7 +194,7 @@ int main()
 			// ps
 			else if (strncmp(argv[0], "ps", 2) == 0) {
 				
-				for (int i = 0; i < MAX_PS_COUNT && ps_pid[i] > 0; i++) {
+				for (int i = 0; i < ps_c; i++) {
 
 					printf("%d %s\n", ps_pid[i], ps_nazivi[i]);
 
@@ -208,6 +228,14 @@ int main()
 				continue;
 			}
 
+			//exit
+			else if (strncmp(argv[0], "exit", 4) == 0) {
+
+				for (int i = 0; i < ps_c; i++) kill(ps_pid[i], SIGTERM);
+				exit(0);
+
+			}
+
 			// upisana naredba nije prepoznata kao jedna od naredbi ljuske
 			// pretpostavlja se da je program
 		
@@ -221,7 +249,7 @@ int main()
 			pid_novi = pokreni_program(argv, u_pozadini);
 
 			if (u_pozadini) {
-				printf("[dijete %d] pokrenuto u pozadini\n");
+				printf("[dijete %d] pokrenuto u pozadini\n", pid_novi);
 				continue;
 			}
 
