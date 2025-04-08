@@ -19,6 +19,8 @@ int ps_c = 0;
 char *historija[MAX_HISTORY_COUNT];
 int historija_c = 0;
 
+int pid_ljuske = -1;
+
 char* spoji_stringove(char *str1, char *str2)
 {
 	char *str3;
@@ -96,6 +98,7 @@ void obradi_signal_zavrsio_neki_proces_dijete(int id)
 pid_t pokreni_program(char *argv[], int u_pozadini)
 {
 	pid_t pid_novi;
+
 	if ((pid_novi = fork()) == 0) {
 		// if (!u_pozadini) printf("[dijete %d] krenuo s radom\n", (int) getpid());
 		sigaction(SIGINT, &prije, NULL); //resetiraj signale
@@ -107,6 +110,8 @@ pid_t pokreni_program(char *argv[], int u_pozadini)
 
 		// ps
 		if (strncmp(argv[0], "ps", 2) == 0) {
+
+			printf("%d	ova ljuska\n", pid_ljuske);
 				
 			for (int i = 0; i < ps_c; i++) {
 
@@ -114,7 +119,7 @@ pid_t pokreni_program(char *argv[], int u_pozadini)
 
 			}
 
-			printf("%d	%s\n", getpid(), "ps");
+			printf("%d	ps\n", (int)getpid());
 
 			exit(0);
 		}
@@ -144,6 +149,8 @@ int main()
 	//uobicajeno se sve varijable deklariraju ovdje!
 
 	printf("roditelj %d krenuo s radom\n", (int) getpid());
+
+	pid_ljuske = (int) getpid();
 
 	//postavi signale SIGINT i SIGCHLD
 	act.sa_handler = obradi_dogadjaj;
