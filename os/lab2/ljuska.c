@@ -50,7 +50,7 @@ int broj_iz_str(char *str)
 	return n;
 }
 
-void ispisi_proces_iz_ps_evidencije(pid_t pid_zavrsio)
+void ukloni_proces_iz_ps_evidencije(pid_t pid_zavrsio)
 {
 	int i;
 	for (i = 0; ps_pid[i] != pid_zavrsio && i < ps_c; i++);
@@ -81,9 +81,9 @@ void obradi_signal_zavrsio_neki_proces_dijete(int id)
 		
 		if (kill(pid_zavrsio, 0) == -1) {//možda je samo promijenio stanje ili je bas završio
 			
-			printf("\n[roditelj %d - SIGCHLD + waitpid] dijete %d zavrsilo s radom\n", (int) getpid(), pid_zavrsio);
+			printf("\npozadinsko dijete %d zavrsilo s radom\n", pid_zavrsio);
 			
-			ispisi_proces_iz_ps_evidencije(pid_zavrsio);
+			ukloni_proces_iz_ps_evidencije(pid_zavrsio);
 
 		}
 
@@ -93,24 +93,42 @@ void obradi_signal_zavrsio_neki_proces_dijete(int id)
 }
 
 //primjer stvaranja procesa i u njemu pokretanja programa
-pid_t pokreni_program(char *naredba[], int u_pozadini)
+pid_t pokreni_program(char *argv[], int u_pozadini)
 {
 	pid_t pid_novi;
 	if ((pid_novi = fork()) == 0) {
-		if (!u_pozadini) printf("[dijete %d] krenuo s radom\n", (int) getpid());
+		// if (!u_pozadini) printf("[dijete %d] krenuo s radom\n", (int) getpid());
 		sigaction(SIGINT, &prije, NULL); //resetiraj signale
 		setpgid(pid_novi, pid_novi); //stvori novu grupu za ovaj proces
 		if (!u_pozadini)
 			tcsetpgrp(STDIN_FILENO, getpgid(pid_novi)); //dodijeli terminal
 
-		execvp(naredba[0], naredba);
-		perror("Nisam pokrenuo program!");
-		exit(1);
+		
+
+		// ps
+		if (strncmp(argv[0], "ps", 2) == 0) {
+				
+			for (int i = 0; i < ps_c; i++) {
+
+				printf("%d	%s\n", ps_pid[i], ps_nazivi[i]);
+
+			}
+
+			printf("%d	%s\n", getpid(), "ps");
+
+			exit(0);
+		}
+
+		else {
+			execvp(argv[0], argv);
+			perror("Nisam pokrenuo program!");
+			exit(1);
+		}
 	}
 
 	else {
 		ps_pid[ps_c] = pid_novi;
-		asprintf(&ps_nazivi[ps_c], "%s", naredba[0]);
+		asprintf(&ps_nazivi[ps_c], "%s", argv[0]);
 		ps_c++;
 	}
 
@@ -125,7 +143,7 @@ int main()
 	//ali SAMO RADI jednostavnijeg praćenja
 	//uobicajeno se sve varijable deklariraju ovdje!
 
-	printf("[roditelj %d] krenuo s radom\n", (int) getpid());
+	printf("roditelj %d krenuo s radom\n", (int) getpid());
 
 	//postavi signale SIGINT i SIGCHLD
 	act.sa_handler = obradi_dogadjaj;
@@ -156,7 +174,7 @@ int main()
 
 	do {
 		//unos teksta i parsiranje
-		printf("[roditelj@%s] $ ", dir);
+		printf("[%s] > ", dir);
 
 		if (fgets(buffer, vel_buf, stdin) != NULL) {
 
@@ -195,17 +213,7 @@ int main()
 				continue;
 			}
 
-			// ps
-			else if (strncmp(argv[0], "ps", 2) == 0) {
-				
-				for (int i = 0; i < ps_c; i++) {
-
-					printf("%d %s\n", ps_pid[i], ps_nazivi[i]);
-
-				}
-
-				continue;
-			}
+			
 
 			// cd
 			else if (strncmp(argv[0], "cd", 2) == 0) {
@@ -249,15 +257,15 @@ int main()
 				argv[--argc] = NULL;
 			}
 
-			printf("[roditelj] pokrecem program\n");
+			// printf("[roditelj] pokrecem program\n");
 			pid_novi = pokreni_program(argv, u_pozadini);
 
 			if (u_pozadini) {
-				printf("[dijete %d] pokrenuto u pozadini\n", pid_novi);
+				printf("dijete %d pokrenuto u pozadini\n", pid_novi);
 				continue;
 			}
 
-			printf("[roditelj] cekam da zavrsi\n");
+			// printf("[roditelj] cekam da zavrsi\n");
 			pid_t pid_zavrsio;
 			do {
 
@@ -267,9 +275,9 @@ int main()
 				if (pid_zavrsio > 0) {
 					if (kill(pid_novi, 0) == -1) { //nema ga više? ili samo mijenja stanje
 						
-						printf("[roditelj] dijete %d zavrsilo s radom\n", pid_zavrsio);
+						// printf("[roditelj] dijete %d zavrsilo s radom\n", pid_zavrsio);
 
-						ispisi_proces_iz_ps_evidencije(pid_zavrsio);
+						ukloni_proces_iz_ps_evidencije(pid_zavrsio);
 
 						//vraćam terminal ljusci
 						tcsetpgrp(STDIN_FILENO, getpgid(0));
