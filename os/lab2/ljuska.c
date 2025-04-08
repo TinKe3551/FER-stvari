@@ -11,6 +11,41 @@
 
 struct sigaction prije;
 
+int ps_pid[512];
+char *ps_nazivi[512];
+
+char *historija[4096];
+int historija_c = 0;
+
+char* spoji(char *str1, char *str2)
+{
+	char *str3;
+	asprintf(&str3, "%s %s", str1, str2);
+	return str3;
+}
+
+void ispis_historije() 
+{
+
+	for (int i = 0; i < historija_c; i++) {
+
+		printf("%d	%s\n", i + 1, historija[i]);
+
+	}
+
+}
+
+char* zapis_u_historiju(char *naredba[], int argc)
+{
+	char *zapis = "";
+
+	for (int i = 0; i < argc; i++) zapis = spoji(zapis, naredba[i]);
+
+	historija[historija_c++] = zapis;
+
+	return zapis;
+}
+
 void obradi_dogadjaj(int sig)
 {
 	printf("\n[signal SIGINT] proces %d primio signal %d\n", (int) getpid(), sig);
@@ -82,11 +117,15 @@ int main()
 	size_t vel_buf = 128;
 	char buffer[vel_buf];
 
+	char *dir;
+	dir = getcwd(dir, (size_t)pathconf(".", _PC_PATH_MAX));
+
 	do {
 		//unos teksta i parsiranje
-		printf("[roditelj] unesi naredbu: ");
+		printf("[roditelj@%s] unesi naredbu: ", dir);
 
 		if (fgets(buffer, vel_buf, stdin) != NULL) {
+
 			#define MAXARGS 5
 			char *argv[MAXARGS];
 			int argc = 0;
@@ -96,7 +135,33 @@ int main()
 				argv[argc] = strtok(NULL, " \t\n");
 			}
 
-			//pokretanje "naredbe" (pretpostavljam da je program)
+			
+			u_pozadini = 0;
+			if (argv[argc - 1] == "&") u_pozadini = 1;
+
+						
+			
+			if (strncmp(argv[0], "history", 7) == 0) {
+				ispis_historije();
+				continue;
+			}
+			// else if (strncmp(argv[0], "ps", 2) == 0) {
+			// 	ps();
+			// 	continue;
+			// }
+			else if (strncmp(argv[0], "cd", 2) == 0) {
+				chdir(argv[1]);
+				dir = getcwd(dir, (size_t)pathconf(".", _PC_PATH_MAX));
+				continue;
+			}
+			// else if (strncmp(argv[0], "kill", 4) == 0) {
+			// 	slanje_signala(argv[0], argv[1], argv[2]);
+			// 	continue;
+			// }
+
+			// upisana naredba nije prepoznata kao jedna od naredbi ljuske
+			// pretpostavlja se da je program
+
 			printf("[roditelj] pokrecem program\n");
 			pid_novi = pokreni_program(argv, 0);
 
@@ -121,7 +186,7 @@ int main()
 					break;
 				}
 			}
-			while(pid_zavrsio <= 0);
+			while(pid_zavrsio <= 0 && fg);
 		}
 		else {
 			//printf("[roditelj] neka greska pri unosu, vjerojatno dobio signal\n");
