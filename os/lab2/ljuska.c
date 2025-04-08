@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -9,13 +7,16 @@
 #include <string.h>
 #include <termios.h>
 
+#define MAX_PS_COUNT 512
+#define MAX_HISTORY_COUNT 4096
+
 struct sigaction prije;
 
-int ps_pid[512] = {0};
-char *ps_nazivi[512];
+pid_t ps_pid[MAX_PS_COUNT] = {0};
+char *ps_nazivi[MAX_PS_COUNT];
 int ps_c = 0;
 
-char *historija[4096];
+char *historija[MAX_HISTORY_COUNT];
 int historija_c = 0;
 
 char* spoji(char *str1, char *str2)
@@ -36,11 +37,23 @@ char* zapis_u_historiju(char *naredba[], int argc)
 	return zapis;
 }
 
-int pid_prvi_plan = -1;
+int broj_iz_str(char *str)
+{
+	int n = 0;
+
+	for (int i = 0; str[i] != '\0'; i++) {
+		n *= 10;
+		int m = (int)(str[i] - '0');
+		if (0 < m && m <= 9) n += m;
+	}
+
+	return n;
+}
+
+
 void obradi_dogadjaj(int sig)
 {
 	printf("\n[signal SIGINT] proces %d primio signal %d\n", (int) getpid(), sig);
-	if (pid_prvi_plan != -1) kill(pid_prvi_plan, SIGINT);
 }
 
 void obradi_signal_zavrsio_neki_proces_dijete(int id)
@@ -60,7 +73,7 @@ pid_t pokreni_program(char *naredba[], int u_pozadini)
 {
 	pid_t pid_novi;
 	if ((pid_novi = fork()) == 0) {
-		printf("[dijete %d] krenuo s radom\n", (int) getpid());
+		if (!u_pozadini) printf("[dijete %d] krenuo s radom\n", (int) getpid());
 		sigaction(SIGINT, &prije, NULL); //resetiraj signale
 		setpgid(pid_novi, pid_novi); //stvori novu grupu za ovaj proces
 		if (!u_pozadini)
@@ -69,6 +82,12 @@ pid_t pokreni_program(char *naredba[], int u_pozadini)
 		execvp(naredba[0], naredba);
 		perror("Nisam pokrenuo program!");
 		exit(1);
+	}
+
+	else {
+		ps_pid[ps_c] = pid_novi;
+		asprintf(&ps_nazivi[ps_c], "%s", naredba[0]);
+		ps_c++;
 	}
 
 	return pid_novi; //roditelj samo dolazi do tuda
@@ -128,16 +147,12 @@ int main()
 
 			zapis_u_historiju(argv, argc);
 			
+			// history
 			if (strncmp(argv[0], "history", 7) == 0) {
 
 				if (argv[1] != NULL && strncmp(argv[1], "!", 1) == 0) {
 
-					int redak = 0;
-
-					for (int i = 1; argv[1][i] != '\0'; i++) {
-						redak *= 10;
-						redak += (int)(argv[1][i] - '0');
-					}
+					int redak = broj_iz_str(argv[1]);
 
 					if (0 < redak && redak <= historija_c)
 						printf("%s\n", historija[redak - 1]);
@@ -155,34 +170,67 @@ int main()
 
 				continue;
 			}
-			// else if (strncmp(argv[0], "ps", 2) == 0) {
-			// 	ps();
-			// 	continue;
-			// }
+
+			// ps
+			else if (strncmp(argv[0], "ps", 2) == 0) {
+				
+				for (int i = 0; i < MAX_PS_COUNT && ps_pid[i] > 0; i++) {
+
+					printf("%d %s\n", ps_pid[i], ps_nazivi[i]);
+
+				}
+
+				continue;
+			}
+
+			// cd
 			else if (strncmp(argv[0], "cd", 2) == 0) {
 				chdir(argv[1]);
 				dir = getcwd(dir, (size_t)pathconf(".", _PC_PATH_MAX));
 				continue;
 			}
-			// else if (strncmp(argv[0], "kill", 4) == 0) {
-			// 	slanje_signala(argv[0], argv[1], argv[2]);
-			// 	continue;
-			// }
+
+			// kill
+			else if (strncmp(argv[0], "kill", 4) == 0) {
+
+				pid_t pid_meta = broj_iz_str(argv[1]);
+
+				int valja = 0;
+				for (int i = 0; i < ps_c && !valja; i++)
+					valja = ps_pid[i] == pid_meta;
+
+				if (valja) {
+					kill(pid_meta, broj_iz_str(argv[2]));
+					printf("signal poslan\n");
+				}
+				else printf("signal nije poslan\n");
+
+				continue;
+			}
 
 			// upisana naredba nije prepoznata kao jedna od naredbi ljuske
 			// pretpostavlja se da je program
 		
 			int u_pozadini = 0;
-			if (argv[argc - 1] == "&") u_pozadini = 1;
+			if (strncmp(argv[argc - 1], "&", 1) == 0) {
+				u_pozadini = 1;
+				argv[--argc] = NULL;
+			}
 
-			printf("[roditelj] pokrecem program");
-			if (u_pozadini) printf(" u pozadini");
-			printf("\n");
+			printf("[roditelj] pokrecem program\n");
 			pid_novi = pokreni_program(argv, u_pozadini);
+
+			if (u_pozadini) {
+				printf("[dijete %d] pokrenuto u pozadini\n");
+				continue;
+			}
 
 			printf("[roditelj] cekam da zavrsi\n");
 			pid_t pid_zavrsio;
 			do {
+
+				if (u_pozadini) break;
+
 				pid_zavrsio = waitpid(pid_novi, NULL, 0); //čekaj
 				if (pid_zavrsio > 0) {
 					if (kill(pid_novi, 0) == -1) { //nema ga više? ili samo mijenja stanje
@@ -200,8 +248,7 @@ int main()
 					printf("[roditelj] waitpid gotov ali ne daje informaciju\n");
 					break;
 				}
-			}
-			while(pid_zavrsio <= 0 && !u_pozadini);
+			} while(pid_zavrsio <= 0);
 		}
 		else {
 			//printf("[roditelj] neka greska pri unosu, vjerojatno dobio signal\n");
