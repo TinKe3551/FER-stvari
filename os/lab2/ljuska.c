@@ -11,8 +11,9 @@
 
 struct sigaction prije;
 
-int ps_pid[512];
+int ps_pid[512] = {0};
 char *ps_nazivi[512];
+int ps_c = 0;
 
 char *historija[4096];
 int historija_c = 0;
@@ -22,17 +23,6 @@ char* spoji(char *str1, char *str2)
 	char *str3;
 	asprintf(&str3, "%s %s", str1, str2);
 	return str3;
-}
-
-void ispis_historije() 
-{
-
-	for (int i = 0; i < historija_c; i++) {
-
-		printf("%d	%s\n", i + 1, historija[i]);
-
-	}
-
 }
 
 char* zapis_u_historiju(char *naredba[], int argc)
@@ -46,10 +36,11 @@ char* zapis_u_historiju(char *naredba[], int argc)
 	return zapis;
 }
 
+int pid_prvi_plan = -1;
 void obradi_dogadjaj(int sig)
 {
 	printf("\n[signal SIGINT] proces %d primio signal %d\n", (int) getpid(), sig);
-	//proslijedi ga ako se program izvodi u prvom planu
+	if (pid_prvi_plan != -1) kill(pid_prvi_plan, SIGINT);
 }
 
 void obradi_signal_zavrsio_neki_proces_dijete(int id)
@@ -122,7 +113,7 @@ int main()
 
 	do {
 		//unos teksta i parsiranje
-		printf("[roditelj@%s] unesi naredbu: ", dir);
+		printf("[roditelj@%s] $ ", dir);
 
 		if (fgets(buffer, vel_buf, stdin) != NULL) {
 
@@ -135,14 +126,33 @@ int main()
 				argv[argc] = strtok(NULL, " \t\n");
 			}
 
-			
-			u_pozadini = 0;
-			if (argv[argc - 1] == "&") u_pozadini = 1;
-
-						
+			zapis_u_historiju(argv, argc);
 			
 			if (strncmp(argv[0], "history", 7) == 0) {
-				ispis_historije();
+
+				if (argv[1] != NULL && strncmp(argv[1], "!", 1) == 0) {
+
+					int redak = 0;
+
+					for (int i = 1; argv[1][i] != '\0'; i++) {
+						redak *= 10;
+						redak += (int)(argv[1][i] - '0');
+					}
+
+					if (0 < redak && redak <= historija_c)
+						printf("%s\n", historija[redak - 1]);
+				}
+
+				else {
+
+					for (int i = 0; i < historija_c; i++) {
+
+						printf("%d	%s\n", i + 1, historija[i]);
+				
+					}
+
+				}
+
 				continue;
 			}
 			// else if (strncmp(argv[0], "ps", 2) == 0) {
@@ -161,9 +171,14 @@ int main()
 
 			// upisana naredba nije prepoznata kao jedna od naredbi ljuske
 			// pretpostavlja se da je program
+		
+			int u_pozadini = 0;
+			if (argv[argc - 1] == "&") u_pozadini = 1;
 
-			printf("[roditelj] pokrecem program\n");
-			pid_novi = pokreni_program(argv, 0);
+			printf("[roditelj] pokrecem program");
+			if (u_pozadini) printf(" u pozadini");
+			printf("\n");
+			pid_novi = pokreni_program(argv, u_pozadini);
 
 			printf("[roditelj] cekam da zavrsi\n");
 			pid_t pid_zavrsio;
@@ -186,7 +201,7 @@ int main()
 					break;
 				}
 			}
-			while(pid_zavrsio <= 0 && fg);
+			while(pid_zavrsio <= 0 && !u_pozadini);
 		}
 		else {
 			//printf("[roditelj] neka greska pri unosu, vjerojatno dobio signal\n");
