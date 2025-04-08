@@ -19,7 +19,7 @@ int ps_c = 0;
 char *historija[MAX_HISTORY_COUNT];
 int historija_c = 0;
 
-char* spoji(char *str1, char *str2)
+char* spoji_stringove(char *str1, char *str2)
 {
 	char *str3;
 	asprintf(&str3, "%s %s", str1, str2);
@@ -30,7 +30,7 @@ char* zapis_u_historiju(char *naredba[], int argc)
 {
 	char *zapis = "";
 
-	for (int i = 0; i < argc; i++) zapis = spoji(zapis, naredba[i]);
+	for (int i = 0; i < argc; i++) zapis = spoji_stringove(zapis, naredba[i]);
 
 	historija[historija_c++] = zapis;
 
@@ -50,6 +50,23 @@ int broj_iz_str(char *str)
 	return n;
 }
 
+void ispisi_proces_iz_ps_evidencije(pid_t pid_zavrsio)
+{
+	int i;
+	for (i = 0; ps_pid[i] != pid_zavrsio && i < ps_c; i++);
+	
+	for (int j = i; j < ps_c - 1; j++) {
+
+		ps_pid[j] = ps_pid[j + 1];
+		ps_pid[j + 1] = (pid_t)0;
+
+		asprintf(&ps_nazivi[j], "%s", ps_nazivi[j + 1]);
+		ps_nazivi[j + 1] = NULL;
+
+	}
+
+	ps_c--;
+}
 
 void obradi_dogadjaj(int sig)
 {
@@ -66,27 +83,14 @@ void obradi_signal_zavrsio_neki_proces_dijete(int id)
 			
 			printf("\n[roditelj %d - SIGCHLD + waitpid] dijete %d zavrsilo s radom\n", (int) getpid(), pid_zavrsio);
 			
-			int i;
-			for (i = 0; ps_pid[i] != pid_zavrsio && i < ps_c; i++);
-			
-			for (int j = i; j < ps_c - 1; j++) {
-		
-				ps_pid[j] = ps_pid[j + 1];
-				ps_pid[j + 1] = (pid_t)0;
+			ispisi_proces_iz_ps_evidencije(pid_zavrsio);
 
-				asprintf(&ps_nazivi[j], "%s", ps_nazivi[j + 1]);
-				ps_nazivi[j + 1] = NULL;
-		
-			}
-		
-			ps_c--;
 		}
 
 	}
 	
 
 }
-
 
 //primjer stvaranja procesa i u njemu pokretanja programa
 pid_t pokreni_program(char *naredba[], int u_pozadini)
@@ -262,7 +266,10 @@ int main()
 				pid_zavrsio = waitpid(pid_novi, NULL, 0); //čekaj
 				if (pid_zavrsio > 0) {
 					if (kill(pid_novi, 0) == -1) { //nema ga više? ili samo mijenja stanje
+						
 						printf("[roditelj] dijete %d zavrsilo s radom\n", pid_zavrsio);
+
+						ispisi_proces_iz_ps_evidencije(pid_zavrsio);
 
 						//vraćam terminal ljusci
 						tcsetpgrp(STDIN_FILENO, getpgid(0));
@@ -287,35 +294,4 @@ int main()
 	return 0;
 }
 
-/* primjer pokretanja:
-
-$ gcc lab2-sucelja.c
-$ ./a.out
-[roditelj 1621] krenuo s radom
-[dijete 1622] krenuo s radom
-Jedan
-Dva
-Tri
-[roditelj] unesi naredbu: sleep 5
-[roditelj] pokrecem program
-[roditelj] cekam da zavrsi
-[dijete 1731] krenuo s radom
-[roditelj] dijete 1731 zavrsilo s radom
-[roditelj] unesi naredbu: bc -q
-[roditelj] pokrecem program
-[roditelj] cekam da zavrsi
-[dijete 1750] krenuo s radom
-123-2*75+111
-84
-quit
-[roditelj] dijete 1750 zavrsilo s radom
-[roditelj] unesi naredbu: exit
-[roditelj] pokrecem program
-[roditelj] cekam da zavrsi
-[dijete 1787] krenuo s radom
-Nisam pokrenuo program!: No such file or directory
-[roditelj] dijete 1787 zavrsilo s radom
-$
-
-*/
 
