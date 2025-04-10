@@ -39,8 +39,313 @@
         <div class = "programskitekst">
             <pre>
                 #include &ltstdio.h&gt
-                int main(void) {
-                    printf("lmao\n");
+                #include &ltstdlib.h&gt
+                #include &ltunistd.h&gt
+                #include &ltsignal.h&gt
+                #include &ltsys/types.h&gt
+                #include &ltsys/wait.h&gt
+                #include &ltstring.h&gt
+                #include &lttermios.h&gt
+                
+                #define MAX_PS_COUNT 512
+                #define MAX_HISTORY_COUNT 4096
+                
+                struct sigaction prije;
+                
+                pid_t ps_pid[MAX_PS_COUNT] = {0};
+                char *ps_nazivi[MAX_PS_COUNT];
+                int ps_c = 0;
+                
+                char *historija[MAX_HISTORY_COUNT];
+                int historija_c = 0;
+                
+                int pid_ljuske = -1;
+                
+                char* spoji_stringove(char *str1, char *str2)
+                {
+                    char *str3;
+                    asprintf(&str3, "%s %s", str1, str2);
+                    return str3;
+                }
+                
+                char* zapis_u_historiju(char *naredba[], int argc)
+                {
+                    char *zapis = "";
+                
+                    for (int i = 0; i < argc; i++) zapis = spoji_stringove(zapis, naredba[i]);
+                
+                    historija[historija_c++] = zapis;
+                
+                    return zapis;
+                }
+                
+                int broj_iz_str(char *str)
+                {
+                    int n = 0;
+                
+                    for (int i = 0; str[i] != '\0'; i++) {
+                        n *= 10;
+                        int m = (int)(str[i] - '0');
+                        if (0 < m && m <= 9) n += m;
+                    }
+                
+                    return n;
+                }
+                
+                void ukloni_proces_iz_ps_evidencije(pid_t pid_zavrsio)
+                {
+                    int i;
+                    for (i = 0; ps_pid[i] != pid_zavrsio && i < ps_c; i++);
+                    
+                    for (int j = i; j < ps_c - 1; j++) {
+                
+                        ps_pid[j] = ps_pid[j + 1];
+                        ps_pid[j + 1] = (pid_t)0;
+                
+                        asprintf(&ps_nazivi[j], "%s", ps_nazivi[j + 1]);
+                        ps_nazivi[j + 1] = NULL;
+                
+                    }
+                
+                    ps_c--;
+                }
+                
+                void obradi_dogadjaj(int sig)
+                {
+                    printf("\n[signal SIGINT] proces %d primio signal %d\n", (int) getpid(), sig);
+                }
+                
+                void obradi_signal_zavrsio_neki_proces_dijete(int id)
+                {
+                    //ako je već dole pozvan waitpid, onda na ovaj signal waitpid ne daje informaciju (ponovo)
+                    pid_t pid_zavrsio = waitpid(-1, NULL, WNOHANG); //ne čeka
+                    if (pid_zavrsio > 0) {
+                        
+                        if (kill(pid_zavrsio, 0) == -1) {//možda je samo promijenio stanje ili je bas završio
+                            
+                            printf("\npozadinsko dijete %d zavrsilo s radom\n", pid_zavrsio);
+                            
+                            ukloni_proces_iz_ps_evidencije(pid_zavrsio);
+                
+                        }
+                
+                    }
+                    
+                
+                }
+                
+                //primjer stvaranja procesa i u njemu pokretanja programa
+                pid_t pokreni_program(char *argv[], int u_pozadini)
+                {
+                    pid_t pid_novi;
+                
+                    if ((pid_novi = fork()) == 0) {
+                        // if (!u_pozadini) printf("[dijete %d] krenuo s radom\n", (int) getpid());
+                        sigaction(SIGINT, &prije, NULL); //resetiraj signale
+                        setpgid(pid_novi, pid_novi); //stvori novu grupu za ovaj proces
+                        if (!u_pozadini)
+                            tcsetpgrp(STDIN_FILENO, getpgid(pid_novi)); //dodijeli terminal
+                
+                        
+                
+                        // ps
+                        if (strncmp(argv[0], "ps", 2) == 0) {
+                
+                            printf("%d	ova ljuska\n", pid_ljuske);
+                                
+                            for (int i = 0; i < ps_c; i++) {
+                
+                                printf("%d	%s\n", ps_pid[i], ps_nazivi[i]);
+                
+                            }
+                
+                            printf("%d	ps\n", (int)getpid());
+                
+                            exit(0);
+                        }
+                
+                        else {
+                            execvp(argv[0], argv);
+                            perror("Nisam pokrenuo program!");
+                            exit(1);
+                        }
+                    }
+                
+                    else {
+                        ps_pid[ps_c] = pid_novi;
+                        asprintf(&ps_nazivi[ps_c], "%s", argv[0]);
+                        ps_c++;
+                    }
+                
+                    return pid_novi; //roditelj samo dolazi do tuda
+                }
+                
+                int main()
+                {
+                    struct sigaction act;
+                    pid_t pid_novi;
+                    //ostale varijable su definirane neposredno prije koristenja
+                    //ali SAMO RADI jednostavnijeg praćenja
+                    //uobicajeno se sve varijable deklariraju ovdje!
+                
+                    printf("roditelj %d krenuo s radom\n", (int) getpid());
+                
+                    pid_ljuske = (int) getpid();
+                
+                    //postavi signale SIGINT i SIGCHLD
+                    act.sa_handler = obradi_dogadjaj;
+                    sigemptyset(&act.sa_mask);
+                    act.sa_flags = 0;
+                    sigaction(SIGINT, &act, &prije);
+                    act.sa_handler = obradi_signal_zavrsio_neki_proces_dijete;
+                    sigaction(SIGCHLD, &act, NULL);
+                    act.sa_handler = SIG_IGN;
+                    sigaction(SIGTTOU, &act, NULL); //zbog tcsetpgrp
+                
+                    struct termios shell_term_settings;
+                    tcgetattr(STDIN_FILENO, &shell_term_settings);
+                
+                    //primjer stvaranja procesa i u njemu pokretanja programa
+                    // char *naredba_echo[] = {"echo", "-e", "Jedan\nDva\nTri", NULL};
+                    // pid_novi = pokreni_program(naredba_echo, 0);
+                    // waitpid(pid_novi, NULL, 0); //čekaj da završi
+                
+                    //uzmi natrag kontrolu nad terminalom
+                    tcsetpgrp(STDIN_FILENO, getpgid(0));
+                
+                    size_t vel_buf = 128;
+                    char buffer[vel_buf];
+                
+                    char *dir;
+                    dir = getcwd(dir, (size_t)pathconf(".", _PC_PATH_MAX));
+                
+                    do {
+                        //unos teksta i parsiranje
+                        printf("[%s] > ", dir);
+                
+                        if (fgets(buffer, vel_buf, stdin) != NULL) {
+                
+                            #define MAXARGS 5
+                            char *argv[MAXARGS];
+                            int argc = 0;
+                            argv[argc] = strtok(buffer, " \t\n");
+                            while (argv[argc] != NULL) {
+                                argc++;
+                                argv[argc] = strtok(NULL, " \t\n");
+                            }
+                
+                            zapis_u_historiju(argv, argc);
+                            
+                            // history
+                            if (strncmp(argv[0], "history", 7) == 0) {
+                
+                                if (argv[1] != NULL && strncmp(argv[1], "!", 1) == 0) {
+                
+                                    int redak = broj_iz_str(argv[1]);
+                
+                                    if (0 < redak && redak <= historija_c)
+                                        printf("%s\n", historija[redak - 1]);
+                                }
+                
+                                else {
+                
+                                    for (int i = 0; i < historija_c; i++) {
+                
+                                        printf("%d	%s\n", i + 1, historija[i]);
+                                
+                                    }
+                
+                                }
+                
+                                continue;
+                            }
+                
+                            
+                
+                            // cd
+                            else if (strncmp(argv[0], "cd", 2) == 0) {
+                                chdir(argv[1]);
+                                dir = getcwd(dir, (size_t)pathconf(".", _PC_PATH_MAX));
+                                continue;
+                            }
+                
+                            // kill
+                            else if (strncmp(argv[0], "kill", 4) == 0) {
+                
+                                pid_t pid_meta = broj_iz_str(argv[1]);
+                
+                                int valja = 0;
+                                for (int i = 0; i < ps_c && !valja; i++)
+                                    valja = ps_pid[i] == pid_meta;
+                
+                                if (valja) {
+                                    kill(pid_meta, broj_iz_str(argv[2]));
+                                    printf("signal poslan\n");
+                                }
+                                else printf("signal nije poslan\n");
+                
+                                continue;
+                            }
+                
+                            //exit
+                            else if (strncmp(argv[0], "exit", 4) == 0) {
+                
+                                for (int i = 0; i < ps_c; i++) kill(ps_pid[i], SIGTERM);
+                                exit(0);
+                
+                            }
+                
+                            // upisana naredba nije prepoznata kao jedna od naredbi ljuske
+                            // pretpostavlja se da je program
+                        
+                            int u_pozadini = 0;
+                            if (strncmp(argv[argc - 1], "&", 1) == 0) {
+                                u_pozadini = 1;
+                                argv[--argc] = NULL;
+                            }
+                
+                            // printf("[roditelj] pokrecem program\n");
+                            pid_novi = pokreni_program(argv, u_pozadini);
+                
+                            if (u_pozadini) {
+                                printf("dijete %d pokrenuto u pozadini\n", pid_novi);
+                                continue;
+                            }
+                
+                            // printf("[roditelj] cekam da zavrsi\n");
+                            pid_t pid_zavrsio;
+                            do {
+                
+                                if (u_pozadini) break;
+                
+                                pid_zavrsio = waitpid(pid_novi, NULL, 0); //čekaj
+                                if (pid_zavrsio > 0) {
+                                    if (kill(pid_novi, 0) == -1) { //nema ga više? ili samo mijenja stanje
+                                        
+                                        // printf("[roditelj] dijete %d zavrsilo s radom\n", pid_zavrsio);
+                
+                                        ukloni_proces_iz_ps_evidencije(pid_zavrsio);
+                
+                                        //vraćam terminal ljusci
+                                        tcsetpgrp(STDIN_FILENO, getpgid(0));
+                                        tcsetattr(STDIN_FILENO, 0, &shell_term_settings);
+                                    }
+                                    else {
+                                        pid_novi = (pid_t) 0; //nije gotov
+                                    }
+                                }
+                                else {
+                                    printf("[roditelj] waitpid gotov ali ne daje informaciju\n");
+                                    break;
+                                }
+                            } while(pid_zavrsio <= 0);
+                        }
+                        else {
+                            //printf("[roditelj] neka greska pri unosu, vjerojatno dobio signal\n");
+                        }
+                    }
+                    while(strncmp(buffer, "exit", 4) != 0);
+                
                     return 0;
                 }
             </pre>
