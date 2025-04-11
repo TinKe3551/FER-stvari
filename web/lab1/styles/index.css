@@ -1,18 +1,51 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 24px;
 
+* {
+    box-sizing:border-box;
 }
 
 
-div[class="sloj1"] {
+body {
+
+    font-family: "roboto mono", sans-serif;
+    font-size: 25px;
+
+}
+
+div[class="zaglavlje"] {
+    width: 100%;
     color:blue;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    
+}
+
+div[class="zaglavlje_sadrzaj"] {
+    width: fit-content;
+    padding:1vw;
+    width: 20%;
+    min-width: 300px;
+}
+
+div[id="logo"] {
+    background-color:aliceblue;
+}
+
+div[id="nazivstr"] {
+    background-color:antiquewhite;
+}
+
+div[id="kosr_i_pretr"] {
+    background-color:aqua;
 }
 
 
 @media screen and (min-width: 1024px) {
     body {
-        font-size: 30px;
+        font-size: 35px;
     }
 }
+
