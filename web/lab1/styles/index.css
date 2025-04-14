@@ -9,18 +9,23 @@
 html {
 
     font-family: "roboto mono", sans-serif;
-    font-size: 25px;
+    font-size: 20px;
 
 }
 
 div.zaglavlje {
     width: 100%;
+    padding: 2%;
+
     color:blue;
+    background-color: lightcyan;
+
+    border-style: solid;
+    border-color: black;
+
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
-    background-color: lightcyan;
-    padding: 2%;
 }
 
 div.zaglavlje_sadrzaj {
@@ -47,17 +52,24 @@ div.naslovnaslika {
     height: 50px;
     background-color:aquamarine;
     float: right;
+    border-style: solid;
+    border-top: none;
+    border-color: black;
 }
 
 div.sidebar {
     width: 30%;
-    min-width: 240px;
+/*    min-width: 240px;*/
     background-color:aliceblue;
     font-size: 0.9rem;
     float: left;
 }
 
 div.kategorijagumb {
+    border-style: solid;
+    border-top: none;
+    border-right: none;
+    border-color: black;
     padding:1%;
     text-align: center;
     cursor: pointer;
@@ -73,28 +85,45 @@ div.kategorijagumb:active {
     background-color:white;
 }
 
+div.proizvodi {
+    float:right;
+    width: 70%;
+    display:flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    background-color:beige;
+    border-style: solid;
+    border-color: black;
+    border-top: none;
+}
+
 div.proizvod {
     background-color:black; 
-    width: 240px; 
+    color:white;
+    border-style: solid;
+    border-color: white;
+    width: 200px;
     height: 320px;
     display: inline-block;
     margin: 10px;
     padding: 10px;
-}
-
-div.proizvod {
-    color: white;
+    text-align: center;
 }
 
 
 @media screen and (min-width: 1024px) {
     
     html {
-        font-size: 35px;
+        font-size: 30px;
     }
 
     div.naslovnaslika {
         width: 70%;
+    }
+
+    div.proizvod {
+        width: 300px;
+        height: 480px;
     }
 
 }
