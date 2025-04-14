@@ -7,45 +7,69 @@
 }
 
 
-body {
+html {
 
     font-family: "roboto mono", sans-serif;
     font-size: 25px;
 
 }
 
-div[class="zaglavlje"] {
+div.zaglavlje {
     width: 100%;
     color:blue;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
-    
+    background-color: lightcyan;
+    padding: 2%
 }
 
-div[class="zaglavlje_sadrzaj"] {
+div.zaglavlje_sadrzaj {
     width: fit-content;
     padding:1vw;
     width: 20%;
     min-width: 300px;
 }
 
-div[id="logo"] {
+div#logo {
     background-color:aliceblue;
 }
 
-div[id="nazivstr"] {
+div#nazivstr {
     background-color:antiquewhite;
 }
 
-div[id="kosr_i_pretr"] {
+div#kosr_i_pretr {
     background-color:aqua;
+}
+
+div.sidebar {
+    width: 100%;
+    min-width: 240px;
+    background-color:aliceblue;
+    font-size: 0.9rem;
+}
+
+div.kategorijagumb {
+    padding:1%;
+}
+
+div.kategorijagumb:hover {
+    border-width: 4px;
+    border-color: black;
+    background-color: antiquewhite;
 }
 
 
 @media screen and (min-width: 1024px) {
-    body {
+    
+    html {
         font-size: 35px;
     }
+
+    div.sidebar {
+        width: 30%;
+    }
+
 }
 
