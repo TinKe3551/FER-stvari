@@ -20,7 +20,7 @@ div.zaglavlje {
     flex-flow: row wrap;
     justify-content: space-around;
     background-color: lightcyan;
-    padding: 2%
+    padding: 2%;
 }
 
 div.zaglavlje_sadrzaj {
@@ -43,7 +43,7 @@ div#kosr_i_pretr {
 }
 
 div.sidebar {
-    width: 100%;
+    width: 30%;
     min-width: 240px;
     background-color:aliceblue;
     font-size: 0.9rem;
@@ -66,15 +66,22 @@ div.kategorijagumb:active {
     background-color:white;
 }
 
+div.proizvodi {
+    background-color:black; 
+    width: 70%; 
+    height: 320px;
+    display: inline-block;
+}
+
+div.proizvod {
+    color: white;
+}
+
 
 @media screen and (min-width: 1024px) {
     
     html {
         font-size: 35px;
-    }
-
-    div.sidebar {
-        width: 30%;
     }
 
 }
