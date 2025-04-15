@@ -124,6 +124,14 @@ img.proizvod {
     border-color: white;
 }
 
+img.nevidljivo {
+    opacity:0;
+}
+
+img.ikonica {
+    width: 100%;
+}
+
 
 @media screen and (min-width: 1024px) {
     
