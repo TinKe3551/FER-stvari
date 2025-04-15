@@ -11,17 +11,31 @@ function osvjezi_prikaz_proizvoda(kategorija) {
 
         let proizvod = document.createElement("div");
 
-        //proizvod.appendChild(document.createElement("div"));
         proizvod.className = "proizvod";
-        proizvod.innerHTML = novi[i]["name"];
-        //proizvod.childNodes.item(0).class = "proizvodslika";
-        //proizvod.childNodes.item(1).class = "proizvodtekst";
+        proizvod.id = novi[i]["name"];
+
+        proizvod.innerHTML = '';
+
+        let slika = document.createElement("img");
+        slika.src = "./images/" + novi[i]["image"];
+        slika.alt = "slika za " + novi[i]["name"];
+        slika.className = "proizvod";
+
+        let tekst = document.createTextNode(novi[i]["name"]);
+        
+        proizvod.appendChild(slika);
+        proizvod.appendChild(document.createElement("br"));
+        proizvod.appendChild(tekst);
 
         prikaz.appendChild(proizvod);
 
     }
 
+    document.getElementById("nazivkat").innerHTML = kategorija;
+
 }
+
+
 
 
 
