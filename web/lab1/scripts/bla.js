@@ -25,7 +25,7 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         ikonica.src = "./images/edgarferhr.png";
         ikonica.className = "nevidljivo";
         ikonica.style.opacity = 0;
-        ikonica.style.width = 0;
+        ikonica.style.width = "40px";
         ikonica.id = "pr_" + i.toString() + "_ik";
 
         let tekst = document.createElement("p");
@@ -38,13 +38,11 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         proizvod.addEventListener("mouseenter", () => {
             let ik = document.getElementById("pr_" + i.toString() + "_ik");
             ik.style.opacity = 1;
-            ik.style.width = "40px";
         })
 
         proizvod.addEventListener("mouseleave", () => {
             let ik = document.getElementById("pr_" + i.toString() + "_ik");
             ik.style.opacity = 0;
-            ik.style.width = 0;
         })
 
         proizvod.style.cursor = "pointer";
