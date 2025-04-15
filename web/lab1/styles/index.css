@@ -107,12 +107,14 @@ div.proizvod {
     color:white;
     border-style: solid;
     border-color: white;
-    width: 180px;
+    width: 200px;
     height: auto;
-    display: inline-block;
     margin: 10px;
     padding: 10px;
     text-align: center;
+    display:flex;
+    flex-flow: column wrap;
+    align-items:center;
 }
 
 img.proizvod {
@@ -134,7 +136,11 @@ img.proizvod {
     }
 
     div.proizvod {
-        width: 270px;
+        width: 300px;
+    }
+
+    img.proizvod {
+        width: 240px;
     }
 
 }

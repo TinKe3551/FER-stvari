@@ -21,7 +21,9 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         slika.alt = "slika za " + novi[i]["name"];
         slika.className = "proizvod";
 
-        let tekst = document.createTextNode(novi[i]["name"]);
+        let tekst = document.createElement("p");
+        tekst.innerHTML = novi[i]["name"];
+
         
         proizvod.appendChild(slika);
         proizvod.appendChild(document.createElement("br"));
