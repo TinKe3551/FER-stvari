@@ -31,7 +31,7 @@ div.zaglavlje {
 div.zaglavlje_sadrzaj {
     width: fit-content;
     padding:1vw;
-    width: 20%;
+    width: 30%;
     min-width: 300px;
 }
 
@@ -124,12 +124,9 @@ img.proizvod {
     border-color: white;
 }
 
-img.nevidljivo {
-    opacity:0;
-}
 
 img.ikonica {
-    width: 100%;
+    width: 1000px;
 }
 
 

@@ -22,8 +22,8 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         slika.className = "proizvod";
 
         let ikonica = document.createElement("img");
-        ikonica.src = "./images/edgarferhr.png";
-        ikonica.className = "nevidljivo";
+        ikonica.src = "./images/kosarica.png";
+        ikonica.className = "ikonica";
         ikonica.style.opacity = 0;
         ikonica.style.width = "40px";
         ikonica.id = "pr_" + i.toString() + "_ik";
@@ -34,6 +34,7 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         proizvod.appendChild(slika);
         proizvod.appendChild(ikonica);
         proizvod.appendChild(tekst);
+        proizvod.appendChild(document.createElement("p"));
 
         proizvod.addEventListener("mouseenter", () => {
             let ik = document.getElementById("pr_" + i.toString() + "_ik");
@@ -43,6 +44,11 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         proizvod.addEventListener("mouseleave", () => {
             let ik = document.getElementById("pr_" + i.toString() + "_ik");
             ik.style.opacity = 0;
+        })
+
+        proizvod.addEventListener("click", () => {
+            data["basketsize"]++;
+            
         })
 
         proizvod.style.cursor = "pointer";
