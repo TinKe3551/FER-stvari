@@ -35,16 +35,20 @@ div.zaglavlje_sadrzaj {
     min-width: 300px;
 }
 
-div#logo {
+div.zaglavlje_sadrzaj#logo {
     background-color:aliceblue;
 }
 
-div#nazivkat {
+div.zaglavlje_sadrzaj#nazivkat {
     background-color:antiquewhite;
 }
 
-div#kosr_i_pretr {
+div.zaglavlje_sadrzaj#kosr_i_pretr {
     background-color:aqua;
+    display: flex;
+    flex-flow: row wrap;
+    text-align: center;
+    align-items: center;
 }
 
 div.naslovnaslika {
@@ -71,13 +75,13 @@ div.sidebar {
 }
 
 div.kategorijagumb {
-    border-style: solid;
-    border-top: none;
-    border-right: none;
+    border-right-style: solid;
     border-color: black;
     padding:1%;
     text-align: center;
     cursor: pointer;
+    border-bottom-style:dashed;
+    border-left: none;
 }
 
 div.kategorijagumb:hover {
@@ -97,9 +101,6 @@ div.proizvodi {
     flex-flow: row wrap;
     justify-content: space-around;
     background-color:beige;
-    border-style: solid;
-    border-color: black;
-    border-top: none;
 }
 
 div.proizvod {
@@ -146,6 +147,10 @@ img.ikonica {
 
     img.proizvod {
         width: 240px;
+    }
+
+    div.naslovnaslika {
+        border-left: none;
     }
 
 }

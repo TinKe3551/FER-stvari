@@ -30,11 +30,16 @@ function osvjezi_prikaz_proizvoda(kategorija) {
 
         let tekst = document.createElement("p");
         tekst.innerHTML = novi[i]["name"];
+
+        let pr_brojac = document.createElement("p");
+        if (novi[i]["amount"] > 0) pr_brojac.innerHTML = "u košarici: " + novi[i]["amount"];
         
         proizvod.appendChild(slika);
         proizvod.appendChild(ikonica);
         proizvod.appendChild(tekst);
-        proizvod.appendChild(document.createElement("p"));
+        proizvod.appendChild(pr_brojac)
+
+        proizvod.id = "pr_" + i.toString();
 
         proizvod.addEventListener("mouseenter", () => {
             let ik = document.getElementById("pr_" + i.toString() + "_ik");
@@ -47,7 +52,19 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         })
 
         proizvod.addEventListener("click", () => {
+
+            let kosr_brojac = Number(localStorage.getItem("kosr_brojac"));
+            kosr_brojac++;
+            localStorage.setItem("kosr_brojac", kosr_brojac);
+
             data["basketsize"]++;
+            document.getElementById("kosr_brojac").innerHTML = data["basketsize"];
+
+            data["categories"][kategorija][i]["amount"]++;
+
+            let proizvod = document.getElementById("pr_"+i.toString());
+            proizvod.childNodes[proizvod.childNodes.length - 1].
+            innerHTML = "u košarici: " + data["categories"][kategorija][i]["amount"].toString();
             
         })
 
@@ -96,3 +113,4 @@ document.getElementById("kategorija10").addEventListener("click", () => {
     osvjezi_prikaz_proizvoda("Bilježnice s praznim stranicama");
 });
 
+localStorage.setItem("kosr_brojac", 0);

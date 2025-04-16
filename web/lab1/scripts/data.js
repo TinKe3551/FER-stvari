@@ -11,7 +11,6 @@ const data = {
             {
                 "name": "Matematička analiza 1",
                 "image": "matan1udz.png",
-                "amount": 0,
                 "price": 0
             },
 
