@@ -32,7 +32,7 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         tekst.innerHTML = novi[i]["name"];
 
         let pr_brojac = document.createElement("p");
-        if (novi[i]["amount"] > 0) pr_brojac.innerHTML = "u košarici: " + novi[i]["amount"];
+        if (localStorage.getItem(novi[i]["name"]) > 0) pr_brojac.innerHTML = "u košarici: " + localStorage.getItem(novi[i]["name"]).toString();
         
         proizvod.appendChild(slika);
         proizvod.appendChild(ikonica);
@@ -53,18 +53,19 @@ function osvjezi_prikaz_proizvoda(kategorija) {
 
         proizvod.addEventListener("click", () => {
 
-            let kosr_brojac = Number(localStorage.getItem("kosr_brojac"));
+            let kosr_brojac = localStorage.getItem("kosr_brojac");
             kosr_brojac++;
             localStorage.setItem("kosr_brojac", kosr_brojac);
-
-            data["basketsize"]++;
-            document.getElementById("kosr_brojac").innerHTML = data["basketsize"];
+            document.getElementById("kosr_brojac").innerHTML = kosr_brojac;
 
             data["categories"][kategorija][i]["amount"]++;
+            let pr_brojac = localStorage.getItem(novi[i]["name"]);
+            pr_brojac++;
+            localStorage.setItem(novi[i]["name"], pr_brojac);
 
             let proizvod = document.getElementById("pr_"+i.toString());
             proizvod.childNodes[proizvod.childNodes.length - 1].
-            innerHTML = "u košarici: " + data["categories"][kategorija][i]["amount"].toString();
+            innerHTML = "u košarici: " + pr_brojac.toString();            
             
         })
 
@@ -77,8 +78,6 @@ function osvjezi_prikaz_proizvoda(kategorija) {
     document.getElementById("nazivkat").innerHTML = kategorija;
 
 }
-
-
 
 
 
@@ -113,4 +112,7 @@ document.getElementById("kategorija10").addEventListener("click", () => {
     osvjezi_prikaz_proizvoda("Bilježnice s praznim stranicama");
 });
 
-localStorage.setItem("kosr_brojac", 0);
+
+if (localStorage.getItem("kosr_brojac") === null) localStorage.setItem("kosr_brojac", 0);
+document.getElementById("kosr_brojac").innerHTML = localStorage.getItem("kosr_brojac");
+

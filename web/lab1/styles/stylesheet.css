@@ -3,6 +3,9 @@
 
 * {
     box-sizing:border-box;
+    align-content: center;
+    text-align: center;
+    align-items: center;
 }
 
 
@@ -20,35 +23,30 @@ div.zaglavlje {
     color:blue;
     background-color: lightcyan;
 
-    border-style: solid;
-    border-color: black;
-
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-around;
+    justify-content: space-evenly;;
 }
 
 div.zaglavlje_sadrzaj {
-    width: fit-content;
-    padding:1vw;
-    width: 30%;
-    min-width: 300px;
+    padding:3vw;
 }
 
 div.zaglavlje_sadrzaj#logo {
     background-color:aliceblue;
+    width: auto;
 }
 
 div.zaglavlje_sadrzaj#nazivkat {
     background-color:antiquewhite;
+    width: 50%;
 }
 
 div.zaglavlje_sadrzaj#kosr_i_pretr {
     background-color:aqua;
     display: flex;
-    flex-flow: row wrap;
-    text-align: center;
-    align-items: center;
+    flex-direction: row;
+    width: auto;
 }
 
 div.naslovnaslika {
@@ -99,7 +97,7 @@ div.proizvodi {
     width: 70%;
     display:flex;
     flex-flow: row wrap;
-    justify-content: space-around;
+    justify-content: space-evenly;
     background-color:beige;
 }
 
@@ -112,7 +110,6 @@ div.proizvod {
     height: auto;
     margin: 10px;
     padding: 10px;
-    text-align: center;
     display:flex;
     flex-flow: column wrap;
     align-items:center;
@@ -128,6 +125,12 @@ img.proizvod {
 
 img.ikonica {
     width: 1000px;
+}
+
+div.kosr_proizvodi {
+    background-color:aliceblue;
+    border-style: solid;
+    border-color:black;
 }
 
 

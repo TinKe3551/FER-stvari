@@ -8,11 +8,34 @@
         <script defer src="scripts/data.js"></script>
         <script defer src="scripts/cart.js"></script>
 
+        <link rel="stylesheet" href="styles/stylesheet.css">
+
     </head>
 
     <body>
 
         <a href="index.html">glavna stranica</a>
+        <button onclick="localStorage.clear()">resetiraj košaricu</button>
+
+        <div class="zaglavlje">
+            <div class="zaglavlje_sadrzaj" id="logo">
+                <img src="images/logo.png" alt="logo"/>
+            </div>
+            <div class="zaglavlje_sadrzaj" id="nazivkat">košarica</div>
+            <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
+                <div class="ikonica" id="kosr_ik">
+                    <a href="cart.html"><img src="images/kosarica.png"/></a>
+                    <p id="kosr_brojac">0</p>
+                </div>
+                <div>
+                    <img src="pretrazivanje.png"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="kosr_proizvodi">
+            Košarica je trenutno prazna.
+        </div>
 
     </body>
 
