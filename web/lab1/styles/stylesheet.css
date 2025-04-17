@@ -73,7 +73,7 @@ div.kategorijagumb {
     padding:1%;
     text-align: center;
     cursor: pointer;
-    border-bottom-style:dashed;
+    border-top-style:dashed;
     border-color: black;
 }
 
