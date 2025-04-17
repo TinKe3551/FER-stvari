@@ -44,7 +44,7 @@ div.zaglavlje_sadrzaj#kosr_i_pretr {
 }
 
 div.kosr_i_pretr {
-    margin:15px;
+    margin:30px;
 }
 
 div.naslovnaslika {
@@ -72,6 +72,7 @@ div.kategorijagumb {
     border-top-style:dashed;
     border-color: black;
     font-size: 1.2rem;
+    user-select: none;
 }
 
 div.kategorijagumb:hover {
@@ -108,6 +109,7 @@ div.proizvod {
     display:flex;
     flex-flow: column wrap;
     align-items:center;
+    user-select: none;
 }
 
 img.proizvod {
