@@ -42,13 +42,11 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         proizvod.id = "pr_" + i.toString();
 
         proizvod.addEventListener("mouseenter", () => {
-            let ik = document.getElementById("pr_" + i.toString() + "_ik");
-            ik.style.opacity = 1;
+            document.getElementById("pr_" + i.toString() + "_ik").style.opacity = 1;
         })
 
         proizvod.addEventListener("mouseleave", () => {
-            let ik = document.getElementById("pr_" + i.toString() + "_ik");
-            ik.style.opacity = 0;
+            document.getElementById("pr_" + i.toString() + "_ik").style.opacity = 0;
         })
 
         proizvod.addEventListener("click", () => {
@@ -59,9 +57,9 @@ function osvjezi_prikaz_proizvoda(kategorija) {
             document.getElementById("kosr_brojac").innerHTML = kosr_brojac;
 
             data["categories"][kategorija][i]["amount"]++;
-            let pr_brojac = localStorage.getItem(novi[i]["name"]);
+            let pr_brojac = localStorage.getItem("pr_" + novi[i]["name"]);
             pr_brojac++;
-            localStorage.setItem(novi[i]["name"], pr_brojac);
+            localStorage.setItem("pr_" + novi[i]["name"], pr_brojac);
 
             let proizvod = document.getElementById("pr_"+i.toString());
             proizvod.childNodes[proizvod.childNodes.length - 1].

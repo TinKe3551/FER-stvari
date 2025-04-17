@@ -54,8 +54,7 @@ div.naslovnaslika {
     height: auto;
     background-color:white;
     float: right;
-    border-style: solid;
-    border-top: none;
+    border-bottom-style: solid;
     border-color: black;
 }
 
@@ -129,8 +128,35 @@ img.ikonica {
 
 div.kosr_proizvodi {
     background-color:aliceblue;
-    border-style: solid;
-    border-color:black;
+    border-top-style: dashed;
+    border-color: black;
+    min-height: 128px;
+}
+
+div.kosr_proizvod {
+    border-top-style: dashed;
+    border-color: black;
+    display: flex;
+    flex-flow: row wrap;
+    min-height: 64px;
+}
+
+div.kosr_proizvod_naziv {
+    width: 70%;
+}
+
+div.kosr_proizvod_dodaj {
+    width: 10%;
+    cursor: pointer;
+}
+
+div.kosr_proizvod_brojac {
+    width: 10%;
+}
+
+div.kosr_proizvod_makni {
+    width: 10%;
+    cursor: pointer;
 }
 
 
