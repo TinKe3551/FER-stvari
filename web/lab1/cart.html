@@ -15,13 +15,13 @@
     <body>
 
         <a href="index.html">glavna stranica</a>
-        <button onclick="localStorage.clear()">resetiraj košaricu</button>
+        <button onclick="localStorage.clear(); location.reload()">resetiraj košaricu</button>
 
         <div class="zaglavlje">
             <div class="zaglavlje_sadrzaj" id="logo">
                 <img src="images/logo.png" alt="logo"/>
             </div>
-            <div class="zaglavlje_sadrzaj" id="nazivkat">košarica</div>
+            <div class="zaglavlje_sadrzaj" id="nazivkat">Košarica</div>
             <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
                 <div class="ikonica" id="kosr_ik">
                     <a href="cart.html"><img src="images/kosarica.png"/></a>
@@ -33,21 +33,7 @@
             </div>
         </div>
 
-        <div class="kosr_proizvodi" id="kosr_proizvodi">
-            Košarica je trenutno prazna.
-            <div class="kosr_proizvod">
-                <div class="kosr_proizvod_naziv">Pileći batak 250 grama</div>
-                <div class="kosr_proizvod_dodaj">
-                    <img src="images/plus.png" class="kosr_proizvod_dodaj"/>
-                </div>
-                <div class="kosr_proizvod_brojac">
-                    0
-                </div>
-                <div class="kosr_proizvod_makni">
-                    <img src="images/minus.png" class="kosr_proizvod_makni"/>
-                </div>
-            </div>
-        </div>
+        <div class="kosr_proizvodi" id="kosr_proizvodi"></div>
 
     </body>
 

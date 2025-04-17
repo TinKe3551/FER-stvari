@@ -53,9 +53,7 @@ div.naslovnaslika {
     width: 100%;
     height: auto;
     background-color:white;
-    float: right;
-    border-bottom-style: solid;
-    border-color: black;
+    float: right
 }
 
 img.naslovnaslika {
@@ -72,13 +70,11 @@ div.sidebar {
 }
 
 div.kategorijagumb {
-    border-right-style: solid;
-    border-color: black;
     padding:1%;
     text-align: center;
     cursor: pointer;
     border-bottom-style:dashed;
-    border-left: none;
+    border-color: black;
 }
 
 div.kategorijagumb:hover {
@@ -128,9 +124,8 @@ img.ikonica {
 
 div.kosr_proizvodi {
     background-color:aliceblue;
-    border-top-style: dashed;
-    border-color: black;
     min-height: 128px;
+    align-content: start;
 }
 
 div.kosr_proizvod {
@@ -138,7 +133,9 @@ div.kosr_proizvod {
     border-color: black;
     display: flex;
     flex-flow: row wrap;
+    justify-content: space-evenly;
     min-height: 64px;
+    text-align: center;
 }
 
 div.kosr_proizvod_naziv {

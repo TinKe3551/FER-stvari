@@ -32,7 +32,8 @@ function osvjezi_prikaz_proizvoda(kategorija) {
         tekst.innerHTML = novi[i]["name"];
 
         let pr_brojac = document.createElement("p");
-        if (localStorage.getItem(novi[i]["name"]) > 0) pr_brojac.innerHTML = "u košarici: " + localStorage.getItem(novi[i]["name"]).toString();
+        if (localStorage.getItem("pr_" + novi[i]["name"]) > 0) pr_brojac.innerHTML = "u košarici: " + localStorage.getItem("pr_" + novi[i]["name"]).toString();
+    
         
         proizvod.appendChild(slika);
         proizvod.appendChild(ikonica);

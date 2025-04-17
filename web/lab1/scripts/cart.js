@@ -1,3 +1,4 @@
+if (localStorage.getItem("kosr_brojac") === null) localStorage.setItem("kosr_brojac", 0);
 document.getElementById("kosr_brojac").innerHTML = localStorage.getItem("kosr_brojac");
 
 prazna = true;
@@ -7,12 +8,15 @@ for (let i = 0; localStorage.key(i) !== null; i++) {
     let ime = localStorage.key(i);
 
     if (ime.substring(0, 3) !== "pr_") continue;
-    if (localStorage.getItem(ime) === null || localStorage.getItem(ime) === 0) continue;
+    if (localStorage.getItem(ime) == null || localStorage.getItem(ime) == 0) continue;
+
+    prazna = false;
 
     //alert(ime + ": " + localStorage.getItem(ime));
 
     let kosr_proizvod = document.createElement("div");
     kosr_proizvod.className = "kosr_proizvod";
+    kosr_proizvod.id = "kosr_" + ime;
 
     let kosr_proizvod_naziv = document.createElement("div");
     kosr_proizvod_naziv.innerHTML = ime.substring(3);
@@ -41,10 +45,42 @@ for (let i = 0; localStorage.key(i) !== null; i++) {
     kosr_proizvod.appendChild(kosr_proizvod_brojac);
     kosr_proizvod.appendChild(kosr_proizvod_makni);
 
+    kosr_proizvod_dodaj.addEventListener("click", () => {
+
+        let kosr_brojac = localStorage.getItem("kosr_brojac");
+        kosr_brojac++;
+        localStorage.setItem("kosr_brojac", kosr_brojac);
+        document.getElementById("kosr_brojac").innerHTML = kosr_brojac;
+
+        let kosr_pr_brojac = document.getElementById("kosr_" + ime).childNodes.item(2).innerHTML;
+        kosr_pr_brojac++;
+        document.getElementById("kosr_" + ime).childNodes.item(2).innerHTML = kosr_pr_brojac;
+        localStorage.setItem(ime, kosr_pr_brojac);
+
+    })
+
+    kosr_proizvod_makni.addEventListener("click", () => {
+
+        let kosr_pr_brojac = document.getElementById("kosr_" + ime).childNodes.item(2).innerHTML;
+        if (kosr_pr_brojac == 0) return 0;
+        kosr_pr_brojac--;
+        document.getElementById("kosr_" + ime).childNodes.item(2).innerHTML = kosr_pr_brojac;
+        localStorage.setItem(ime, kosr_pr_brojac);
+
+        let kosr_brojac = localStorage.getItem("kosr_brojac");
+        kosr_brojac--;
+        localStorage.setItem("kosr_brojac", kosr_brojac);
+        document.getElementById("kosr_brojac").innerHTML = kosr_brojac;
+
+    })
+
     document.getElementById("kosr_proizvodi").appendChild(kosr_proizvod);
 
 }
 
 if (prazna) {
-    document.getElementById("kosr_proizvodi").innerHTML = "Košarica je trenutno prazna.";
+    let kosr_prazna = document.createElement("div");
+    kosr_prazna.className = "kosr_proizvod";
+    kosr_prazna.innerHTML = "Košarica je trenutno prazna.";
+    document.getElementById("kosr_proizvodi").appendChild(kosr_prazna);
 }
