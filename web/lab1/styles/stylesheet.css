@@ -35,12 +35,16 @@ div.zaglavlje_sadrzaj#logo {
 
 div.zaglavlje_sadrzaj#nazivkat {
     width: 50%;
+    font-size: 1.5rem;
 }
 
 div.zaglavlje_sadrzaj#kosr_i_pretr {
     display: flex;
     flex-direction: row;
-    width: auto;
+}
+
+div.kosr_i_pretr {
+    margin:15px;
 }
 
 div.naslovnaslika {
@@ -67,6 +71,7 @@ div.kategorijagumb {
     cursor: pointer;
     border-top-style:dashed;
     border-color: black;
+    font-size: 1.2rem;
 }
 
 div.kategorijagumb:hover {
@@ -111,8 +116,8 @@ img.proizvod {
 }
 
 
-img.ikonica {
-    width: 1000px;
+img.kosr_i_pretr {
+    width: 40px;
 }
 
 div.kosr_proizvodi {

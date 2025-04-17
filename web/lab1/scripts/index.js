@@ -1,5 +1,7 @@
 function osvjezi_prikaz_proizvoda(kategorija) {
 
+    localStorage.setItem("otvorena_kat", kategorija);
+
     stari = document.getElementsByClassName("proizvod");
     for (let i = 0; i < stari.length; stari.item(0).remove());
 
@@ -114,4 +116,7 @@ document.getElementById("kategorija10").addEventListener("click", () => {
 
 if (localStorage.getItem("kosr_brojac") === null) localStorage.setItem("kosr_brojac", 0);
 document.getElementById("kosr_brojac").innerHTML = localStorage.getItem("kosr_brojac");
+
+if (localStorage.getItem("otvorena_kat") === null) localStorage.setItem("otvorena_kat", "Udžbenici iz matematike");
+osvjezi_prikaz_proizvoda(localStorage.getItem("otvorena_kat"));
 
