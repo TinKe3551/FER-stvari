@@ -78,6 +78,16 @@ function osvjezi_prikaz_proizvoda(kategorija) {
 
     document.getElementById("nazivkat").innerHTML = kategorija;
 
+    let kat_gumbovi = document.getElementsByClassName("kategorijagumb");
+    for (kat_gumb of kat_gumbovi) {
+        if (kat_gumb.innerHTML === kategorija) {
+            kat_gumb.style.fontWeight = 900;
+        }
+        else {
+            kat_gumb.style.fontWeight = 400;
+        }
+    }
+
 }
 
 

@@ -68,7 +68,7 @@ const data = {
             },
 
             {
-                "name": "Linearna algebra: zbirka zadataka",
+                "name": "Linearna algebra: zbirka zadataka (12€)",
                 "image": "linearnazbirka.png",
                 "amount": 0,
                 "price": 0
@@ -94,21 +94,21 @@ const data = {
 
             {
                 "name": "Električni krugovi",
-                "image": "elektruudz.png",
+                "image": "elekruudz.png",
                 "amount": 0,
                 "price": 0
             },
 
             {
                 "name": "Elektronika 1",
-                "image": "el1udz",
+                "image": "el1udz.png",
                 "amount": 0,
                 "price": 0
             },
 
             {
                 "name": "Elektronika 2",
-                "image": "el2udz",
+                "image": "el2udz.png",
                 "amount": 0,
                 "price": 0
             },
@@ -133,7 +133,7 @@ const data = {
 
             {
                 "name": "Električni krugovi: zbirka zadataka",
-                "image": "elektruzbirka.png",
+                "image": "elekruzbirka.png",
                 "amount": 0,
                 "price": 0
             },
@@ -264,7 +264,7 @@ const data = {
 
             {
                 "name": "Inženjerska ekonomika 2: zbirka zadataka",
-                "image": "inzeko2zbirka",
+                "image": "inzeko2zbirka.png",
                 "amount": 0,
                 "price": 0
             },

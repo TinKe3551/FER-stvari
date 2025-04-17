@@ -16,6 +16,13 @@ html {
 
 }
 
+div.pozdravnitekst {
+    font-size: 2rem;
+    border-bottom-style: dotted;
+    border-color: black;
+    padding: 2vw;
+}
+
 div.zaglavlje {
     width: 100%;
     padding: 2%;
@@ -60,7 +67,7 @@ img.naslovnaslika {
 }
 
 div.sidebar {
-    width: 25vw;
+    width: 30vw;
 /*    min-width: 240px;*/
     font-size: 0.9rem;
     float: left;
@@ -72,16 +79,31 @@ div.kategorijagumb {
     cursor: pointer;
     border-top-style:dashed;
     border-color: black;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     user-select: none;
 }
 
 div.kategorijagumb:hover {
-    border-width: 4px;
     border-color: black;
+    border-left-style: dotted;
+    border-right-style: dotted;
 }
 
-div.kategorijagumb:active {
+div.kategorijagumb_odabrano {
+    padding:1%;
+    text-align: center;
+    cursor: pointer;
+    border-top-style:dashed;
+    border-color: black;
+    font-size: 1.1rem;
+    user-select: none;
+    font-weight: 900;
+}
+
+div.kategorijagumb_odabrano:hover {
+    border-color: black;
+    border-left-style: dotted;
+    border-right-style: dotted;
 }
 
 div.ekstra {
@@ -116,6 +138,9 @@ div.proizvod {
 img.proizvod {
     width: 160px;
     height: auto;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
 }
 
 
@@ -162,7 +187,7 @@ div.kosr_proizvod_makni {
     }
 
     div.naslovnaslika {
-        width: 70%;
+        width: 69%;
     }
 
     div.proizvod {
