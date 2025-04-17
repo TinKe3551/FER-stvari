@@ -44,7 +44,8 @@ div.zaglavlje_sadrzaj#kosr_i_pretr {
 }
 
 div.kosr_i_pretr {
-    margin:30px;
+    margin-right:5vw;
+    margin-left:5vw;
 }
 
 div.naslovnaslika {
