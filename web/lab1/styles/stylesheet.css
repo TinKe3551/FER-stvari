@@ -20,9 +20,6 @@ div.zaglavlje {
     width: 100%;
     padding: 2%;
 
-    color:blue;
-    background-color: lightcyan;
-
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;;
@@ -33,17 +30,14 @@ div.zaglavlje_sadrzaj {
 }
 
 div.zaglavlje_sadrzaj#logo {
-    background-color:aliceblue;
     width: auto;
 }
 
 div.zaglavlje_sadrzaj#nazivkat {
-    background-color:antiquewhite;
     width: 50%;
 }
 
 div.zaglavlje_sadrzaj#kosr_i_pretr {
-    background-color:aqua;
     display: flex;
     flex-direction: row;
     width: auto;
@@ -52,7 +46,6 @@ div.zaglavlje_sadrzaj#kosr_i_pretr {
 div.naslovnaslika {
     width: 100%;
     height: auto;
-    background-color:white;
     float: right
 }
 
@@ -62,9 +55,8 @@ img.naslovnaslika {
 }
 
 div.sidebar {
-    width: 30%;
+    width: 25vw;
 /*    min-width: 240px;*/
-    background-color:aliceblue;
     font-size: 0.9rem;
     float: left;
 }
@@ -80,27 +72,30 @@ div.kategorijagumb {
 div.kategorijagumb:hover {
     border-width: 4px;
     border-color: black;
-    background-color: antiquewhite;
 }
 
 div.kategorijagumb:active {
-    background-color:white;
+}
+
+div.ekstra {
+    display: flex;
+    flex-flow: column wrap;
+    border-top-style: dashed;
+    border-color: black;
 }
 
 div.proizvodi {
     float:right;
-    width: 70%;
+    width: 60vw;
     display:flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
-    background-color:beige;
+    margin: 2vw;
 }
 
 div.proizvod {
-    background-color:black; 
-    color:white;
     border-style: solid;
-    border-color: white;
+    border-color: black;
     width: 200px;
     height: auto;
     margin: 10px;
@@ -113,8 +108,6 @@ div.proizvod {
 img.proizvod {
     width: 160px;
     height: auto;
-    border-style: solid;
-    border-color: white;
 }
 
 
@@ -123,19 +116,16 @@ img.ikonica {
 }
 
 div.kosr_proizvodi {
-    background-color:aliceblue;
     min-height: 128px;
     align-content: start;
 }
 
 div.kosr_proizvod {
-    border-top-style: dashed;
-    border-color: black;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
     min-height: 64px;
-    text-align: center;
+    margin-top:5px;
 }
 
 div.kosr_proizvod_naziv {
