@@ -1,0 +1,58 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body > header {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+
+/* stil brojača i timera: */
+#score {
+    color: #27ae60;
+    font-size: 3rem;
+}
+
+
+#timer {
+    color: #c0392b;
+    font-size: 3rem;
+}
+
+body > div.cardRow {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+}
+
+
+/* izgled jedne kartice: */
+.card {
+    width: 20vw;
+    height: 20vw;
+    position: relative;
+    cursor: pointer;
+    background-color: burlywood;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    align-content: center;
+    padding: 5px;
+}
+
+.card:hover {
+    border: 1px solid black;
+}
+
+
+/* ovime možemo onemogućiti klikanje na uparene kartice: */
+.matched {
+    pointer-events: none;
+}
+

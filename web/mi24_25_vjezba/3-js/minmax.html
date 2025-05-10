@@ -22,9 +22,6 @@
                     if (lista[i] > najveci) najveci = lista[i];
                 }
 
-                console.log(najveci);
-                console.log(najmanji);
-
                 return [najveci, najmanji]
             }
 
@@ -35,9 +32,20 @@
 
         }
 
-        Promise.all([obradi_listu("first.json")]).then(
+        Promise.all([obradi_listu("first.json"), obradi_listu("second.json")]).then(
             function(result) {
-                console.log(result);
+                
+                najveci = result[0][0];
+                najmanji = result[0][1];
+
+                for (let i = 1; i < result.length; i++) {
+                    if (result[i][0] > najveci) najveci = result[i][0];
+                    if (result[i][1] < najmanji) najmanji = result[i][1];
+                }
+
+                console.log("najveci: " + najveci);
+                console.log("najmanji: ", najmanji);
+
             },
             function(error) {console.log(error)}
         );
