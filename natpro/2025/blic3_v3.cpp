@@ -6,7 +6,7 @@ using namespace std;
 
 
 void unesi_duzinu(stack<pair<int, int>> &duzine, int l, int d) {
-	
+
 	if (duzine.empty()) {
 		duzine.emplace(pair<int, int>(l, d));
 		return;
