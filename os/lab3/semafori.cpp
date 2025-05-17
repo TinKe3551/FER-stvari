@@ -1,35 +1,49 @@
 #include <bits/stdc++.h>
-#include <ctime>
-#include <pthread.h>
-#include <unistd.h>
 
 
 using namespace std;
 
 
+void kupac() {}
+
+
 int main(void) {
-
-    cout << "prodavac je na pauzi\n";
-
-    int lol = 1;
 
     int glavni_pid = getpid();
 
-    while (lol > 0) {
+    int f = fork();
 
-        int t = clock();
+    if (f > 0) { // proces trgovca
 
-        // printf("glavni proces %d", getpid());
-
-        lol = fork();
-
-        usleep(1000000 - (t - clock()));
+        
 
     }
 
-    cout << "kupac " << getpid() << " krepava od gladi\n";
-    cout << "glavni pid: " << glavni_pid << '\n';
+    else if (f == 0) { // proces koji generira procese kupaca
 
-    return 0;
+        while (1) {
+
+            int f2 = fork();
+
+            if (f2 > 0) {
+
+                usleep(1000000);
+                continue;
+
+            }
+
+            else if (f2== 0) { // proces kupca
+
+                kupac();
+
+            }
+
+            // da ne bi slucajno i procesi kupaca krenuli
+            // generirati jos procesa kupaca
+            break;
+
+        }
+
+    }
 
 }
