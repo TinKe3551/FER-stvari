@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include <unistd.h>
+#include <ctime>
 
 
 using namespace std;
@@ -7,9 +7,9 @@ using namespace std;
 
 int main(void) {
 
-	while (1) {
-		cout << clock() << '\n';
-	}
+	srand(time(nullptr));
+
+	cout << rand() << endl;
 
 	return 0;
 
