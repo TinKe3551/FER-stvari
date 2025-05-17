@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-
 using namespace std;
 
 string sastojci[3] = {
@@ -10,7 +9,7 @@ string sastojci[3] = {
 };
 
 
-void proc_trgovac() 
+void proc_trgovac()
 {
 
     vector<string> trgovac_sastojci;
@@ -48,7 +47,7 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
     string kupac_sastojak = sastojci[vrsta_kupca];
 
     cout << "kupac " << broj_kupca << ": " << kupac_sastojak << '\n';
-    
+
     // cekaj_semafor_za_uci_u_trgovinu(); // svaka vrsta kupaca  ima svoj semafor za uci u trgovinu
 
 
@@ -86,8 +85,6 @@ int main(void)
 
         int broj_kupca = 0;
 
-        
-
         while (1) {
 
             broj_kupca++;
@@ -105,10 +102,10 @@ int main(void)
             }
 
             else if (f2 == 0) { // proces kupca
-                
+
                 // nasumični odabir vrste kupca
                 srand(time(nullptr));
-                int vrsta_kupca = rand() % 3;                
+                int vrsta_kupca = rand() % 3;
 
                 proc_kupac(vrsta_kupca, broj_kupca);
 
