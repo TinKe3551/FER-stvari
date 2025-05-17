@@ -21,10 +21,6 @@ void proc_trgovac()
 
         sleep(1);
 
-        // ovdje ide kriticni odsjecak
-        // gdje trgovac stavlja nove
-        // sastojke na stol
-
         // cekaj_semafor_za_sastojke_na_stolu();
         // postavi_sastojke_na_stol();
 
@@ -58,14 +54,15 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
 
     // while (nema potrebnih sastojaka) {
-    //     cekaj_semafor_za_pogledati_sastojke();
+    //     cekaj_semafor_za_sastojke_na_stolu();
     //     pogledaj_sastojke();
-    //     postavi_semafor_za_pogledati_sastojke();
+    //     postavi_semafor_za_sastojke_na_stolu();
     // }
 
     cout << "kupac " << broj_kupca << " sastavlja sendvič i jede\n\n";
 
     // postavi_semafor_za_uci_u_trgovinu();
+
 
     return;
 
