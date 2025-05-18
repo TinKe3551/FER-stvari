@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 
+
 using namespace std;
+
 
 string sastojci[3] = {
         "kruh",
