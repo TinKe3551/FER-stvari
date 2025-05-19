@@ -4,7 +4,9 @@
 #include <semaphore.h>
 
 
-using namespace std;
+using std::vector;
+using std::cout;
+using std::string;
 
 
 sem_t *sem_kupci_ulazak = (sem_t*) malloc(sizeof(sem_t));
@@ -70,7 +72,7 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
     cout << "kupac " << broj_kupca << ": " << kupac_sastojak << '\n';
 
-    // cekaj_semafor_za_uci_u_trgovinu(); // svaka vrsta kupaca  ima svoj semafor za uci u trgovinu
+    // cekaj_semafor_za_uci_u_trgovinu();
     sem_wait(sem_kupci_ulazak);
 
     // if (u trgovini nema kupac iste vrste) uđi();
@@ -99,18 +101,46 @@ int main(void)
 
     // semafor za kupce koji još nisu ušli u trgovinu
     int ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
-    shmctl (ID, IPC_RMID, NULL);
     sem_kupci_ulazak = (sem_t*) shmat(ID, NULL, 0);
+    shmctl (ID, IPC_RMID, NULL);
+
     sem_init(sem_kupci_ulazak, 1, 1);
     sem_post(sem_kupci_ulazak);
 
     // semafor za trgovca i kupce koji su u trgovini
     ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
-    shmctl(ID, IPC_RMID, NULL)
+    sem_sastojci = (sem_t*) shmat(ID, NULL, 0);
+    shmctl(ID, IPC_RMID, NULL);
+
     sem_init(sem_sastojci, 1, 1);
     sem_post(sem_sastojci);
 
-    
+    // varijable koje naznačuju je li u trgovini
+    // prisutan kupac određene vrste
+    ID = shmget(IPC_PRIVATE, sizeof(int), 0600);
+    kv0 = (int*) shmat(ID, NULL, 0);
+    shmctl(ID, IPC_RMID, NULL);
+    *kv0 = 0;
+
+    ID = shmget(IPC_PRIVATE, sizeof(int), 0600);
+    kv1 = (int*) shmat(ID, NULL, 0);
+    shmctl(ID, IPC_RMID, NULL);
+    *kv1 = 0;
+
+    ID = shmget(IPC_PRIVATE, sizeof(int), 0600);
+    kv2 = (int*) shmat(ID, NULL, 0);
+    shmctl(ID, IPC_RMID, NULL);
+    *kv2 = 0;
+
+    // preko ove varijable određuje se koji su sastojci na stolu
+    // -1 - stol je prazan
+    // 0 - sir i šunka
+    // 1 - kruh i šunka
+    // 2 - kruh i sir
+    ID = shmget(IPC_PRIVATE, sizeof(int), 0600);
+    stol = (int*) shmat(ID, NULL, 0);
+    shmctl(ID, IPC_RMID, NULL);
+    *stol = 0;
 
     int f = fork();
 
