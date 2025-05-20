@@ -13,7 +13,6 @@ sem_t *sem_ulazak_kupci2;
 
 sem_t *sem_sastojci;
 
-
 char* sastojci[] = {
         "kruh",
         "sir",
@@ -21,6 +20,17 @@ char* sastojci[] = {
 };
 
 int *stol;
+
+
+void stanje() {
+    // printf("stol: %p\n", (void*)sem_sastojci);
+    // printf("kupci0: %p\n", (void*)sem_ulazak_kupci0);
+    // printf("kupci1: %p\n", (void*)sem_ulazak_kupci1);
+    // printf("kupci2: %p\n", (void*)sem_ulazak_kupci2);
+    // printf("sastojci na stolu: %d\n", *stol);
+    return;
+}
+
 
 
 void proc_trgovac()
@@ -36,6 +46,9 @@ void proc_trgovac()
         sem_wait(sem_sastojci);
 
         printf("trgovac dolazi do stola\n");
+        stanje();
+
+        usleep(500000);
 
         // postavi_sastojke_na_stol();
 
@@ -61,8 +74,8 @@ void proc_trgovac()
         }
 
         // postavi_semafor_za_sastojke_na_stolu();
-        sem_post(sem_sastojci);
         printf("trgovac odlazi sa stola\n");
+        sem_post(sem_sastojci);
 
     }
 
@@ -74,7 +87,8 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
     char* kupac_sastojak = sastojci[vrsta_kupca];
 
-    printf("stvoren kupac %d (%d): %s\n", broj_kupca, vrsta_kupca, kupac_sastojak);
+    printf("novi kupac %d (%d): %s\n", broj_kupca, vrsta_kupca, kupac_sastojak);
+    stanje();
 
     // cekaj_semafor_za_uci_u_trgovinu();
     switch (vrsta_kupca) {
@@ -109,14 +123,18 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
         sem_wait(sem_sastojci);
 
+        printf("kupac %d (%d) dolazi do stola\n", broj_kupca, vrsta_kupca);
+        
+        usleep(500000);
+
         // cout << "kupac " << broj_kupca << " (" << vrsta_kupca << ")" << " vidi: " << *stol << '\n';
 
         if(*stol == vrsta_kupca)
             sastojci_prisutni++;
 
         else {
-            sem_post(sem_sastojci);
             printf("kupac %d (%d) odlazi sa stola\n", broj_kupca, vrsta_kupca);
+            sem_post(sem_sastojci);
         }
 
     }
@@ -128,6 +146,8 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
     // postavi_semafor_za_sastojke_na_stolu();
     sem_post(sem_sastojci);
     printf("kupac %d (%d) odlazi sa stola\n", broj_kupca, vrsta_kupca);
+
+    printf("kupac %d (%d) odlazi iz trgovine\n", broj_kupca, vrsta_kupca);
 
     // postavi_semafor_za_uci_u_trgovinu();
     switch (vrsta_kupca) {
@@ -149,8 +169,6 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
     }
 
-    printf("kupac %d (%d) odlazi iz trgovine\n", broj_kupca, vrsta_kupca);
-
     return;
 
 }
@@ -158,7 +176,6 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
 int main(void)
 {
-
     // semafor za kupce vrste 0 koji još nisu ušli u trgovinu
     int ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
     sem_ulazak_kupci0 = (sem_t*) shmat(ID, NULL, 0);
@@ -201,7 +218,28 @@ int main(void)
     shmctl(ID, IPC_RMID, NULL);
     *stol = -1;
 
+    
+    
+
     int f = fork();
+
+    // debug, provjera ispravnosti semafora
+    // if (fork() == 0) {
+    //     sem_wait(sem_sastojci);
+    //     while (1) sleep(1);
+    // }
+    // if (fork() == 0) {
+    //     sem_wait(sem_ulazak_kupci0);
+    //     while (1) sleep(1);
+    // }
+    // if (fork() == 0) {
+    //     sem_wait(sem_ulazak_kupci1);
+    //     while (1) sleep(1);
+    // }
+    // if (fork() == 0) {
+    //     sem_wait(sem_ulazak_kupci2);
+    //     while (1) sleep(1);
+    // }
 
     if (f > 0) { // proces trgovca
 
@@ -241,16 +279,16 @@ int main(void)
 
             // da ne bi slucajno i procesi kupaca krenuli
             // generirati jos procesa kupaca
-            return 0;
+            exit(0);
 
         }
 
     }
 
-    sem_destroy(sem_ulazak_kupci0);
+    // sem_destroy(sem_ulazak_kupci0);
     shmdt(sem_ulazak_kupci0);
 
-    sem_destroy(sem_sastojci);
+    // sem_destroy(sem_sastojci);
     shmdt(sem_sastojci);
 
     return 0;
