@@ -227,24 +227,6 @@ int main(void)
 
     int f = fork();
 
-    // debug, provjera ispravnosti semafora
-    // if (fork() == 0) {
-    //     sem_wait(sem_sastojci);
-    //     while (1) sleep(1);
-    // }
-    // if (fork() == 0) {
-    //     sem_wait(sem_ulazak_kupci0);
-    //     while (1) sleep(1);
-    // }
-    // if (fork() == 0) {
-    //     sem_wait(sem_ulazak_kupci1);
-    //     while (1) sleep(1);
-    // }
-    // if (fork() == 0) {
-    //     sem_wait(sem_ulazak_kupci2);
-    //     while (1) sleep(1);
-    // }
-
     if (f > 0) { // proces trgovca
 
         proc_trgovac();

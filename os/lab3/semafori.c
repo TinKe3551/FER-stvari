@@ -27,18 +27,83 @@ void proc_trgovac() {
 
     sem_t* sem_stol = sem_open(SEM_STOL, 0);
 
-    sem_wait(sem_stol);
-    printf("trgovac je došao do stola\n");
+    while (1) {
+
+        sem_wait(sem_stol);
+        // printf("trgovac je došao do stola\n");
+
+        if (*stol == -1) {
+
+            *stol = rand() % 3;
+
+            printf("\ntrgovac na stol stavlja:\n");
+            for (int i = 0; i < 3; i++) {
+                if (i != *stol) {
+                    printf("%s\n", sastojci[i]);
+                }
+            }
+
+            printf("\n");
+
+        }
+        // usleep(500000);
+
+        // printf("trgovac odlazi od stola\n");
+        sem_post(sem_stol);
+
+    }
 
 }
 
 
 void proc_kupac(int broj_kupca, int vrsta_kupca) {
 
-    sem_t* sem_stol = sem_open(SEM_STOL, 0);
+    printf("novi kupac %d (%s)\n", broj_kupca, sastojci[vrsta_kupca]);
 
-    sem_wait(sem_stol);
-    printf("kupac je došao do stola\n");
+    sem_t* sem_stol = sem_open(SEM_STOL, 0);
+    sem_t* sem_trgovina;
+    switch (vrsta_kupca) {
+        case 0:
+            sem_trgovina = sem_open(SEM_KUPCI0, 0);
+            break;
+        case 1:
+            sem_trgovina = sem_open(SEM_KUPCI1, 0);
+            break;
+        case 2:
+            sem_trgovina = sem_open(SEM_KUPCI2, 0);
+            break;
+        default:
+            break;
+    }
+
+    sem_wait(sem_trgovina);
+
+    int imam_sastojke = 0;
+
+    while (!imam_sastojke) {
+
+        sem_wait(sem_stol);
+
+        // printf("kupac %d (%s) dolazi do stola\n", broj_kupca, sastojci[vrsta_kupca]);
+
+        if (*stol == vrsta_kupca) {
+            *stol = -1;
+            imam_sastojke++;
+        }
+
+        else {
+            // printf("kupac %d (%s) odlazi od stola\n", broj_kupca, sastojci[vrsta_kupca]);
+            sem_post(sem_stol);
+        }
+
+    }
+
+    printf("kupac %d (%s) slaže sendvič i jede\n", broj_kupca, sastojci[vrsta_kupca]);
+
+    sem_post(sem_stol);
+    sem_post(sem_trgovina);
+
+    return;
 
 }
 
@@ -51,7 +116,7 @@ sem_t* stavi_semafor(char* ime) {
     sem_unlink(ime);
 
     // ovo je zapravo semafor koji će se koristiti
-    sem = sem_open(ime, O_CREAT, 0666, 1000);
+    sem = sem_open(ime, O_CREAT, 0666, 1);
 
     return sem;
 
@@ -62,6 +127,8 @@ int main(void) {
     
     sem_t* sem_stol = stavi_semafor(SEM_STOL);
     sem_t* sem_kupci0 = stavi_semafor(SEM_KUPCI0);
+    sem_t* sem_kupci1 = stavi_semafor(SEM_KUPCI1);
+    sem_t* sem_kupci2 = stavi_semafor(SEM_KUPCI2);
     
     int ID = shmget(IPC_PRIVATE, sizeof(int), 0600);
     stol = (int*) shmat(ID, NULL, 0);
@@ -76,8 +143,6 @@ int main(void) {
 
     else if (f == 0) {
 
-        int broj_kupca = 0;
-
         for (int i = 0; i < 20; i++) {
 
             int f2 = fork();
@@ -90,11 +155,12 @@ int main(void) {
 
             }
 
-            else if (f2 == 0) {
+            else {
 
                 srand(clock());
                 int vrsta_kupca = rand() % 3;
-                proc_kupac(broj_kupca, vrsta_kupca);
+
+                proc_kupac(i + 1, vrsta_kupca);
 
             }
 
