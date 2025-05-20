@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -16,17 +15,18 @@ sem_t* sem_ulazak_kupci0;
 
 int main(void) {
 
-    sem_ulazak_kupci0 = sem_open(SEM_NAME, O_CREAT, 0666, 30);
+    sem_ulazak_kupci0 = sem_open(SEM_NAME, O_CREAT, 0666, 10);
     sem_close(sem_ulazak_kupci0);
     sem_unlink(SEM_NAME);
+    sem_ulazak_kupci0 = sem_open(SEM_NAME, O_CREAT, 0666, 0);
 
     while (1) {
 
         if (fork() == 0) {
 
-            sem_ulazak_kupci0 = sem_open(SEM_NAME, O_CREAT, 0666, 3);
+            sem_t* bla = sem_open(SEM_NAME, 0);
 
-            sem_wait(sem_ulazak_kupci0);
+            sem_wait(bla);
             printf("abcde\n");
 
         }
