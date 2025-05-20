@@ -11,7 +11,7 @@
 #define SEM_KUPCI1 "SEM_KUPCI1"
 #define SEM_KUPCI2 "SEM_KUPCI2"
 
-sem_t *sem;
+sem_t *sem_ulazak_kupci0;
 sem_t *sem_ulazak_kupci1;
 sem_t *sem_ulazak_kupci2;
 
@@ -98,7 +98,7 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
     switch (vrsta_kupca) {
 
         case 0:
-            sem_wait(sem);
+            sem_wait(sem_ulazak_kupci0);
             break;
 
         case 1:
@@ -157,7 +157,7 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
     switch (vrsta_kupca) {
 
         case 0:
-            sem_post(sem);
+            sem_post(sem_ulazak_kupci0);
             break;
 
         case 1:
@@ -182,11 +182,11 @@ int main(void)
 {
     // semafor za kupce vrste 0 koji još nisu ušli u trgovinu
     int ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
-    sem = (sem_t*) shmat(ID, NULL, 0);
+    sem_ulazak_kupci0 = (sem_t*) shmat(ID, NULL, 0);
     shmctl (ID, IPC_RMID, NULL);
 
-    sem_init(sem, 1, 1);
-    sem_post(sem);
+    sem_init(sem_ulazak_kupci0, 1, 1);
+    sem_post(sem_ulazak_kupci0);
 
     // semafor za kupce vrste 1 koji još nisu ušli u trgovinu
     ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
@@ -290,7 +290,7 @@ int main(void)
     }
 
     // sem_destroy(sem_ulazak_kupci0);
-    shmdt(sem);
+    shmdt(sem_ulazak_kupci0);
 
     // sem_destroy(sem_sastojci);
     shmdt(sem_sastojci);
