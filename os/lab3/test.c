@@ -5,38 +5,32 @@
 #include <sys/shm.h>
 #include <semaphore.h>
 #include <time.h>
+#include <fcntl.h>
 
 
-sem_t* sem_ulazak_kupci0;
+#define SEM_NAME "/JEBENISEMAFORKOJIMECIJELIDANJEBEUSUPAKMOGMOZGA"
+
+
+sem_t* sem;
 
 
 int main(void) {
 
-    int ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
-    sem_ulazak_kupci0 = (sem_t*) shmat(ID, NULL, 0);
-    shmctl (ID, IPC_RMID, NULL);
-
-    sem_init(sem_ulazak_kupci0, 1, 0);
-    sem_post(sem_ulazak_kupci0);
+    sem = sem_open(SEM_NAME, O_CREAT, 0666, 30);
+    sem_close(sem);
+    sem_unlink(SEM_NAME);
 
     while (1) {
 
         if (fork() == 0) {
-            while(1) {
-                sem_wait(sem_ulazak_kupci0);
-                printf("jebem ti semafore i procese\n");
-                sleep(1);
-                return 0;
-            }
+
+            sem = sem_open(SEM_NAME, O_CREAT, 0666, 3);
+
+            sem_wait(sem);
+            printf("abcde\n");
+
         }
 
-        sleep(1);
-
     }
-
-    sem_destroy(sem_ulazak_kupci0);
-    shmdt(sem_ulazak_kupci0);
-
-    return 0;
     
 }

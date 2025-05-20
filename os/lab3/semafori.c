@@ -6,8 +6,12 @@
 #include <semaphore.h>
 #include <time.h>
 
+#define SEM_STOL "SEM_STOL"
+#define SEM_KUPCI0 "SEM_KUPCI0"
+#define SEM_KUPCI1 "SEM_KUPCI1"
+#define SEM_KUPCI2 "SEM_KUPCI2"
 
-sem_t *sem_ulazak_kupci0;
+sem_t *sem;
 sem_t *sem_ulazak_kupci1;
 sem_t *sem_ulazak_kupci2;
 
@@ -45,10 +49,10 @@ void proc_trgovac()
         // cekaj_semafor_za_sastojke_na_stolu();
         sem_wait(sem_sastojci);
 
-        printf("trgovac dolazi do stola\n");
+        // printf("trgovac dolazi do stola\n");
         stanje();
 
-        usleep(500000);
+        // usleep(500000);
 
         // postavi_sastojke_na_stol();
 
@@ -74,7 +78,7 @@ void proc_trgovac()
         }
 
         // postavi_semafor_za_sastojke_na_stolu();
-        printf("trgovac odlazi sa stola\n");
+        // printf("trgovac odlazi od stola\n");
         sem_post(sem_sastojci);
 
     }
@@ -94,7 +98,7 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
     switch (vrsta_kupca) {
 
         case 0:
-            sem_wait(sem_ulazak_kupci0);
+            sem_wait(sem);
             break;
 
         case 1:
@@ -110,7 +114,7 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
     }
 
-    printf("kupac %d (%d) ulazi u trgovinu\n", broj_kupca, vrsta_kupca);
+    // printf("kupac %d (%d) ulazi u trgovinu\n", broj_kupca, vrsta_kupca);
 
     // while (nema potrebnih sastojaka) {
     //     cekaj_semafor_za_sastojke_na_stolu();
@@ -123,9 +127,9 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
 
         sem_wait(sem_sastojci);
 
-        printf("kupac %d (%d) dolazi do stola\n", broj_kupca, vrsta_kupca);
+        // printf("kupac %d (%d) dolazi do stola\n", broj_kupca, vrsta_kupca);
         
-        usleep(500000);
+        // usleep(500000);
 
         // cout << "kupac " << broj_kupca << " (" << vrsta_kupca << ")" << " vidi: " << *stol << '\n';
 
@@ -133,27 +137,27 @@ void proc_kupac(int vrsta_kupca, int broj_kupca)
             sastojci_prisutni++;
 
         else {
-            printf("kupac %d (%d) odlazi sa stola\n", broj_kupca, vrsta_kupca);
+            // printf("kupac %d (%d) odlazi od stola\n", broj_kupca, vrsta_kupca);
             sem_post(sem_sastojci);
         }
 
     }
 
     // uzmi_sastojke();
-    printf("kupac %d sastavlja sendvič i jede\n", broj_kupca);
+    printf("kupac %d (%d) sastavlja sendvič i jede\n", broj_kupca, vrsta_kupca);
     *stol = -1;
     
     // postavi_semafor_za_sastojke_na_stolu();
     sem_post(sem_sastojci);
-    printf("kupac %d (%d) odlazi sa stola\n", broj_kupca, vrsta_kupca);
+    // printf("kupac %d (%d) odlazi sa stola\n", broj_kupca, vrsta_kupca);
 
-    printf("kupac %d (%d) odlazi iz trgovine\n", broj_kupca, vrsta_kupca);
+    // printf("kupac %d (%d) odlazi iz trgovine\n", broj_kupca, vrsta_kupca);
 
     // postavi_semafor_za_uci_u_trgovinu();
     switch (vrsta_kupca) {
 
         case 0:
-            sem_post(sem_ulazak_kupci0);
+            sem_post(sem);
             break;
 
         case 1:
@@ -178,11 +182,11 @@ int main(void)
 {
     // semafor za kupce vrste 0 koji još nisu ušli u trgovinu
     int ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
-    sem_ulazak_kupci0 = (sem_t*) shmat(ID, NULL, 0);
+    sem = (sem_t*) shmat(ID, NULL, 0);
     shmctl (ID, IPC_RMID, NULL);
 
-    sem_init(sem_ulazak_kupci0, 1, 1);
-    sem_post(sem_ulazak_kupci0);
+    sem_init(sem, 1, 1);
+    sem_post(sem);
 
     // semafor za kupce vrste 1 koji još nisu ušli u trgovinu
     ID = shmget(IPC_PRIVATE, sizeof(sem_t), 0600);
@@ -251,7 +255,7 @@ int main(void)
 
         int broj_kupca = 0;
 
-        while (1) {
+        for(int abc = 0; abc < 20; abc++) {
 
             broj_kupca++;
 
@@ -286,7 +290,7 @@ int main(void)
     }
 
     // sem_destroy(sem_ulazak_kupci0);
-    shmdt(sem_ulazak_kupci0);
+    shmdt(sem);
 
     // sem_destroy(sem_sastojci);
     shmdt(sem_sastojci);
