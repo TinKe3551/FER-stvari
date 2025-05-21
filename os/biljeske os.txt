@@ -24,5 +24,70 @@ RAM - random access memory, bilo kojem okviru može se pristupiti u O(1) vremenu
 
 tablica prevođenja logičke adrese u fizičku adresu
 - ne moraju sve stranice programa biti u randnom spremniku
- 
- 
+- stupac sa rednim brojevima stranica i stupac sa bitovima prisutnosti (za svaku stranicu piše je li na njoj prisutan neki program)
+- u cache se pohranjuju informacije vezane za prevođenje kako bi se brže pristupilo ramu
+
+koje dijelove spremnika koriste dretve? (u logičkom smislu, ne u fizičkom)
+- instrukcije
+    - sve skupa u zajedničkom prostoru
+    - svaka dretva ima pointer na funkciju u zajedničkom prostoru koju ona izvršava
+- u procesu se sve instrukcije nalaze u segmentu funkcija
+
+- lokalne varijable
+    - sve na programskom stogu lol (ko u arh)
+
+- nešto treće
+
+- konstante
+    - smještene prije varijabla koje se mijenjaju
+
+- gomila
+    - zajednički prostor svih dretvi itd itd
+    - "raste" prema većim adresama
+
+- stog
+    - okvir stoga - osnovni sadržaj stoga: parametri funkcija, povratna adresa, registri koji će se mijenjati (kontekst), lokalne varijable
+    - stog "raste" prema manjim adresama
+    - svaka dretva ima svoj stogs
+
+
+proces:
+- instrukcije
+- zajednički podaci: globalne varijable i konstante
+- gomila
+- stog za dretvu d2
+- stog za dretvu itd
+- stog za dretvu d1 (glavna)
+
+rezervirani i dodijeljeni adresni prostor
+- za proces se razervira prostor
+- dijelovi koji se koriste su dodijeljeni procesu, a ostali se mogu dodijeliti nekom drugom procesu
+
+
+sklopovska potpora straničenju u 32-bitnoj arhitekturi intel x86
+- zadnjih 12 bita LA kopira se u zadnjih 12 bita fragmentacija
+- za svaki proces postoji tablica prevođenja
+    - i ta tablica se također dijeli na komade od 4 kb  kako bi stala u stranice ili što već
+    - zapisi su 32-bitni -> tablica mora imati kilobajt redaka
+    - 20 bita je redni broj okvira, 12 zastavice
+    - tablica prevođenja je hijerarhijski uređena
+        - postoji registar u kojem je zapisana njena adresa
+        - direktorij stranica
+            - 1024 zapisa
+            - tablice stranica (tj kazaljke na njih)
+            - tablice stranica imaju svaka po 1024 kazaljki na stranice valjda
+
+
+- adresa direktorija 10 bitova
+- adresa tablice u direktoriju 10 bitova
+- zastavice 12 bitova
+
+- fizička adresa 20 bitova
+
+
+TLB - translation lookaside buffer - informacije zapisane u cache-u vezane za pronalazak neke fizičke adrese
+
+
+straničenje na zahtjev (demand paging)
+
+adresiranje neprisutne stranice -> prekid zbog promašaja -> dohvat stranice na disku -> prebacivanje stranice u prazan okvir -> nadopuna tablice stranica -> ponavljanje instrukcije
