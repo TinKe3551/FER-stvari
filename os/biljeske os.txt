@@ -19,3 +19,10 @@ podjela:
 - program na stranice
 - ram na okvire
 - disk na clustere
+
+RAM - random access memory, bilo kojem okviru može se pristupiti u O(1) vremenu
+
+tablica prevođenja logičke adrese u fizičku adresu
+- ne moraju sve stranice programa biti u randnom spremniku
+ 
+ 
