@@ -89,5 +89,47 @@ TLB - translation lookaside buffer - informacije zapisane u cache-u vezane za pr
 
 
 straničenje na zahtjev (demand paging)
+- adresiranje neprisutne stranice -> prekid zbog promašaja -> dohvat stranice na disku -> prebacivanje stranice u prazan okvir -> nadopuna tablice stranica -> ponavljanje instrukcije
 
-adresiranje neprisutne stranice -> prekid zbog promašaja -> dohvat stranice na disku -> prebacivanje stranice u prazan okvir -> nadopuna tablice stranica -> ponavljanje instrukcije
+u čemu se prekid zbog promašaja razlikuje od ostalih prekida
+- prekid zbog promašaja stranice ide usred instrukcije, a ne nakon nje
+- ta instrukcija se mora ponoviti
+- pohrana konteksta mora biti riješena na sklopovskoj razini kako računalo ne bi bilo ubitačno sporo
+    - u procesoru je potreban duplikat svakog registra
+
+strategije zamjene stranica
+- ako se sadržaj stranice nije mijenjao (tj ako je ostala čista), onda se stranica ne mora prepisivati na disk
+- u tablicu prevođenja uvodi se poseban bit za označavanje čistoće dakle eto jedna zastavica
+    - zastavice btw:
+        - V bit prisutnosti
+        - W zastavica readonly
+        - O zastavica "stranicu upotrebljava OS"
+        - Wt - svako pisanje u stranicu prepisuje stranicu iz priručnog u glavni spremnik (tako da se ne bi podaci izgubili ako npr nestane struje)
+        - A u stranicu se pristupaloW
+        - D stranica je nečista
+        - Gl stranica se smatra globalnom
+
+- FIFO - za izbacivanje stranice odabire se ona koja je najdulje u radnom spremniku, ovo se koristi na višeprocesorskim računalima
+- LRU (least recently used) - izbaci stranicu koja se najkasnije koristila, za ovo nema dovoljno bitova pa se koristi pojednostavljena verzija ("satni algoritam") i to se koristi na jednoprocesorskim računalima
+- optimalna strategija
+    - izbaci stranicu koja se najdalje u budućnosti neće koristiti
+    - ovo bi valjda lisan al gaib koristio kada ne bi bilo zabranjeno koristiti računala
+    - s ovim se nekako uspoređuju osmišljene strategije
+
+
+praktične aproksimacije strategije LRU
+
+- primjer
+    - nadopuniti tablice stranica posmačnim registrima u koje bi se moglo posmaknuti bitove pristupa
+    - ovo bi za pokriti samo sat vremena trebalo nekoliko milijuna registara
+
+- primjer 2 stranice se podjele u 4 tipa ovisno o zastavicama A i D:
+    - tip 0: (A,D) = (0,0)
+    - tip 1: (A,D) = (0,1)
+    - tip 2: (A,D) = (1,0)
+    - tip 3: (A,D) = (1,1)
+
+- evo nas sad napokon kod satnog algoritma
+    - sve se stranice u okvirima svrstavaju u kružnu listu po redu prispjeća
+    - stranica se izbacuje ako je njezina zastvica A = 0, inače se preskače pa joj se zastavica A postavlja na 0
+    - ako kazaljka obiđe cijelu listu i ne naiđe na A=0, postavit će sve na 0 i izbaciti stranicu s koje je započela obilazak
