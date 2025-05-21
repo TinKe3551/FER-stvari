@@ -133,3 +133,7 @@ praktične aproksimacije strategije LRU
     - sve se stranice u okvirima svrstavaju u kružnu listu po redu prispjeća
     - stranica se izbacuje ako je njezina zastvica A = 0, inače se preskače pa joj se zastavica A postavlja na 0
     - ako kazaljka obiđe cijelu listu i ne naiđe na A=0, postavit će sve na 0 i izbaciti stranicu s koje je započela obilazak
+
+
+nešto sa dodjeljivanjem okvira
+    - procesu koji ima puno promašaja dodjeljuju se ram okviri koji se uzmu procesima koji imaju malo promašaja
