@@ -1,0 +1,21 @@
+==== 21.5.2025. ====
+
+Dodjeljivanje spremnika straničenjem
+
+logički adresni prostor:
+- 2**p veličina stranice
+- m adresnih bitova dijeli se na
+    - p bitova koji određuju adresu u stranici
+    - r = m - p bitova -> redni broj stranice
+- m = 32 ili 64 ili 16
+
+
+fizički radni spremnik:
+- 2**p vel. okv.
+- stranice se mogu smjestiti u bilo koji okvir
+    - osnovna ideja je da se izbjegne fragmentacija
+
+podjela:
+- program na stranice
+- ram na okvire
+- disk na clustere
