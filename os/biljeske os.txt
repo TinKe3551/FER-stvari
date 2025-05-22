@@ -100,7 +100,7 @@ u čemu se prekid zbog promašaja razlikuje od ostalih prekida
 strategije zamjene stranica
 - ako se sadržaj stranice nije mijenjao (tj ako je ostala čista), onda se stranica ne mora prepisivati na disk
 - u tablicu prevođenja uvodi se poseban bit za označavanje čistoće dakle eto jedna zastavica
-    - zastavice btw:
+    - zastavice btw (od najdesnije do najlijevije):
         - V bit prisutnosti
         - W zastavica readonly
         - O zastavica "stranicu upotrebljava OS"
