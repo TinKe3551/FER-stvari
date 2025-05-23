@@ -56,9 +56,49 @@ string joinstr(set<string> &c, string delim) {
 }
 
 
-bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<string,string> &prijelazi) {
+string joinstr(deque<string> &c, string delim) {
 
-    return true;
+    vector<string> c2;
+    for (string s: c) c2.push_back(s);
+
+    return joinstr(c2, delim);
+
+}
+
+
+bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<vector<string>, vector<string>> &prijelazi, set<string> prihvatljiva_stanja) {
+
+    // trojka = (stanje, ulazni znak, znak na stogu)
+
+    if (stog.empty()) stog.emplace_back("$");
+
+    trojka[2] = stog.back();
+    stog.pop_back();
+
+    if (prijelazi.count(trojka)) {
+        
+        for (int i = prijelazi[trojka][1].size() - 1; i >= 0; i--) {
+            stog.emplace_back(string(1, prijelazi[trojka][1][i]));
+        }
+
+        cout << trojka[0] << "#" << joinstr(stog, "") << "|";
+
+        trojka[0] = prijelazi[trojka][0];
+
+        return true;
+
+    }
+
+    else if (trojka[1] == "$") {
+        cout << trojka[0] << "#" << joinstr(stog, "") << "|";
+        cout << prihvatljiva_stanja.count(trojka[0]) << "\n";
+        return false;
+    }
+
+    else {
+        cout << "fail|0\n";
+        return false;
+    }
 
 }
 
@@ -107,14 +147,14 @@ int main(void) {
     cin >> poc_zn_st;
 
     // prijelazi
-    map<string, string> prijelazi;
+    map<vector<string>, vector<string>> prijelazi;
 
     while (getline(cin, redak)) {
 
         if (redak == "") continue;
 
         vector<string> prijelaz = splitstr(redak, "->");
-        prijelazi[prijelaz[0]] = prijelazi[prijelaz[1]];
+        prijelazi[splitstr(prijelaz[0], ",")] = splitstr(prijelaz[1], ",");
 
     }
 
@@ -134,10 +174,12 @@ int main(void) {
         stog.clear();
         stog.emplace_back(poc_zn_st);
 
-        while (obavi_prijelaz(trojka, stog, prijelazi)) {
-            i = min((unsigned long)i + 1, ulazni_niz.size() - 1);
-            trojka[0] = ulazni_niz[i];
+        while (obavi_prijelaz(trojka, stog, prijelazi, prihvatljiva_stanja)) {
+            i = min(i + 1, (int)ulazni_niz.size() - 1);
+            trojka[1] = ulazni_niz[i];
         }
+
+
 
     }
 
