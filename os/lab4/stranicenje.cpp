@@ -84,13 +84,13 @@ int main(void) {
             okviri[i][1] = trazena_str;
             A_zast[proc][trazena_str] = 1;
             i = (i + 1) % n_okv;
-        
+
         }
 
         for (int j = 0; j < n_kor_okv; j++) {
-            
+
             if (i == j) cout << "> ";
-            
+
             cout << j + 1 << ". okvir: proc " << okviri[j][0] + 1 << " str " << okviri[j][1] 
             << " (A=" << A_zast[okviri[j][0]][okviri[j][1]] << ")\n";
 
