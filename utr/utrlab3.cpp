@@ -56,10 +56,13 @@ string joinstr(set<string> &c, string delim) {
 }
 
 
-string joinstr(deque<string> &c, string delim) {
+string joinstr(deque<string> c, string delim) {
 
     vector<string> c2;
-    for (string s: c) c2.push_back(s);
+    while (!c.empty()) {
+        c2.push_back(c.back());
+        c.pop_back();
+    }
 
     return joinstr(c2, delim);
 
@@ -73,9 +76,10 @@ bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<vector<stri
     if (stog.empty()) stog.emplace_back("$");
 
     trojka[2] = stog.back();
-    stog.pop_back();
 
     if (prijelazi.count(trojka)) {
+
+        stog.pop_back();
         
         for (int i = prijelazi[trojka][1].size() - 1; i >= 0; i--) {
             stog.emplace_back(string(1, prijelazi[trojka][1][i]));
