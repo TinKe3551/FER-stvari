@@ -6,6 +6,8 @@ using namespace std;
 
 vector<string> splitstr(string s, string delim) {
 
+    if (s == "") return vector<string>();
+
     string part = "";
     vector<string> parts;
 
@@ -56,7 +58,7 @@ string joinstr(set<string> &c, string delim) {
 }
 
 
-string joinstr(deque<string> c, string delim) {
+string joinstr_rev(deque<string> c, string delim) {
 
     vector<string> c2;
     while (!c.empty()) {
@@ -69,22 +71,41 @@ string joinstr(deque<string> c, string delim) {
 }
 
 
-bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<vector<string>, vector<string>> &prijelazi, set<string> prihvatljiva_stanja) {
+bool obavi_prijelaz(int &i, vector<string> &trojka, deque<string> &stog, map<vector<string>, vector<string>> &prijelazi, set<string> prihvatljiva_stanja) {
 
     // trojka = (stanje, ulazni znak, znak na stogu)
 
-    if (stog.empty()) stog.emplace_back("$");
+    if (stog.empty()) {
+        cout << trojka[0] << "#" << "$" << "|" << "fail|0\n";
+        return false;
+    }
 
     trojka[2] = stog.back();
 
-    cout << trojka[0] << "#" << joinstr(stog, "") << "|";
+    cout << trojka[0] << "#" << joinstr_rev(stog, "") << "|";
+
+    #ifdef debug
+    for (string i: trojka) cout << i << " ";
+    cout << "-> ";
+    if (prijelazi.count(trojka)) for (string i: prijelazi[trojka]) cout << i << " ";
+    cout << "\n";
+    #endif
+
+    string ul_znak = trojka[1];
 
     if (prijelazi.count(trojka)) {
 
+        if (trojka[1] == "$" && prihvatljiva_stanja.count(trojka[0])) {
+            cout << "1\n";
+            return false;
+        }
+
         stog.pop_back();
         
-        for (int i = prijelazi[trojka][1].size() - 1; i >= 0; i--) {
-            stog.emplace_back(string(1, prijelazi[trojka][1][i]));
+        if (prijelazi[trojka][1] != "$") {
+            for (int i = prijelazi[trojka][1].size() - 1; i >= 0; i--) {
+                stog.emplace_back(string(1, prijelazi[trojka][1][i]));
+            }
         }
 
         trojka[0] = prijelazi[trojka][0];
@@ -99,8 +120,39 @@ bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<vector<stri
     }
 
     else {
-        cout << "fail|0\n";
-        return false;
+
+        trojka[1] = "$";
+
+        #ifdef debug
+        for (string i: trojka) cout << i << " ";
+        cout << "-> ";
+        if (prijelazi.count(trojka)) for (string i: prijelazi[trojka]) cout << i << " ";
+        cout << "\n";
+        #endif
+
+        if (prijelazi.count(trojka)) {
+            
+            stog.pop_back();
+
+            if (prijelazi[trojka][1] != "$") {
+                for (int i = prijelazi[trojka][1].size() - 1; i >= 0; i--) {
+                    stog.emplace_back(string(1, prijelazi[trojka][1][i]));
+                }
+            }
+
+            trojka[0] = prijelazi[trojka][0];
+            // cout << trojka[0];
+            i--;
+
+            return true;
+
+        }
+
+        else {
+            cout << "fail|0\n";
+            return false;
+        }
+
     }
 
 }
@@ -112,7 +164,7 @@ int main(void) {
 
     // ulazni nizovi    
     vector<vector<string>> ulazni_nizevi;
-    cin >> redak;
+    getline(cin, redak);
 
     for (string i: splitstr(redak, "|")) {
         ulazni_nizevi.push_back(splitstr(i, ","));
@@ -121,21 +173,22 @@ int main(void) {
 
     // skup stanja
     set<string> stanja;
-    cin >> redak;
+    getline(cin, redak);
 
     for (string i: splitstr(redak, "|")) {
         stanja.emplace(i);
     }
 
     // ulazni znakovi
-    cin >> redak;
+    getline(cin, redak);
     
     // znakovi stoga
-    cin >> redak;
+    getline(cin, redak);
 
     // skup prihvatljivih stanja
     set<string> prihvatljiva_stanja;
-    cin >> redak;
+    // cin >> redak;
+    getline(cin, redak);
 
     for (string i: splitstr(redak, "|")) {
         prihvatljiva_stanja.emplace(i);
@@ -170,14 +223,17 @@ int main(void) {
 
         trojka.clear();
         int i = 0;
+
         trojka.push_back(poc_st);
+
         trojka.push_back(ulazni_niz[i]);
+
         trojka.push_back("");
 
         stog.clear();
         stog.emplace_back(poc_zn_st);
 
-        while (obavi_prijelaz(trojka, stog, prijelazi, prihvatljiva_stanja)) {
+        while (obavi_prijelaz(i, trojka, stog, prijelazi, prihvatljiva_stanja)) {
             i = min(i + 1, (int)ulazni_niz.size() - 1);
             trojka[1] = ulazni_niz[i];
         }
