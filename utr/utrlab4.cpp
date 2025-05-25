@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <cstddef>
 
 
 using namespace std;
@@ -16,7 +15,7 @@ deque<char> nezavrsni;
 vector<string> rekreacija;
 
 
-vector<string> rekreiraj(string &zadani) {
+void rekreiraj(string &zadani) {
     
     
 
