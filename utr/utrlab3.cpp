@@ -77,6 +77,8 @@ bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<vector<stri
 
     trojka[2] = stog.back();
 
+    cout << trojka[0] << "#" << joinstr(stog, "") << "|";
+
     if (prijelazi.count(trojka)) {
 
         stog.pop_back();
@@ -85,8 +87,6 @@ bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<vector<stri
             stog.emplace_back(string(1, prijelazi[trojka][1][i]));
         }
 
-        cout << trojka[0] << "#" << joinstr(stog, "") << "|";
-
         trojka[0] = prijelazi[trojka][0];
 
         return true;
@@ -94,7 +94,6 @@ bool obavi_prijelaz(vector<string> &trojka, deque<string> &stog, map<vector<stri
     }
 
     else if (trojka[1] == "$") {
-        cout << trojka[0] << "#" << joinstr(stog, "") << "|";
         cout << prihvatljiva_stanja.count(trojka[0]) << "\n";
         return false;
     }
