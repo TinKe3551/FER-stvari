@@ -4,30 +4,78 @@
 using namespace std;
 
 
-map<string, vector<string>> produkcije = {
-    {"S", {"aAB", "bBA"}},
-    {"A", {"bC", "a"}},
-    {"B", {"ccSbc", ""}},
-    {"C", {"AA"}}
+map<char, vector<string>> produkcije = {
+    {'S', {"aAB", "bBA"}},
+    {'A', {"bC", "a"}},
+    {'B', {"ccSbc", ""}},
+    {'C', {"AA"}}
 };
 
-deque<char> nezavrsni;
-vector<string> rekreacija;
+string rekreacija = "S";
+string zadani;
+bool moguce_parsirati = false;
 
 
-void rekreiraj(string &zadani) {
-    
-    
+void parser() {
+
+    #ifdef debug
+    cout << "----------------\n" << rekreacija << "\n";
+    #endif
+
+    if (moguce_parsirati) return;
+
+    for (int i = 0; i < rekreacija.size(); i++) {
+
+        if (i > zadani.size()) return;
+
+        if (produkcije.count(rekreacija[i])) {
+
+            #ifdef debug
+            cout << "ispisan završni znak " << rekreacija[i] << "\n";
+            #endif
+
+            #ifndef debug
+            cout << rekreacija[i];
+            #endif
+
+            string prije = rekreacija.substr(0, i);
+            string poslije = rekreacija.substr(i + 1);
+            char nezavrsni = rekreacija[i];
+
+            for (string pr: produkcije[nezavrsni]) {
+
+                rekreacija = prije + pr + poslije;
+                parser();
+                rekreacija = prije + nezavrsni + poslije;
+
+            }
+
+            return;
+
+        }
+
+        if (zadani[i] != rekreacija[i]) return;
+
+        if (i == zadani.size() - 1 && i == rekreacija.size() - 1) {
+            moguce_parsirati = true;
+            return;
+        }
+
+    }
 
 }
 
 
 int main(void) {
 
-    string zadani;
     cin >> zadani;
 
-    rekreiraj(zadani);
+    char r[zadani.size()];
+
+    parser();
+
+    if (moguce_parsirati) cout << "\nDA\n";
+    else cout << "\nNE\n";
 
     return 0;
 }

@@ -194,7 +194,7 @@ int main(void) {
         prihvatljiva_stanja.emplace(i);
     }
 
-    // početno stanje
+    // poČetno stanje
     string poc_st;
     cin >> poc_st;
 

@@ -1,5 +1,4 @@
-#include <iostream>
-#include <deque>
+#include <bits/stdc++.h>
 
 
 using namespace std;
@@ -7,16 +6,20 @@ using namespace std;
 
 int main(void) {
 
-    deque<string> bla;
-    string blabla = "blablabla";
+    string a = "aaaAaaaa";
+    string b = "bbb";
 
-    for (int i = 0; i < blabla.size(); i++) {
-        bla.emplace_back(blabla[i]);
-    }
+    int i = 3;
 
-    for (auto i: bla) {
-        cout << i << "\n";
-    }
+    cout << a << "\n";
+
+    a = a.substr(0, i) + b + a.substr(i + 1);
+
+    cout << a << "\n";
+
+    a = a.substr(0, i) + 'A' + a.substr(i + b.size());
+
+    cout << a << endl;
 
     return 0;
 
