@@ -1,0 +1,44 @@
+Osoba:
+> OIB - jedinstven, točno 11 znakova (nazov ograničenja: chkOIB)
+- Ime
+- Prezime
+
+Testiranje
+> Šifra - jedinstvena
+- Datum testiranja
+- Vrsta testa->Šifra
+- Proizvođač testa->Šifra
+- Rezultat - samo 0, 1 ili NULL
+- Laboratorij->Šifra
+- Osoba->OIB
+
+// jedna osoba može uzorak vode donijeti na testiranje više puta
+
+Vrsta testa
+> Šifra - jedinstvena
+- Naziv - jedinstven
+
+Proizvođač testa
+> Šifra - jedinstvena
+- Naziv
+
+Ustanova
+> Šifra - jedinstvena
+- Naziv
+- Teritorijalna jedinica - najuža, nema podređenih -> Šifra
+
+Laboratorij
+> Šifra - jedinstvena
+- Ustanova->Šifra
+- Oznaka
+
+Teritorijalna jedinica
+> Šifra - jedinstvena
+- Naziv
+- Vrsta->Šifra
+
+Vrsta teritorijalne jedinice
+> Šifra - jedinstvena
+- Naziv
+- Nadređena teritorijalna jedinica->Šifra
+- Podređene teritorijalne jedinice->Šifre
