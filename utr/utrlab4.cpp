@@ -14,6 +14,7 @@ map<char, vector<string>> produkcije = {
 string rekreacija = "S";
 string zadani;
 bool moguce_parsirati = false;
+bool nastavi = true;
 
 
 void parser() {
@@ -22,13 +23,16 @@ void parser() {
     cout << "----------------\n" << rekreacija << "\n";
     #endif
 
-    if (moguce_parsirati) return;
+    if (!nastavi) return;
 
     for (int i = 0; i < rekreacija.size(); i++) {
 
-        if (i > zadani.size()) return;
+        if (i > zadani.size()) {
+            nastavi = false;
+            return;
+        }
 
-        if (produkcije.count(rekreacija[i])) {
+        else if (produkcije.count(rekreacija[i])) {
 
             #ifdef debug
             cout << "ispisan završni znak " << rekreacija[i] << "\n";
@@ -54,10 +58,11 @@ void parser() {
 
         }
 
-        if (zadani[i] != rekreacija[i]) return;
+        else if (zadani[i] != rekreacija[i]) return;
 
-        if (i == zadani.size() - 1 && i == rekreacija.size() - 1) {
+        else if (i == zadani.size() - 1 && i == rekreacija.size() - 1) {
             moguce_parsirati = true;
+            nastavi = false;
             return;
         }
 
