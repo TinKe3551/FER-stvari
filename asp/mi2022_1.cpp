@@ -15,7 +15,7 @@ int zamijeniParne(int A[], int n) {
         int tmp = A[0];
         A[0] = A[n - 1];
         A[n - 1] = tmp;
-        z += 1 + zamijeniParne(&A[1], n - 2);        
+        z += 1 + zamijeniParne(&A[1], n - 2);
     }
 
     else if (A[0] % 2 == 1) {
