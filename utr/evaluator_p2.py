@@ -7,11 +7,11 @@ n = 0
 
 for i in range(1, len(d) + 1):
 
-    f = open(f"output{i}").read().strip().split("\n")[-1]
+    f = ' '.join(open(f"output{i}").read().strip().split(" ")[-2:])
 
     # print(f)
 
-    if f != f"Files rezultati/output{i} and lab4_primjeri/test{i}/test.out are identical":
+    if f != f"are identical":
         n += 1
         print(f"output{i}")
 
