@@ -137,3 +137,8 @@ praktične aproksimacije strategije LRU
 
 nešto sa dodjeljivanjem okvira
     - procesu koji ima puno promašaja dodjeljuju se ram okviri koji se uzmu procesima koji imaju malo promašaja
+
+
+==== 4.6.2025. ====
+
+yeet
