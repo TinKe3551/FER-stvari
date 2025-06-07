@@ -56,7 +56,7 @@ void ukloni_proces_iz_ps_evidencije(pid_t pid_zavrsio)
 {
 	int i;
 	for (i = 0; ps_pid[i] != pid_zavrsio && i < ps_c; i++);
-	
+
 	for (int j = i; j < ps_c - 1; j++) {
 
 		ps_pid[j] = ps_pid[j + 1];
@@ -80,17 +80,17 @@ void obradi_signal_zavrsio_neki_proces_dijete(int id)
 	//ako je već dole pozvan waitpid, onda na ovaj signal waitpid ne daje informaciju (ponovo)
 	pid_t pid_zavrsio = waitpid(-1, NULL, WNOHANG); //ne čeka
 	if (pid_zavrsio > 0) {
-		
+
 		if (kill(pid_zavrsio, 0) == -1) {//možda je samo promijenio stanje ili je bas završio
-			
+
 			printf("\npozadinsko dijete %d zavrsilo s radom\n", pid_zavrsio);
-			
+
 			ukloni_proces_iz_ps_evidencije(pid_zavrsio);
 
 		}
 
 	}
-	
+
 
 }
 
