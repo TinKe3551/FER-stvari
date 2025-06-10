@@ -4,4 +4,4 @@ console.log(req.url);
 res.writeHead(200, { 'Content-Type': 'text/html' }); // header
 res.write('Hello World!'); // body
 res.end();
-}).listen(80); // sluša na portu 80
+}).listen(8000); // sluša na portu 8000
