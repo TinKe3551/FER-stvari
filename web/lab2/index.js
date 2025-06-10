@@ -1,7 +1,10 @@
-var http = require('http'); // ugrađeni modul, ne treba install
-http.createServer(function(req, res) {
-console.log(req.url);
-res.writeHead(200, { 'Content-Type': 'text/html' }); // header
-res.write('Hello World!'); // body
-res.end();
-}).listen(8000); // sluša na portu 8000
+const express = require("express");
+const app = express();
+
+app.use(express.static("public/images/"));
+
+app.get("/", function(req, res) {
+    res.send("yeet <img src='/public/images/biljcrte.png'>");
+})
+
+app.listen(8000);
