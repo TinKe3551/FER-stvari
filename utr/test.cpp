@@ -1,26 +1,23 @@
 #include <bits/stdc++.h>
 
-
 using namespace std;
-
 
 int main(void) {
 
-    string a = "aaaAaaaa";
-    string b = "bbb";
+        string a = "aaaAaaaa";
+        string b = "bbb";
 
-    int i = 3;
+        int i = 3;
 
-    cout << a << "\n";
+        cout << a << "\n";
 
-    a = a.substr(0, i) + b + a.substr(i + 1);
+        a = a.substr(0, i) + b + a.substr(i + 1);
 
-    cout << a << "\n";
+        cout << a << "\n";
 
-    a = a.substr(0, i) + 'A' + a.substr(i + b.size());
+        a = a.substr(0, i) + 'A' + a.substr(i + b.size());
 
-    cout << a << endl;
+        cout << a << endl;
 
-    return 0;
-
+        return 0;
 }
