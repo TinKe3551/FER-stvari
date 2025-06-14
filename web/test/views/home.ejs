@@ -20,39 +20,32 @@
 
         <div class="zaglavlje">
             <div class="zaglavlje_sadrzaj" id="logo">
-                <a href="index.html">
-                    <img src="images/logo.png" title="glavna stranica"/>
+                <a href="/">
+                    <img src="/images/logo.png" title="glavna stranica"/>
                 </a>
             </div>
-            <div class="zaglavlje_sadrzaj" id="nazivkat">Trenutno nije odabrana nijedna kategorija</div>
+            <div class="zaglavlje_sadrzaj" id="nazivkat"><%= selected_category %></div>
             <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
                 <div id="kosr_ik" class="kosr_i_pretr">
-                    <a href="cart.ejs"><img src="images/kosarica.png" class="kosr_i_pretr" title="košarica"/></a>
+                    <a href="/cart"><img src="/images/kosarica.png" class="kosr_i_pretr" title="košarica"/></a>
                     <div id="kosr_brojac" title="pretraživanje">0</div>
                 </div>
                 <div>
-                    <img src="images/pretrazivanje.png"/>
+                    <img src="/images/pretrazivanje.png"/>
                 </div>
             </div>
         </div>
 
         <div class="naslovnaslika">
-            <img src="./images/naslovnaslika.png" alt="naslovna slika" class="naslovnaslika"/>
+            <img src="/images/naslovnaslika.png" alt="naslovna slika" class="naslovnaslika"/>
         </div>
 
         <div class="sidebar">
 
             <div class="izbornik">
-                <div class="kategorijagumb" id="kategorija1">Udžbenici iz matematike</div>
-                <div class="kategorijagumb" id="kategorija2">Zbirke zadataka iz matematike</div>
-                <div class="kategorijagumb" id="kategorija3">Udžbenici iz elektrotehničkih predmeta</div>
-                <div class="kategorijagumb" id="kategorija4">Zbirke zadataka iz elektrotehničkih predmeta</div>
-                <div class="kategorijagumb" id="kategorija5">Udžbenici iz računarskih predmeta</div>
-                <div class="kategorijagumb" id="kategorija6">Zbirke zadataka iz računarskih predmeta</div>
-                <div class="kategorijagumb" id="kategorija7">Udžbenici i zbirke zadataka iz ostalih predmeta</div>
-                <div class="kategorijagumb" id="kategorija8">Bilježnice sa stranicama s crtama</div>
-                <div class="kategorijagumb" id="kategorija9">Bilježnice s kariranim stranicama</div>
-                <div class="kategorijagumb" id="kategorija10">Bilježnice s praznim stranicama</div>
+                <% for (let i = 0; i < categories_names.length; i++) {%>
+                    <div class="kategorijagumb" id=<%= i %>><%= categories_names[i] %></div>
+                <% } %>
                 <div class="ekstra">
                     <a href="">Kontakt</a>
                     <a href="">Newsletter</a>

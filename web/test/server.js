@@ -14,7 +14,8 @@ app.set("view engine", "ejs");
 // setup za statičko posluživanje
 app.use(express.static(path.join(__dirname, "public")));
 
-// setup rutera
+// pokretanje rutera
 app.use("/", homeRouter);
+app.use("/", cartRouter);
 
 app.listen(3000);
