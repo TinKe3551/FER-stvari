@@ -4,8 +4,7 @@ const app = express();
 const path = require("path");
 
 // ruteri
-const rootRouter = require("./routes/root.routes");
-const homeRouter = require("./routes/root.routes");
+const homeRouter = require("./routes/home.routes");
 const cartRouter = require("./routes/cart.routes");
 
 // setup ejs-a
