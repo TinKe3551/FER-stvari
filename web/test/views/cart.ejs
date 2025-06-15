@@ -1,36 +1,25 @@
-<!DOCTYPE html>
-<html>
+<%- include("partials/header"); %>
 
-    <head>
+<body>
 
-        <title>FER knjižara - košarica</title>
-
-        <link rel="stylesheet" href="/styles/stylesheet.css">
-
-    </head>
-
-    <body>
-
-        <div class="zaglavlje">
-            <div class="zaglavlje_sadrzaj" id="logo">
-                <a href="/home">
-                    <img src="/images/logo.png" title="glavna stranica"/>
-                </a>
+    <div class="zaglavlje">
+        <div class="zaglavlje_sadrzaj" id="logo">
+            <a href="/home">
+                <img src="/images/logo.png" title="glavna stranica" />
+            </a>
+        </div>
+        <div class="zaglavlje_sadrzaj" id="nazivkat">Košarica</div>
+        <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
+            <div id="kosr_ik" class="kosr_i_pretr">
+                <a href="/cart"><img src="/images/kosarica.png" class="kosr_i_pretr" title="košarica" /></a>
+                <div id="kosr_brojac">0</div>
             </div>
-            <div class="zaglavlje_sadrzaj" id="nazivkat">Košarica</div>
-            <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
-                <div id="kosr_ik" class="kosr_i_pretr">
-                    <a href="/cart"><img src="/images/kosarica.png" class="kosr_i_pretr" title="košarica"/></a>
-                    <div id="kosr_brojac">0</div>
-                </div>
-                <div class="kosr_i_pretr">
-                    <img src="/images/pretrazivanje.png" class="kosr_i_pretr"/>
-                </div>
+            <div class="kosr_i_pretr">
+                <img src="/images/pretrazivanje.png" class="kosr_i_pretr" />
             </div>
         </div>
+    </div>
 
-        <div class="kosr_proizvodi" id="kosr_proizvodi"></div>
+    <div class="kosr_proizvodi" id="kosr_proizvodi"></div>
 
-    </body>
-
-</html>
+<%- include("partials/footer"); %>

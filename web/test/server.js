@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const session = require("session");
 
 // ruteri
 const homeRouter = require("./routes/home.routes");
@@ -17,5 +18,14 @@ app.use(express.static(path.join(__dirname, "public")));
 // pokretanje rutera
 app.use("/", homeRouter);
 app.use("/", cartRouter);
+
+// inicijalizacija sjednice
+app.use(
+    session({
+        secret: "boble",
+        resave: false,
+        saveUninitialized: true,
+    })
+);
 
 app.listen(3000);

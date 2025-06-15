@@ -134,6 +134,9 @@ div.proizvod {
     flex-flow: column wrap;
     align-items: center;
     user-select: none;
+}
+
+input.proizvod {
     cursor: pointer;
 }
 

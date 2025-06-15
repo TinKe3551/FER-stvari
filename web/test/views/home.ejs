@@ -1,78 +1,71 @@
-<!DOCTYPE html>
-<html>
+<%- include("partials/header"); %>
 
-<head>
+    <body>
 
-    <title>FER knjižara</title>
+        <div class="pozdravnitekst">Dobrodošli u FER knjižaru!</div>
 
-    <link rel="stylesheet" href="/styles/stylesheet.css">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-</head>
-
-<body>
-
-    <div class="pozdravnitekst">Dobrodošli u FER knjižaru!</div>
-
-    <div class="zaglavlje">
-        <div class="zaglavlje_sadrzaj" id="logo">
-            <a href="/">
-                <img src="/images/logo.png" title="glavna stranica" />
-            </a>
-        </div>
-        <div class="zaglavlje_sadrzaj" id="nazivkat">
-            <%= selected_category %>
-        </div>
-        <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
-            <div id="kosr_ik" class="kosr_i_pretr">
-                <a href="/cart"><img src="/images/kosarica.png" class="kosr_i_pretr" title="košarica"/></a>
-                <div id="kosr_brojac">0</div>
+        <div class="zaglavlje">
+            <div class="zaglavlje_sadrzaj" id="logo">
+                <a href="/">
+                    <img src="/images/logo.png" title="glavna stranica" />
+                </a>
             </div>
-            <div>
-                <img src="/images/pretrazivanje.png" title="pretraživanje"/>
+            <div class="zaglavlje_sadrzaj" id="nazivkat">
+                <%= selected_category %>
+            </div>
+            <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
+                <div id="kosr_ik" class="kosr_i_pretr">
+                    <a href="/cart"><img src="/images/kosarica.png" class="kosr_i_pretr" title="košarica" /></a>
+                    <div id="kosr_brojac">0</div>
+                </div>
+                <div>
+                    <img src="/images/pretrazivanje.png" title="pretraživanje" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="naslovnaslika">
-        <img src="/images/naslovnaslika.png" alt="naslovna slika" class="naslovnaslika" />
-    </div>
+        <div class="naslovnaslika">
+            <img src="/images/naslovnaslika.png" alt="naslovna slika" class="naslovnaslika" />
+        </div>
 
-    <div class="sidebar">
+        <div class="sidebar">
 
-        <div class="izbornik">
-            <% for (let i=0; i < categories_names.length; i++) {%>
-                <a href=<%="/home/getProducts/:" + i %>><div class="kategorijagumb" id=<%=i %>><%= categories_names[i]
-                            %>
-                    </div></a>
+            <div class="izbornik">
+                <% for (let i=0; i < categories_names.length; i++) {%>
+                    <a href=<%="/home/getProducts/:" + i %>>
+                        <div class="kategorijagumb" id=<%=i %>><%= categories_names[i]%>
+                        </div>
+                    </a>
+                    <% } %>
+                        <div class="ekstra">
+                            <a href="">Kontakt</a>
+                            <a href="">Newsletter</a>
+                            <a href="">Pretplati se</a>
+                        </div>
+            </div>
+
+            <div class="kontaktinfo">
+            </div>
+
+        </div>
+
+        <div class="proizvodi" id="proizvodi">
+            <% for (let i=0; i < category_data.length; i++) { %>
+                <div class="proizvod" id=<%="pr_" + i %>>
+                    <img class="proizvod" src=<%="/images/" + category_data[i]["image"]%>>
+                    <form action=<%="/cart/add/:" + category_id + "_" + i %> method="POST">
+                        <input type="submit" value="Dodaj u košaricu" id=<%="g_" + i %> class="proizvod">
+                    </form>
+                    <p>
+                        <%= category_data[i]["name"] %>
+                    </p>
+                    <p id=<%="br_" + i %>>
+                        <%= category_data[i]["amount"] %>
+                    </p>
+                </div>
                 <% } %>
-                    <div class="ekstra">
-                        <a href="">Kontakt</a>
-                        <a href="">Newsletter</a>
-                        <a href="">Pretplati se</a>
-                    </div>
         </div>
 
-        <div class="kontaktinfo">
-        </div>
+        <script defer src="/scripts/home.js"></script>
 
-    </div>
-
-    <div class="proizvodi" id="proizvodi">
-        <% for (let i=0; i < category_data.length; i++) { %>
-            <div id=<%="pr_" + i %> class="proizvod">
-                <img class="proizvod" src=<%="/images/" + category_data[i]["image"]%>>
-                <img class="ikonica" src="/images/kosarica.png" id=<%="ik_" + i %>>
-                <p><%= category_data[i]["name"] %></p>
-                <p id=<%= "br_" + i %>><%= category_data[i]["amount"] %></p>
-            </div>
-            <% } %>
-    </div>
-
-    <script defer src="/scripts/home.js"></script>
-
-</body>
-
-</html>
+        <%- include("partials/footer"); %>
