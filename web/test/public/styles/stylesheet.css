@@ -2,7 +2,7 @@
 
 
 * {
-    box-sizing:border-box;
+    box-sizing: border-box;
     align-content: center;
     text-align: center;
     align-items: center;
@@ -29,11 +29,12 @@ div.zaglavlje {
 
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-evenly;;
+    justify-content: space-evenly;
+    ;
 }
 
 div.zaglavlje_sadrzaj {
-    padding:3vw;
+    padding: 3vw;
 }
 
 div.zaglavlje_sadrzaj#logo {
@@ -51,8 +52,8 @@ div.zaglavlje_sadrzaj#kosr_i_pretr {
 }
 
 div.kosr_i_pretr {
-    margin-right:1vw;
-    margin-left:1vw;
+    margin-right: 1vw;
+    margin-left: 1vw;
 }
 
 div.naslovnaslika {
@@ -68,16 +69,16 @@ img.naslovnaslika {
 
 div.sidebar {
     width: 30vw;
-/*    min-width: 240px;*/
+    /*    min-width: 240px;*/
     font-size: 0.9rem;
     float: left;
 }
 
 div.kategorijagumb {
-    padding:1%;
+    padding: 1%;
     text-align: center;
     cursor: pointer;
-    border-top-style:dashed;
+    border-top-style: dashed;
     border-color: black;
     font-size: 1.1rem;
     user-select: none;
@@ -90,10 +91,10 @@ div.kategorijagumb:hover {
 }
 
 div.kategorijagumb_odabrano {
-    padding:1%;
+    padding: 1%;
     text-align: center;
     cursor: pointer;
-    border-top-style:dashed;
+    border-top-style: dashed;
     border-color: black;
     font-size: 1.1rem;
     user-select: none;
@@ -114,9 +115,9 @@ div.ekstra {
 }
 
 div.proizvodi {
-    float:right;
+    float: right;
     width: 60vw;
-    display:flex;
+    display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
     margin: 2vw;
@@ -129,10 +130,11 @@ div.proizvod {
     height: auto;
     margin: 10px;
     padding: 10px;
-    display:flex;
+    display: flex;
     flex-flow: column wrap;
-    align-items:center;
+    align-items: center;
     user-select: none;
+    cursor: pointer;
 }
 
 img.proizvod {
@@ -143,6 +145,9 @@ img.proizvod {
     border-width: 2px;
 }
 
+img.ikonica {
+    width: 40px;
+}
 
 img.kosr_i_pretr {
     width: 40px;
@@ -158,7 +163,7 @@ div.kosr_proizvod {
     flex-flow: row wrap;
     justify-content: space-evenly;
     min-height: 64px;
-    margin-top:5px;
+    margin-top: 5px;
 }
 
 div.kosr_proizvod_naziv {
@@ -181,7 +186,7 @@ div.kosr_proizvod_makni {
 
 
 @media screen and (min-width: 1024px) {
-    
+
     html {
         font-size: 30px;
     }
@@ -203,4 +208,3 @@ div.kosr_proizvod_makni {
     }
 
 }
-
