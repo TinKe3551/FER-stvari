@@ -4,6 +4,14 @@ const app = express();
 const path = require("path");
 const session = require("express-session");
 
+app.use(
+    session({
+        secret: "anything",
+        resave: false,
+        saveUninitialized: true,
+    }),
+);
+
 // ruteri
 const homeRouter = require("./routes/home.routes");
 const cartRouter = require("./routes/cart.routes");
@@ -18,13 +26,5 @@ app.use(express.static(path.join(__dirname, "public")));
 // pokretanje rutera
 app.use("/", homeRouter);
 app.use("/", cartRouter);
-
-app.use(
-    session({
-        secret: "anything",
-        resave: false,
-        saveUninitialized: true,
-    })
-);
 
 app.listen(3000);

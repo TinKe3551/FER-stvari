@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
 * {
     box-sizing: border-box;
@@ -8,12 +7,9 @@
     align-items: center;
 }
 
-
 html {
-
     font-family: "roboto mono", sans-serif;
     font-size: 20px;
-
 }
 
 div.pozdravnitekst {
@@ -30,7 +26,6 @@ div.zaglavlje {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
-    ;
 }
 
 div.zaglavlje_sadrzaj {
@@ -59,7 +54,7 @@ div.kosr_i_pretr {
 div.naslovnaslika {
     width: 100%;
     height: auto;
-    float: right
+    float: right;
 }
 
 img.naslovnaslika {
@@ -173,23 +168,25 @@ div.kosr_proizvod_naziv {
     width: 70%;
 }
 
-div.kosr_proizvod_dodaj {
-    width: 10%;
+input.kosr_proizvod_dodaj {
+    font-size: 0.8rem;
+    padding: 5px;
     cursor: pointer;
+    text-align: center;
 }
 
 div.kosr_proizvod_brojac {
     width: 10%;
 }
 
-div.kosr_proizvod_makni {
-    width: 10%;
+input.kosr_proizvod_makni {
+    font-size: 0.8rem;
+    padding: 5px;
     cursor: pointer;
+    text-align: center;
 }
 
-
 @media screen and (min-width: 1024px) {
-
     html {
         font-size: 30px;
     }
@@ -209,5 +206,4 @@ div.kosr_proizvod_makni {
     div.naslovnaslika {
         border-left: none;
     }
-
 }

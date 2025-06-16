@@ -6,7 +6,7 @@
 
         <div class="zaglavlje">
             <div class="zaglavlje_sadrzaj" id="logo">
-                <a href="/home_check_categories">
+                <a href="/home/getCategories">
                     <img src="/images/logo.png" title="glavna stranica" />
                 </a>
             </div>
@@ -16,7 +16,9 @@
             <div class="zaglavlje_sadrzaj" id="kosr_i_pretr">
                 <div id="kosr_ik" class="kosr_i_pretr">
                     <a href="/cart"><img src="/images/kosarica.png" class="kosr_i_pretr" title="košarica" /></a>
-                    <div id="kosr_brojac">0</div>
+                    <div id="kosr_brojac">
+                        <%= total_amount %>
+                    </div>
                 </div>
                 <div>
                     <img src="/images/pretrazivanje.png" title="pretraživanje" />
@@ -60,7 +62,7 @@
                         <%= category_data[i]["name"] %>
                     </p>
                     <p id=<%="br_" + i %>>
-                        <%= category_data[i]["amount"] %>
+                        <%= product_amounts[i] %>
                     </p>
                 </div>
                 <% } %>
