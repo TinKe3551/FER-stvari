@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+var session = require("express-session");
 var data = require("../data/data");
 
 // varijable koje se koriste pri učitavanju home stranice
@@ -10,15 +11,22 @@ let category_data = [];
 
 
 router.get("/", (req, res, next) => {
-    res.redirect("/home");
+    res.redirect("/home_check_categories");
 });
 
-router.get("/home", (req, res, next) => {
+router.get("/home_check_categories", (req, res, next) => {
 
     // ako kategorije još nisu dohvaćene, dohvati ih
     if (categories_names.length === 0) {
         res.redirect("/home/getCategories");
     }
+
+    res.redirect("/home");
+
+})
+
+router.get("/home", (req, res, next) => {
+
 
     // učitaj home stranicu
     res.render("home", {
@@ -28,6 +36,7 @@ router.get("/home", (req, res, next) => {
         categories_names: categories_names,
         category_data: category_data,
     });
+
 });
 
 router.get("/home/getCategories", (req, res, next) => {
@@ -47,5 +56,6 @@ router.get("/home/getProducts/:id", (req, res, next) => {
     res.redirect("/home")
 
 });
+
 
 module.exports = router;
