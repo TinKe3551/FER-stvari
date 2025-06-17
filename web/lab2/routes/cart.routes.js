@@ -54,11 +54,12 @@ router.post("/cart/add/:id", (req, res, next) => {
     return res.sendStatus(204);
 });
 
-router.get("/cart/remove/:id", (req, res, next) => {
-    if (req.session.total_amount === undefined) req.session.total_amount = 0;
-    if (req.session.total_amount > 0) req.session.total_amount -= 1;
-
+router.post("/cart/remove/:id", (req, res, next) => {
     let id = req.params.id.substring(1);
+
+    if (req.session.total_amount === undefined) req.session.total_amount = 0;
+    if (req.session.total_amount > 0 && req.session.data[id] > 0)
+        req.session.total_amount -= 1;
 
     if (!req.session.data[id]) {
         req.session.data[id] = 0;

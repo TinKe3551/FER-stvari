@@ -29,13 +29,13 @@
                     <%= product_names[i] %>
                 </div>
                 <form action=<%= "/cart/add/:" + distinct_products[i] %> method="POST">
-                    <input type="submit" value="dodaj" class="kosr_proizvod_dodaj" id=<%= "gd_" + distinct_products[i] %>>
+                    <input type="submit" value="dodaj" class="kosr_proizvod_dodaj" id=<%= "gd_" + i %>>
                 </form>
-                <div class="kosr_proizvod_brojac" id=<%= "br_" + distinct_products[i] %>>
+                <div class="kosr_proizvod_brojac" id=<%= "br_" + i %>>
                     <%= amounts[distinct_products[i]] %>
                 </div>
-                <form action=<%= "/cart/remove/:" + distinct_products[i] %> method="DELETE">
-                    <input type="submit" value="makni" class="kosr_proizvod_makni" id=<%= "gm_" + distinct_products[i] %>>
+                <form action=<%= "/cart/remove/:" + distinct_products[i] %> method="POST">
+                    <input type="submit" value="makni" class="kosr_proizvod_makni" id=<%= "gm_" + i %>>
                 </form>
             </div>
         <% } %>

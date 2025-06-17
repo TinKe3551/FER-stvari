@@ -1,9 +1,9 @@
 {
-  "name": "test",
+  "name": "lab2",
   "version": "1.0.0",
-  "description": "test",
+  "description": "Druga laboratorijska vježba na kolegiju Razvoj programske potpore za web",
   "license": "MIT",
-  "author": "tk",
+  "author": "Tin Keglević (0036559457)",
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
