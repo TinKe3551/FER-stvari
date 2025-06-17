@@ -27,4 +27,5 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", homeRouter);
 app.use("/", cartRouter);
 
+console.log("server open on localhost:3000");
 app.listen(3000);
