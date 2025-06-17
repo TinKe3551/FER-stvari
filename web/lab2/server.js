@@ -9,6 +9,9 @@ app.use(
         secret: "anything",
         resave: false,
         saveUninitialized: true,
+        cookie: {
+            maxAge: 3600000, // sjednica traje sat vremena
+        },
     }),
 );
 

@@ -168,22 +168,16 @@ div.kosr_proizvod_naziv {
     width: 70%;
 }
 
-input.kosr_proizvod_dodaj {
+input {
     font-size: 0.8rem;
     padding: 5px;
     cursor: pointer;
     text-align: center;
+    margin-top: 10px;
 }
 
 div.kosr_proizvod_brojac {
     width: 10%;
-}
-
-input.kosr_proizvod_makni {
-    font-size: 0.8rem;
-    padding: 5px;
-    cursor: pointer;
-    text-align: center;
 }
 
 @media screen and (min-width: 1024px) {
