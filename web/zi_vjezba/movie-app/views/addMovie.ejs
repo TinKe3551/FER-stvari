@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <link rel="stylesheet" href="/css/site.css">
+
+        <title>Movie List App</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    </head>
+
+    <body>
+
+        <div class="card" id="addmv">
+
+            <h1>Add Movie</h1>
+
+            <form action="/movies/add" method="POST">
+
+                <label for="movieTitle">Movie title:</label><br>
+                <input type="text" name="movieTitle" value=""><br>
+
+                <label for="director">Director:</label><br>
+                <input type="text" name="director" name=""><br>
+
+                <input type="submit" class="button" value="Add Movie">
+
+            </form>
+
+            <form action="/movies" method="GET">
+                <input type="submit" class="button" value="Back to Movie List">
+            </form>
+
+        </div>
+
+    </body>
+
+</html>

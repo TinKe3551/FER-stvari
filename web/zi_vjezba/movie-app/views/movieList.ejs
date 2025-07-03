@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <link rel="stylesheet" href="/css/site.css">
+
+        <title>Movie List App</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    </head>
+
+    <body>
+
+        <div class="card" id="mvlist">
+
+            <h1>Movie List</h1>
+
+            <form action="/movies/add" methot="GET">
+                <input type="submit" class="button" value="Add New Movie">
+            </form>
+
+            <% for (let i = 0; i < movies.length; i += 2) { %>
+                <div class="movie" id = <%= "" + i %>>
+                    <p>
+                        <%= movies[i] %> directed by <%= movies[i+1] %>
+                    </p>
+                    <form action= <%= "/movies/delete/:" + (Math.floor(i/2)) %> method="POST">
+                        <input type="submit" value="delete" class="button">
+                    </form>
+                </div>
+            <% } %>
+
+            <form action="/" method="GET">
+                <input type="submit" class="button" value="Home">
+            </form>
+
+        </div>
+
+    </body>
+
+</html>
