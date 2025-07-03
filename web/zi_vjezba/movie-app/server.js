@@ -30,5 +30,4 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", homeRouter);
 app.use("/", movieRouter);
 
-console.log("server open on localhost:8080");
 app.listen(8080);
