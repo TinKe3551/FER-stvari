@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Kviz uspješno završen!</h1>
+        </div>
+
+        <div class="main">
+            <div class="results-card">
+                <h2>Koliko poznaješ legendarne svjetove?</h2>
+                
+                <div class="score-display">
+                     <div class="score-text">
+						<%= correct + "/" + total %>
+                    </div>
+                </div>
+
+
+                <div class="actions">
+                    <form action="/" method="get">
+                        <input type="submit" class="btn-secondary" value="Natrag na početnu">
+                    </form>
+                    <div style="display: inline;">
+                        <form action="/" method="get">
+                            <input type="submit" class="submit-btn" value="Pokušaj ponovo">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

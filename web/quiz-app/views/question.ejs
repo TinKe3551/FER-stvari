@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question <%= num %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Koliko poznaješ legendarne svjetove?</h1>
+            <div class="progress">
+                Pitanje 1 of 6
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="question-card">
+                <div class="category-badge">
+                    <%= category %>
+                </div>
+                <h2 class="question-title">
+                    <%= question %>
+                </h2>
+        <!-- {
+            id: 1,
+            question: "Koji je rodni planet Lukea Skywalkera?",
+            options: ["Coruscant", "Hoth", "Tatooine", "Dagobah"],
+            correctAnswer: 2,
+            category: "Star Wars"
+        } -->
+                <div>
+                    <form action=<%= "/quiz/question/:" + num + "/answer" %> method="post">
+                        <div class="options">
+
+                                <% for (let i = 0; i < options.length; i++) { %>
+                                    <label class="option">
+                                        <input type="radio" name="answer" value=<%= i + 1%>>
+                                        <span class="option-text">
+                                            <%= alphabet[i] + ". " + options[i] %>
+                                        </span>
+                                    </label>
+                                <% } %>
+                            
+                        </div>
+                        <input type="submit" class="submit-btn" value="Sljedeće pitanje">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
