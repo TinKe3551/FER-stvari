@@ -24,7 +24,6 @@ vector<string> splitstr(string s, string delim) {
         else {
             part += s[i];
             i++;
-            
         }
     }
 

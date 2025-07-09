@@ -90,7 +90,7 @@ int main(void) {
     set<string> pocetna_stanja;
     cin >> redak;
     pocetna_stanja.emplace(redak);
-    
+
     map<string, vector<string>> epsilon_prijelazi;
     map<pair<string, string>, vector<string>> prijelazi;
 
